@@ -1,0 +1,52 @@
+.profile-skeleton-container {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 24px 16px;
+}
+
+.profile-skeleton-avatar-section {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  margin-bottom: 24px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.profile-skeleton-avatar-info {
+  flex: 1;
+}
+
+.profile-skeleton-form {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.profile-skeleton-section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 16px;
+  background: #f9f9f9;
+  border-radius: 8px;
+}
+
+.profile-skeleton-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.profile-skeleton-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.profile-skeleton-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  margin-top: 12px;
+}

@@ -1,68 +1,99 @@
-:root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
+@import "tailwindcss";
 
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+@layer base {
+  * {
+    @apply box-border;
+  }
 
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
-}
-
-body {
-  margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
-}
-
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
-}
-
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
-  cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
-}
-
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
+  html,
+  body {
+    @apply text-base text-gray-900;
     background-color: #ffffff;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
   }
-  a:hover {
-    color: #747bff;
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-semibold text-gray-900;
   }
-  button {
-    background-color: #f9f9f9;
+
+  h1 {
+    @apply text-4xl;
+  }
+
+  h2 {
+    @apply text-3xl;
+  }
+
+  h3 {
+    @apply text-2xl;
+  }
+
+  button,
+  input,
+  select,
+  textarea {
+    font-family: inherit;
+    font-size: inherit;
+  }
+
+  a {
+    @apply text-gray-900 hover:text-gray-700 underline transition-colors;
   }
 }
+
+@layer components {
+  /* Input Styles */
+  .input-base {
+    @apply w-full px-4 py-2 border border-gray-300 rounded-lg text-base focus:outline-none focus:ring-2 focus:ring-gray-800 focus:border-transparent transition-all bg-white text-gray-900;
+  }
+
+  .input-error {
+    @apply border-gray-600 focus:ring-gray-900;
+  }
+
+  /* Form Label */
+  .label-base {
+    @apply block text-sm font-medium text-gray-900 mb-2;
+  }
+
+  /* Card */
+  .card {
+    @apply bg-white rounded-lg shadow-sm p-6 border border-gray-200;
+  }
+
+  /* Text Utilities */
+  .text-muted {
+    @apply text-gray-600;
+  }
+
+  .text-error {
+    @apply text-gray-900;
+  }
+
+  .text-success {
+    @apply text-gray-800;
+  }
+
+  .text-warning {
+    @apply text-gray-700;
+  }
+}
+
+/* Global Classes */
+.container-main {
+  @apply max-w-screen-xl mx-auto px-4;
+}
+
+.section {
+  @apply py-8 md:py-12;
+}
+
+.divider {
+  @apply border-t border-gray-300;
+}
+
