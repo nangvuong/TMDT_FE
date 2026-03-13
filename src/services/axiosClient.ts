@@ -1,7 +1,7 @@
 import axios from 'axios';
-import type { AxiosInstance, AxiosRequestConfig } from 'axios';
-
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:3000/api';
+import { API_BASE_URL } from '../constants/api'
+import { getToken, removeToken } from '../utils/token';
+import type { AxiosInstance } from 'axios';
 
 const axiosClient: AxiosInstance = axios.create({
   baseURL: API_BASE_URL,
@@ -14,9 +14,18 @@ const axiosClient: AxiosInstance = axios.create({
 // Request interceptor
 axiosClient.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('authToken');
+    const token = getToken();
+    console.log('[AxiosClient Request]', {
+      url: config.url,
+      tokenExists: !!token,
+      tokenLength: token?.length || 0,
+    });
+    
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
+      console.log('[AxiosClient] ✓ Token attached');
+    } else {
+      console.warn('[AxiosClient] ⚠ No token - request will likely fail with 401');
     }
     return config;
   },
@@ -26,7 +35,26 @@ axiosClient.interceptors.request.use(
 // Response interceptor
 axiosClient.interceptors.response.use(
   (response) => response.data,
-  (error) => Promise.reject(error)
+  (error) => {
+    const status = error.response?.status;
+    const message = error.response?.data?.message || error.message;
+    
+    console.error('[AxiosClient Response Error]', {
+      status,
+      message,
+      url: error.config?.url,
+      authHeader: error.config?.headers?.Authorization ? 'YES' : 'NO',
+    });
+
+    // Handle 401 - Unauthorized (token expired or invalid)
+    if (status === 401) {
+      console.warn('[AxiosClient] Unauthorized (401) - Removing token');
+      removeToken();
+      localStorage.removeItem('rememberMe');
+    }
+
+    return Promise.reject(error);
+  }
 );
 
 export default axiosClient;

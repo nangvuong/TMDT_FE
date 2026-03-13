@@ -13,8 +13,12 @@ export const useProfile = () => {
     try {
       const data = await userService.getProfile();
       setProfile(data);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to fetch profile');
+    } catch (err: any) {
+      // Include status code in error message for better handling
+      const statusCode = err.response?.status || '';
+      const message = err instanceof Error ? err.message : 'Failed to fetch profile';
+      const errorMsg = statusCode ? `${message} (${statusCode})` : message;
+      setError(errorMsg);
     } finally {
       setLoading(false);
     }
@@ -26,8 +30,11 @@ export const useProfile = () => {
     try {
       const updated = await userService.updateProfile(data);
       setProfile(updated);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to update profile');
+    } catch (err: any) {
+      const statusCode = err.response?.status || '';
+      const message = err instanceof Error ? err.message : 'Failed to update profile';
+      const errorMsg = statusCode ? `${message} (${statusCode})` : message;
+      setError(errorMsg);
     } finally {
       setLoading(false);
     }

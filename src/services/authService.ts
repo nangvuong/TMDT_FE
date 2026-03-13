@@ -6,6 +6,7 @@ import type {
   AuthResponse,
 } from '../types/user';
 import { AUTH_ENDPOINTS } from '../constants/api';
+import { removeToken } from '../utils/token';
 
 const authService = {
   register: (data: RegisterPayload) =>
@@ -15,7 +16,7 @@ const authService = {
     axiosClient.post<any, AuthResponse>(AUTH_ENDPOINTS.LOGIN, data),
 
   logout: () => {
-    localStorage.removeItem('authToken');
+    removeToken();
   },
 };
 

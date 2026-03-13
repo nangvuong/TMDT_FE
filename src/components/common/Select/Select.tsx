@@ -169,6 +169,7 @@ const Select: React.FC<SelectProps> = ({
                   filteredOptions.map((option) => (
                     <motion.button
                       key={option.value}
+                      type="button"
                       className={cn(
                         'w-full text-left px-4 py-2 transition-colors disabled:opacity-50 disabled:cursor-not-allowed',
                         selectedOption?.value === option.value
@@ -200,6 +201,7 @@ const Select: React.FC<SelectProps> = ({
               {clearable && selectedOption && (
                 <div className="border-t border-gray-200 p-2">
                   <button
+                    type="button"
                     className="w-full px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
                     onClick={() => {
                       onChange?.('');

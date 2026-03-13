@@ -8,6 +8,11 @@ interface GetProductsParams {
   categoryId?: string;
 }
 
+interface GetCategoryParams {
+    page?: number;
+    limit?: number;
+}
+
 const productService = {
   // ====== PRODUCTS (Public Read-Only) ======
   // Get all products with optional filters
@@ -33,8 +38,14 @@ const productService = {
 
   // ====== CATEGORIES (Public Read-Only) ======
   // Get all categories
-  getAllCategories: () =>
-    axiosClient.get<any, Category[]>(CATEGORIES_ENDPOINTS.GET_ALL),
+  getAllCategories: (params? : GetCategoryParams) =>
+    axiosClient.get<any, { data: Category[], meta: { page: number, limit: number, totalItems: number, totalPages: number}}>(
+        CATEGORIES_ENDPOINTS.GET_ALL,
+        {params :{
+            [QUERY_PARAMS.PAGE]: params?.page || DEFAULT_PAGINATION.PAGE,
+            [QUERY_PARAMS.LIMIT]: params?.limit || DEFAULT_PAGINATION.LIMIT,
+        }}
+    ),
 
   // Get category by ID
   getCategoryById: (id: string) =>

@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence, type Variants } from 'framer-motion';
 import {
   Search,
@@ -13,12 +14,14 @@ import {
 } from 'lucide-react';
 import Input from '../../common/Input/Input';
 import logoSvg from '../../../assets/logo.svg';
+import { useLogout } from '../../../hooks/useAuth';
 import type { Category } from '../../../types/product';
 
 interface HeaderProps {
   logo?: string;
   onSearch?: (query: string) => void;
   categories?: Category[];
+  isLoadingCategories?: boolean;
   userMenuItems?: UserMenuItem[];
   cartCount?: number;
   wishlistCount?: number;
@@ -26,6 +29,7 @@ interface HeaderProps {
   onCartClick?: () => void;
   onWishlistClick?: () => void;
   onUserMenuClick?: () => void;
+  onProfileMenuClick?: () => void;
 }
 
 interface UserMenuItem {
@@ -41,6 +45,7 @@ const Header: React.FC<HeaderProps> = ({
   logo = 'TMDT Logo',
   onSearch,
   categories = [],
+  isLoadingCategories = false,
   userMenuItems = [],
   cartCount = 0,
   wishlistCount = 0,
@@ -48,12 +53,22 @@ const Header: React.FC<HeaderProps> = ({
   onCartClick,
   onWishlistClick,
   onUserMenuClick,
+  onProfileMenuClick,
 }) => {
+  const navigate = useNavigate();
+  const { logout: logoutUser } = useLogout();
+  
   const [searchQuery, setSearchQuery] = useState('');
   const [isCategoryMenuOpen, setIsCategoryMenuOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const categoryMenuRef = useRef<HTMLDivElement>(null);
   const userMenuRef = useRef<HTMLDivElement>(null);
+
+  const handleLogout = () => {
+    logoutUser();
+    setIsUserMenuOpen(false);
+    navigate('/');
+  };
 
   // Handle outside click for menus
   useEffect(() => {
@@ -185,44 +200,71 @@ const Header: React.FC<HeaderProps> = ({
                     exit="exit"
                   >
                     <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6">
-                      {categories.map((category, i) => (
-                        <motion.div
-                          key={category.id}
-                          variants={itemVariants}
-                          custom={i}
-                        >
-                          <motion.button
-                            className="flex flex-col items-start gap-2 p-3 rounded-lg w-full hover:bg-gray-50 group"
-                            whileHover={{ x: 5 }}
+                      {isLoadingCategories ? (
+                        // Skeleton Loading
+                        Array.from({ length: 6 }).map((_, i) => (
+                          <motion.div
+                            key={`skeleton-${i}`}
+                            className="flex flex-col items-start gap-2 p-3 rounded-lg w-full"
                           >
-                            <div className="w-full h-32 bg-gray-200 rounded-lg overflow-hidden">
-                              {category.imageUrl ? (
-                                <img
-                                  src={category.imageUrl}
-                                  alt={category.name}
-                                  className="w-full h-full object-cover group-hover:scale-105 transition-transform"
-                                />
-                              ) : (
-                                <motion.div 
-                                  className="w-full h-full bg-gradient-to-r from-gray-300 via-gray-200 to-gray-300"
-                                  variants={skeletonVariants}
-                                  animate="loading"
-                                />
-                              )}
-                            </div>
-                            <div className="text-left w-full">
-                              <h3 className="font-medium text-gray-900 text-sm">
-                                {category.name}
-                              </h3>
-                              {category.description && (
-                                <p className="text-xs text-gray-500 mt-1 line-clamp-2">
-                                  {category.description}
-                                </p>
-                              )}
-                            </div>
-                          </motion.button>
-                        </motion.div>
-                      ))}
+                            <motion.div 
+                              className="w-full h-32 bg-gray-200 rounded-lg"
+                              variants={skeletonVariants}
+                              animate="loading"
+                            />
+                            <motion.div 
+                              className="w-full h-4 bg-gray-200 rounded"
+                              variants={skeletonVariants}
+                              animate="loading"
+                            />
+                            <motion.div 
+                              className="w-3/4 h-3 bg-gray-200 rounded"
+                              variants={skeletonVariants}
+                              animate="loading"
+                            />
+                          </motion.div>
+                        ))
+                      ) : (
+                        // Actual Categories
+                        categories.map((category, i) => (
+                          <motion.div
+                            key={category.id}
+                            variants={itemVariants}
+                            custom={i}
+                          >
+                            <motion.button
+                              className="flex flex-col items-start gap-2 p-3 rounded-lg w-full hover:bg-gray-50 group"
+                              whileHover={{ x: 5 }}
+                            >
+                              <div className="w-full h-32 bg-gray-200 rounded-lg overflow-hidden">
+                                {category.imageUrl ? (
+                                  <img
+                                    src={category.imageUrl}
+                                    alt={category.name}
+                                    className="w-full h-full object-cover group-hover:scale-105 transition-transform"
+                                  />
+                                ) : (
+                                  <motion.div 
+                                    className="w-full h-full bg-gradient-to-r from-gray-300 via-gray-200 to-gray-300"
+                                    variants={skeletonVariants}
+                                    animate="loading"
+                                  />
+                                )}
+                              </div>
+                              <div className="text-left w-full">
+                                <h3 className="font-medium text-gray-900 text-sm">
+                                  {category.name}
+                                </h3>
+                                {category.description && (
+                                  <p className="text-xs text-gray-500 mt-1 line-clamp-2">
+                                    {category.description}
+                                  </p>
+                                )}
+                              </div>
+                            </motion.button>
+                          </motion.div>
+                        ))
+                      )}
                     </div>
                   </motion.div>
                 )}
@@ -311,29 +353,34 @@ const Header: React.FC<HeaderProps> = ({
                   >
                     {!isUserLoggedIn ? (
                       <>
-                        <motion.button
-                          className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2"
+                        <motion.a
+                          href="/login"
+                          className="w-full block text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2 no-underline"
                           whileHover={{ paddingLeft: '24px', backgroundColor: '#f9fafb' }}
                         >
                           Đăng nhập
-                        </motion.button>
-                        <motion.button
-                          className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2"
+                        </motion.a>
+                        <motion.a
+                          href="/register"
+                          className="w-full block text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2 no-underline"
                           whileHover={{ paddingLeft: '24px', backgroundColor: '#f9fafb' }}
                         >
                           Đăng ký
-                        </motion.button>
+                        </motion.a>
                       </>
                     ) : (
                       <>
-                        <motion.a
-                          href="/profile"
-                          className="w-full block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2"
+                        <motion.button
+                          onClick={() => {
+                            onProfileMenuClick?.();
+                            setIsUserMenuOpen(false);
+                          }}
+                          className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2"
                           whileHover={{ paddingLeft: '24px', backgroundColor: '#f9fafb' }}
                         >
                           <User size={16} />
-                          Thông tin cá nhân
-                        </motion.a>
+                          Hồ sơ thể chất
+                        </motion.button>
                         <motion.a
                           href="/orders"
                           className="w-full block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2"
@@ -352,6 +399,7 @@ const Header: React.FC<HeaderProps> = ({
                         </motion.a>
                         <div className="border-t border-gray-200 my-2" />
                         <motion.button
+                          onClick={handleLogout}
                           className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2"
                           whileHover={{ paddingLeft: '24px', backgroundColor: '#f9fafb' }}
                         >
@@ -428,9 +476,12 @@ const Header: React.FC<HeaderProps> = ({
             </div>
           </div>
         </div>
+      </div>
 
+      {/* Mobile Navigation Bottom */}
+      <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-lg">
         {/* Bottom Row: Navigation Icons */}
-        <div className="px-2 py-2 flex items-center justify-between border-t border-gray-100">
+        <div className="px-2 py-2 flex items-center justify-between">
           {/* Home Button */}
           <motion.a
             href="/"
@@ -464,32 +515,54 @@ const Header: React.FC<HeaderProps> = ({
                   animate="visible"
                   exit="exit"
                 >
-                  {categories.map((category, i) => (
-                    <motion.button
-                      key={category.id}
-                      className="w-full text-left px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-3"
-                      variants={itemVariants}
-                      custom={i}
-                      whileHover={{ paddingLeft: '24px', backgroundColor: '#f9fafb' }}
-                    >
-                      <div className="w-10 h-10 bg-gray-200 rounded flex-shrink-0 overflow-hidden">
-                        {category.imageUrl ? (
-                          <img
-                            src={category.imageUrl}
-                            alt={category.name}
-                            className="w-full h-full object-cover"
-                          />
-                        ) : (
-                          <motion.div 
-                            className="w-full h-full bg-gradient-to-r from-gray-300 via-gray-200 to-gray-300"
-                            variants={skeletonVariants}
-                            animate="loading"
-                          />
-                        )}
-                      </div>
-                      <span>{category.name}</span>
-                    </motion.button>
-                  ))}
+                  {isLoadingCategories ? (
+                    // Skeleton Loading
+                    Array.from({ length: 4 }).map((_, i) => (
+                      <motion.div
+                        key={`skeleton-${i}`}
+                        className="w-full px-4 py-3 flex items-center gap-3"
+                      >
+                        <motion.div 
+                          className="w-10 h-10 bg-gray-200 rounded flex-shrink-0"
+                          variants={skeletonVariants}
+                          animate="loading"
+                        />
+                        <motion.div 
+                          className="h-4 flex-1 bg-gray-200 rounded"
+                          variants={skeletonVariants}
+                          animate="loading"
+                        />
+                      </motion.div>
+                    ))
+                  ) : (
+                    // Actual Categories
+                    categories.map((category, i) => (
+                      <motion.button
+                        key={category.id}
+                        className="w-full text-left px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-3"
+                        variants={itemVariants}
+                        custom={i}
+                        whileHover={{ paddingLeft: '24px', backgroundColor: '#f9fafb' }}
+                      >
+                        <div className="w-10 h-10 bg-gray-200 rounded flex-shrink-0 overflow-hidden">
+                          {category.imageUrl ? (
+                            <img
+                              src={category.imageUrl}
+                              alt={category.name}
+                              className="w-full h-full object-cover"
+                            />
+                          ) : (
+                            <motion.div 
+                              className="w-full h-full bg-gradient-to-r from-gray-300 via-gray-200 to-gray-300"
+                              variants={skeletonVariants}
+                              animate="loading"
+                            />
+                          )}
+                        </div>
+                        <span>{category.name}</span>
+                      </motion.button>
+                    ))
+                  )}
                 </motion.div>
               )}
             </AnimatePresence>
@@ -549,7 +622,7 @@ const Header: React.FC<HeaderProps> = ({
               }}
             >
               <User size={20} className="text-gray-700" />
-              <span className="text-xs text-gray-700">Tài khoản</span>
+              <span className="text-xs text-gray-700">{isUserLoggedIn ? "Tài khoản" : "Đăng nhập"}</span>
             </motion.button>
 
             {/* User Menu Dropdown */}
@@ -564,28 +637,33 @@ const Header: React.FC<HeaderProps> = ({
                 >
                   {!isUserLoggedIn ? (
                     <>
-                      <motion.button
-                        className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                      <motion.a
+                        href="/login"
+                        className="w-full block text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 no-underline"
                         whileHover={{ paddingLeft: '24px', backgroundColor: '#f9fafb' }}
                       >
                         Đăng nhập
-                      </motion.button>
-                      <motion.button
-                        className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                      </motion.a>
+                      <motion.a
+                        href="/register"
+                        className="w-full block text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 no-underline"
                         whileHover={{ paddingLeft: '24px', backgroundColor: '#f9fafb' }}
                       >
                         Đăng ký
-                      </motion.button>
+                      </motion.a>
                     </>
                   ) : (
                     <>
-                      <motion.a
-                        href="/profile"
-                        className="w-full block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                      <motion.button
+                        onClick={() => {
+                          onProfileMenuClick?.();
+                          setIsUserMenuOpen(false);
+                        }}
+                        className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
                         whileHover={{ paddingLeft: '24px', backgroundColor: '#f9fafb' }}
                       >
-                        Thông tin cá nhân
-                      </motion.a>
+                        Hồ sơ thể chất
+                      </motion.button>
                       <motion.a
                         href="/orders"
                         className="w-full block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
@@ -602,6 +680,7 @@ const Header: React.FC<HeaderProps> = ({
                       </motion.a>
                       <div className="border-t border-gray-200 my-2" />
                       <motion.button
+                        onClick={handleLogout}
                         className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
                         whileHover={{ paddingLeft: '24px', backgroundColor: '#f9fafb' }}
                       >

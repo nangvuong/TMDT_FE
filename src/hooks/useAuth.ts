@@ -1,52 +1,63 @@
-import { useState, useCallback } from 'react';
-import type { User } from '../types/user';
+import { useState, useCallback, useEffect } from 'react';
+import type { AuthResponse } from '../types/user';
+import { getToken, setToken, removeToken, subscribeToTokenChange } from '../utils/token';
 import authService from '../services/authService';
 
-export const useAuth = () => {
-  const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(false);
+/**
+ * Custom hook for user login
+ */
+export const useLogin = () => {
+  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const register = useCallback(async (email: string, password: string, firstName: string, lastName: string) => {
-    setLoading(true);
-    setError(null);
-    try {
-      const response = await authService.register({ email, password, firstName, lastName });
-      setUser(response.user);
-      localStorage.setItem('authToken', response.token);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Registration failed');
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  const login = useCallback(async (email: string, password: string) => {
-    setLoading(true);
+  const login = useCallback(async (email: string, password: string): Promise<AuthResponse> => {
+    setIsLoading(true);
     setError(null);
     try {
       const response = await authService.login({ email, password });
-      setUser(response.user);
-      localStorage.setItem('authToken', response.token);
+      setToken(response.accessToken);
+      return response;
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Login failed');
+      const errorMessage = err instanceof Error ? err.message : 'Login failed';
+      setError(errorMessage);
+      throw err;
     } finally {
-      setLoading(false);
+      setIsLoading(false);
     }
   }, []);
 
+  return { login, isLoading, error };
+};
+
+/**
+ * Custom hook for user logout
+ */
+export const useLogout = () => {
   const logout = useCallback(() => {
-    authService.logout();
-    setUser(null);
-    setError(null);
+    removeToken();
+    localStorage.removeItem('rememberMe');
   }, []);
 
-  return { 
-    user, 
-    loading, 
-    error, 
-    login, 
-    register,
-    logout,
-  };
+  return { logout };
+};
+
+/**
+ * Custom hook to check if user is logged in - reactive to token changes
+ */
+export const useIsLoggedIn = () => {
+  const [isLoggedIn, setIsLoggedIn] = useState(() => {
+    const token = getToken();
+    return !!token;
+  });
+
+  useEffect(() => {
+    // Subscribe to token changes
+    const unsubscribe = subscribeToTokenChange((token) => {
+      setIsLoggedIn(!!token);
+    });
+
+    return unsubscribe;
+  }, []);
+
+  return { isLoggedIn };
 };

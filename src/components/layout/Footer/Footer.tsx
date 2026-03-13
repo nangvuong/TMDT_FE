@@ -18,24 +18,24 @@ interface SocialLink {
  */
 const Footer: React.FC = () => {
   const shopLinks: FooterLink[] = [
-    { label: 'Equipment', href: '/shop/equipment' },
-    { label: 'Supplements', href: '/shop/supplements' },
-    { label: 'Clothing', href: '/shop/clothing' },
-    { label: 'Sale', href: '/shop/sale' },
+    { label: 'Thiết bị', href: '/shop/equipment' },
+    { label: 'Thực phẩm bổ sung', href: '/shop/supplements' },
+    { label: 'Quần áo', href: '/shop/clothing' },
+    { label: 'Giảm giá', href: '/shop/sale' },
   ];
 
   const supportLinks: FooterLink[] = [
-    { label: 'Contact', href: '/support/contact' },
-    { label: 'Shipping', href: '/support/shipping' },
-    { label: 'Returns', href: '/support/returns' },
-    { label: 'FAQ', href: '/support/faq' },
+    { label: 'Liên hệ', href: '/support/contact' },
+    { label: 'Vận chuyển', href: '/support/shipping' },
+    { label: 'Trả hàng', href: '/support/returns' },
+    { label: 'Câu hỏi thường gặp', href: '/support/faq' },
   ];
 
   const companyLinks: FooterLink[] = [
-    { label: 'About us', href: '/company/about' },
+    { label: 'Về chúng tôi', href: '/company/about' },
     { label: 'Blog', href: '/company/blog' },
-    { label: 'Careers', href: '/company/careers' },
-    { label: 'Privacy policy', href: '/company/privacy' },
+    { label: 'Sự nghiệp', href: '/company/careers' },
+    { label: 'Chính sách bảo mật', href: '/company/privacy' },
   ];
 
   const socialLinks: SocialLink[] = [
@@ -70,7 +70,7 @@ const Footer: React.FC = () => {
             transition={{ delay: 0 }}
           >
             <h3 className="font-semibold text-gray-900 text-sm uppercase tracking-wide mb-4">
-              Shop
+              Cửa hàng
             </h3>
             <ul className="space-y-3">
               {shopLinks.map((link) => (
@@ -98,7 +98,7 @@ const Footer: React.FC = () => {
             transition={{ delay: 0.1 }}
           >
             <h3 className="font-semibold text-gray-900 text-sm uppercase tracking-wide mb-4">
-              Support
+              Hỗ trợ
             </h3>
             <ul className="space-y-3">
               {supportLinks.map((link) => (
@@ -126,7 +126,7 @@ const Footer: React.FC = () => {
             transition={{ delay: 0.2 }}
           >
             <h3 className="font-semibold text-gray-900 text-sm uppercase tracking-wide mb-4">
-              Company
+              Công ty
             </h3>
             <ul className="space-y-3">
               {companyLinks.map((link) => (
@@ -154,7 +154,7 @@ const Footer: React.FC = () => {
             transition={{ delay: 0.3 }}
           >
             <h3 className="font-semibold text-gray-900 text-sm uppercase tracking-wide mb-4">
-              Follow us
+              Theo dõi chúng tôi
             </h3>
             <div className="flex gap-4">
               {socialLinks.map((social) => (
@@ -187,7 +187,7 @@ const Footer: React.FC = () => {
           viewport={{ once: true }}
         >
           <p className="text-gray-600 text-sm">
-            © 2026 FitnessMart. All rights reserved.
+            © 2026 FitnessMart. Bảo lưu mọi quyền.
           </p>
         </motion.div>
       </div>

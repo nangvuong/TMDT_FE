@@ -1,5 +1,5 @@
 export type UserRole = 'admin' | 'customer' | 'seller';
-export type FitnessGoal = 'weight_loss' | 'muscle_gain' | 'maintenance' | 'endurance';
+export type FitnessGoal = 'weight_loss' | 'muscle_gain' | 'strength' | 'endurance' | 'general_fitness';
 
 export interface User {
   id: string; // UUID
@@ -39,7 +39,6 @@ export interface RegisterPayload {
 }
 
 export interface AuthResponse {
-  token: string;
-  user: User;
+  accessToken: string;
 }
 

@@ -1,4 +1,4 @@
-export { useAuth } from './useAuth';
+export { useLogin, useLogout, useIsLoggedIn } from './useAuth';
 export { useCart } from './useCart';
 export { useOrders } from './useOrders';
 export { useProfile } from './useProfile';
