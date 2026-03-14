@@ -30,6 +30,10 @@ interface HeaderProps {
   onWishlistClick?: () => void;
   onUserMenuClick?: () => void;
   onProfileMenuClick?: () => void;
+  currentCategoryPage?: number;
+  itemsPerPage?: number;
+  totalCategoryPages?: number;
+  onCategoryPageChange?: (page: number, limit?: number) => void;
 }
 
 interface UserMenuItem {
@@ -53,14 +57,19 @@ const Header: React.FC<HeaderProps> = ({
   onCartClick,
   onWishlistClick,
   onUserMenuClick,
-  onProfileMenuClick,
+  currentCategoryPage = 1,
+  itemsPerPage = 6,
+  totalCategoryPages = 1,
+  onCategoryPageChange,
 }) => {
   const navigate = useNavigate();
   const { logout: logoutUser } = useLogout();
   
   const [searchQuery, setSearchQuery] = useState('');
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isCategoryMenuOpen, setIsCategoryMenuOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+  const searchRef = useRef<HTMLDivElement>(null);
   const categoryMenuRef = useRef<HTMLDivElement>(null);
   const userMenuRef = useRef<HTMLDivElement>(null);
 
@@ -73,6 +82,12 @@ const Header: React.FC<HeaderProps> = ({
   // Handle outside click for menus
   useEffect(() => {
     const handleOutsideClick = (event: MouseEvent) => {
+      if (
+        searchRef.current &&
+        !searchRef.current.contains(event.target as Node)
+      ) {
+        setIsSearchOpen(false);
+      }
       if (
         categoryMenuRef.current &&
         !categoryMenuRef.current.contains(event.target as Node)
@@ -94,7 +109,21 @@ const Header: React.FC<HeaderProps> = ({
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     const query = e.target.value;
     setSearchQuery(query);
+    setIsSearchOpen(query.length > 0);
     onSearch?.(query);
+  };
+
+  // Filter categories based on search query
+  const filteredCategories = searchQuery.trim().length > 0
+    ? categories.filter(cat =>
+        cat.name.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+    : [];
+
+  const handleCategorySuggestionClick = (categoryId: string) => {
+    setSearchQuery('');
+    setIsSearchOpen(false);
+    navigate(`/categories/${categoryId}`);
   };
 
   const menuVariants: Variants = {
@@ -151,18 +180,49 @@ const Header: React.FC<HeaderProps> = ({
             </div>
           </motion.a>
 
-          {/* Search Bar */}
-          <div className="flex-1 max-w-md">
+          {/* Search Bar with Suggestions */}
+          <div className="flex-1 max-w-md relative" ref={searchRef}>
             <Input
               type="text"
               placeholder="Tìm kiếm sản phẩm..."
               value={searchQuery}
               onChange={handleSearch}
+              onFocus={() => searchQuery.length > 0 && setIsSearchOpen(true)}
               startIcon={<Search size={18} />}
               inputSize="md"
               variant="filled"
               fullWidth
             />
+
+            {/* Search Suggestions Dropdown */}
+            <AnimatePresence>
+              {isSearchOpen && filteredCategories.length > 0 && (
+                <motion.div
+                  className="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg py-2 z-50"
+                  variants={menuVariants}
+                  initial="hidden"
+                  animate="visible"
+                  exit="exit"
+                >
+                  <div className="px-3 py-1">
+                    <p className="text-xs text-gray-500 font-medium mb-2">Danh mục gợi ý</p>
+                  </div>
+                  {filteredCategories.map((category, i) => (
+                    <motion.button
+                      key={category.id}
+                      onClick={() => handleCategorySuggestionClick(category.id)}
+                      className="w-full px-3 py-2 text-left text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2 transition-colors"
+                      custom={i}
+                      variants={itemVariants}
+                      whileHover={{ backgroundColor: '#f3f4f6' }}
+                    >
+                      <Search size={16} className="text-gray-400" />
+                      <span>{category.name}</span>
+                    </motion.button>
+                  ))}
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
 
           {/* Action Items */}
@@ -233,6 +293,10 @@ const Header: React.FC<HeaderProps> = ({
                             custom={i}
                           >
                             <motion.button
+                              onClick={() => {
+                                navigate(`/categories/${category.id}`);
+                                setIsCategoryMenuOpen(false);
+                              }}
                               className="flex flex-col items-start gap-2 p-3 rounded-lg w-full hover:bg-gray-50 group"
                               whileHover={{ x: 5 }}
                             >
@@ -266,6 +330,68 @@ const Header: React.FC<HeaderProps> = ({
                         ))
                       )}
                     </div>
+                    {/* Pagination Controls */}
+                    {!isLoadingCategories && totalCategoryPages > 1 && (
+                      <div 
+                        className="flex items-center justify-center gap-4 mt-6 pt-6 border-t border-gray-200"
+                        onMouseEnter={() => setIsCategoryMenuOpen(true)}
+                        onMouseLeave={() => setIsCategoryMenuOpen(true)}
+                      >
+                        <motion.button
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            onCategoryPageChange?.(Math.max(1, currentCategoryPage - 1), itemsPerPage);
+                            setIsCategoryMenuOpen(true)
+                          }}
+                          disabled={currentCategoryPage === 1}
+                          className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                          whileHover={{ scale: 1.05 }}
+                          whileTap={{ scale: 0.98 }}
+                        >
+                          ← Trước
+                        </motion.button>
+                        <div className="flex items-center gap-2">
+                          {Array.from({ length: totalCategoryPages }).map((_, index) => {
+                            const page = index + 1;
+                            return (
+                              <motion.button
+                                key={page}
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  e.stopPropagation();
+                                  onCategoryPageChange?.(page, itemsPerPage);
+                                  setIsCategoryMenuOpen(true)
+                                }}
+                                className={`w-8 h-8 rounded-lg font-medium text-sm transition-colors ${
+                                  currentCategoryPage === page
+                                    ? 'bg-black text-white'
+                                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                                }`}
+                                whileHover={{ scale: 1.05 }}
+                                whileTap={{ scale: 0.98 }}
+                              >
+                                {page}
+                              </motion.button>
+                            );
+                          })}
+                        </div>
+                        <motion.button
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            onCategoryPageChange?.(Math.min(totalCategoryPages, currentCategoryPage + 1), itemsPerPage);
+                            setIsCategoryMenuOpen(true)
+                          }}
+                          disabled={currentCategoryPage === totalCategoryPages}
+                          className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                          whileHover={{ scale: 1.05 }}
+                          whileTap={{ scale: 0.98 }}
+                        >
+                          Sau →
+                        </motion.button>
+                      </div>
+                    )}
                   </motion.div>
                 )}
               </AnimatePresence>
@@ -372,7 +498,7 @@ const Header: React.FC<HeaderProps> = ({
                       <>
                         <motion.button
                           onClick={() => {
-                            onProfileMenuClick?.();
+                            navigate('/profile');
                             setIsUserMenuOpen(false);
                           }}
                           className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2"
@@ -461,18 +587,49 @@ const Header: React.FC<HeaderProps> = ({
               </div>
             </motion.a>
 
-            {/* Search Bar */}
-            <div className="flex-1">
+            {/* Search Bar with Suggestions */}
+            <div className="flex-1 relative" ref={searchRef}>
               <Input
                 type="text"
                 placeholder="Tìm kiếm..."
                 value={searchQuery}
                 onChange={handleSearch}
+                onFocus={() => searchQuery.length > 0 && setIsSearchOpen(true)}
                 startIcon={<Search size={16} />}
                 inputSize="sm"
                 variant="filled"
                 fullWidth
               />
+
+              {/* Search Suggestions Dropdown (Mobile) */}
+              <AnimatePresence>
+                {isSearchOpen && filteredCategories.length > 0 && (
+                  <motion.div
+                    className="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg py-2 z-50"
+                    variants={menuVariants}
+                    initial="hidden"
+                    animate="visible"
+                    exit="exit"
+                  >
+                    <div className="px-3 py-1">
+                      <p className="text-xs text-gray-500 font-medium mb-2">Danh mục gợi ý</p>
+                    </div>
+                    {filteredCategories.slice(0, 5).map((category, i) => (
+                      <motion.button
+                        key={category.id}
+                        onClick={() => handleCategorySuggestionClick(category.id)}
+                        className="w-full px-3 py-2 text-left text-xs text-gray-700 hover:bg-gray-100 flex items-center gap-2 transition-colors"
+                        custom={i}
+                        variants={itemVariants}
+                        whileHover={{ backgroundColor: '#f3f4f6' }}
+                      >
+                        <Search size={14} className="text-gray-400" />
+                        <span>{category.name}</span>
+                      </motion.button>
+                    ))}
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
           </div>
         </div>
@@ -539,6 +696,10 @@ const Header: React.FC<HeaderProps> = ({
                     categories.map((category, i) => (
                       <motion.button
                         key={category.id}
+                        onClick={() => {
+                          navigate(`/categories/${category.id}`);
+                          setIsCategoryMenuOpen(false);
+                        }}
                         className="w-full text-left px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-3"
                         variants={itemVariants}
                         custom={i}
@@ -562,6 +723,46 @@ const Header: React.FC<HeaderProps> = ({
                         <span>{category.name}</span>
                       </motion.button>
                     ))
+                  )}
+                  {/* Mobile Pagination */}
+                  {!isLoadingCategories && totalCategoryPages > 1 && (
+                    <div 
+                      className="border-t border-gray-200 mt-2 pt-2 px-4 py-2 flex items-center justify-between"
+                      onMouseEnter={() => setIsCategoryMenuOpen(true)}
+                      onMouseLeave={() => setIsCategoryMenuOpen(true)}
+                    >
+                      <motion.button
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          onCategoryPageChange?.(Math.max(1, currentCategoryPage - 1), itemsPerPage);
+                          setIsCategoryMenuOpen(true)
+                        }}
+                        disabled={currentCategoryPage === 1}
+                        className="px-3 py-1 text-xs font-medium text-gray-700 bg-gray-100 rounded disabled:opacity-50 disabled:cursor-not-allowed"
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.98 }}
+                      >
+                        ←
+                      </motion.button>
+                      <span className="text-xs text-gray-600">
+                        {currentCategoryPage} / {totalCategoryPages}
+                      </span>
+                      <motion.button
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          onCategoryPageChange?.(Math.min(totalCategoryPages, currentCategoryPage + 1), itemsPerPage);
+                          setIsCategoryMenuOpen(true)
+                        }}
+                        disabled={currentCategoryPage === totalCategoryPages}
+                        className="px-3 py-1 text-xs font-medium text-gray-700 bg-gray-100 rounded disabled:opacity-50 disabled:cursor-not-allowed"
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.98 }}
+                      >
+                        →
+                      </motion.button>
+                    </div>
                   )}
                 </motion.div>
               )}
@@ -656,7 +857,7 @@ const Header: React.FC<HeaderProps> = ({
                     <>
                       <motion.button
                         onClick={() => {
-                          onProfileMenuClick?.();
+                          navigate('/profile');
                           setIsUserMenuOpen(false);
                         }}
                         className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"

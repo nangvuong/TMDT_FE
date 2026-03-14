@@ -1,63 +1,102 @@
 import React from 'react';
+import { motion } from 'framer-motion';
 import SkeletonLoader from './SkeletonLoader';
+
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1,
+      delayChildren: 0.2,
+    },
+  },
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 10 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      type: 'spring',
+      stiffness: 400,
+      damping: 20,
+    },
+  },
+};
 
 /**
  * Skeleton Loader for User Profile Page
  */
 const ProfileSkeleton: React.FC = () => {
   return (
-    <div className="w-full space-y-6">
+    <motion.div
+      className="w-full space-y-6"
+      variants={containerVariants}
+      initial="hidden"
+      animate="visible"
+    >
       {/* Avatar Section */}
-      <div className="flex items-center gap-6 bg-white border-2 border-gray-200 rounded-lg p-6">
+      <motion.div
+        className="flex flex-col md:flex-row items-center gap-6 bg-white rounded-xl shadow-sm p-6 md:p-8"
+        variants={itemVariants}
+      >
         <div className="flex-shrink-0">
           <SkeletonLoader height={120} width={120} borderRadius="50%" />
         </div>
-        <div className="flex-1 space-y-3">
-          <SkeletonLoader height={24} width={150} borderRadius="4px" />
+        <div className="flex-1 w-full space-y-3">
+          <SkeletonLoader height={24} width={150} borderRadius="6px" />
           <SkeletonLoader height={14} width={200} borderRadius="4px" />
         </div>
-      </div>
+      </motion.div>
 
       {/* Edit Button */}
-      <div>
-        <SkeletonLoader height={40} width={120} borderRadius="6px" />
-      </div>
+      <motion.div variants={itemVariants}>
+        <SkeletonLoader height={44} width={130} borderRadius="8px" />
+      </motion.div>
 
       {/* Profile Form Sections */}
       <div className="space-y-6">
         {/* Personal Information Section */}
-        <div className="bg-white border-2 border-gray-200 rounded-lg p-6 space-y-4">
-          <SkeletonLoader height={20} width={200} borderRadius="4px" />
+        <motion.div
+          className="bg-white rounded-xl shadow-sm p-6 md:p-8 space-y-4"
+          variants={itemVariants}
+        >
+          <SkeletonLoader height={20} width={200} borderRadius="6px" />
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {Array.from({ length: 3 }).map((_, index) => (
-              <div key={`field-${index}`} className="space-y-2">
+              <motion.div key={`field-${index}`} className="space-y-3" variants={itemVariants}>
                 <SkeletonLoader height={14} width={80} borderRadius="4px" />
-                <SkeletonLoader height={36} borderRadius="6px" />
-              </div>
+                <SkeletonLoader height={40} borderRadius="8px" />
+              </motion.div>
             ))}
           </div>
-        </div>
+        </motion.div>
 
         {/* Physical Profile Section */}
-        <div className="bg-white border-2 border-gray-200 rounded-lg p-6 space-y-4">
-          <SkeletonLoader height={20} width={200} borderRadius="4px" />
+        <motion.div
+          className="bg-white rounded-xl shadow-sm p-6 md:p-8 space-y-4"
+          variants={itemVariants}
+        >
+          <SkeletonLoader height={20} width={200} borderRadius="6px" />
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {Array.from({ length: 4 }).map((_, index) => (
-              <div key={`physical-${index}`} className="space-y-2">
+              <motion.div key={`physical-${index}`} className="space-y-3" variants={itemVariants}>
                 <SkeletonLoader height={14} width={80} borderRadius="4px" />
-                <SkeletonLoader height={36} borderRadius="6px" />
-              </div>
+                <SkeletonLoader height={40} borderRadius="8px" />
+              </motion.div>
             ))}
           </div>
-        </div>
+        </motion.div>
 
         {/* Action Buttons */}
-        <div className="flex gap-4">
-          <SkeletonLoader height={40} width={120} borderRadius="6px" />
-          <SkeletonLoader height={40} width={120} borderRadius="6px" />
-        </div>
+        <motion.div className="flex gap-4" variants={itemVariants}>
+          <SkeletonLoader height={44} width={130} borderRadius="8px" />
+          <SkeletonLoader height={44} width={130} borderRadius="8px" />
+        </motion.div>
       </div>
-    </div>
+    </motion.div>
   );
 };
 

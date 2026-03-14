@@ -14,6 +14,10 @@ interface LayoutProps {
   onCartClick?: () => void;
   onWishlistClick?: () => void;
   onProfileMenuClick?: () => void;
+  currentCategoryPage?: number;
+  itemsPerPage?: number;
+  totalCategoryPages?: number;
+  onCategoryPageChange?: (page: number, limit?: number) => void;
 }
 
 const Layout: React.FC<LayoutProps> = ({
@@ -27,6 +31,10 @@ const Layout: React.FC<LayoutProps> = ({
   onCartClick,
   onWishlistClick,
   onProfileMenuClick,
+  currentCategoryPage = 1,
+  itemsPerPage = 6,
+  totalCategoryPages = 1,
+  onCategoryPageChange,
 }) => {
   return (
     <div className="flex flex-col min-h-screen">
@@ -40,6 +48,10 @@ const Layout: React.FC<LayoutProps> = ({
         onCartClick={onCartClick}
         onWishlistClick={onWishlistClick}
         onProfileMenuClick={onProfileMenuClick}
+        currentCategoryPage={currentCategoryPage}
+        itemsPerPage={itemsPerPage}
+        totalCategoryPages={totalCategoryPages}
+        onCategoryPageChange={onCategoryPageChange}
       />
       <main className="flex-1">
         {children}

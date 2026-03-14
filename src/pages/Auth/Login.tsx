@@ -118,7 +118,7 @@ const Login: React.FC = () => {
                 Chào mừng quay trở lại
               </h1>
               <p className="text-base text-gray-600">
-                đến <span className="font-bold">Fitness Mart</span>
+                với <span className="font-bold">Fitness Mart</span>
               </p>
             </motion.div>
 
@@ -283,7 +283,7 @@ const Login: React.FC = () => {
                 Chào mừng quay trở lại
               </h1>
               <p className="text-lg text-gray-600">
-                đến <span className="font-bold">Fitness Mart</span>
+                với <span className="font-bold">Fitness Mart</span>
               </p>
             </motion.div>
             {/* Error Message */}

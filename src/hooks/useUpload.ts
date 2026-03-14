@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react';
-import type { UploadResponse, UploadMultipleResponse } from '../services/uploadService';
+import type { UploadResponse } from '../services/uploadService';
 import uploadService from '../services/uploadService';
 
 export const useUpload = () => {

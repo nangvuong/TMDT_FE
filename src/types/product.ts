@@ -7,6 +7,7 @@ export interface Category {
   description?: string;
   imageUrl?: string;
   isActive: boolean;
+  products?: Product[]; // Products in this category
   createdAt: string;
   updatedAt: string;
 }
@@ -15,13 +16,15 @@ export interface Product {
   id: string; // UUID
   name: string;
   description?: string;
-  price: number;
+  price: number | string; // Can be string from API
   stock: number;
-  tags?: ProductTag[];
+  tags?: string[];
   images?: string[];
-  embedding?: number[]; // Vector embedding for recommendations
+  embedding?: number[] | null; // Vector embedding for recommendations
   isActive: boolean;
   categoryId?: string; // FK to Categories
+  averageRating?: number | string;
+  reviewCount?: number;
   createdAt: string;
   updatedAt: string;
 }

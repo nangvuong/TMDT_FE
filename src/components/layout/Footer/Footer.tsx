@@ -187,7 +187,7 @@ const Footer: React.FC = () => {
           viewport={{ once: true }}
         >
           <p className="text-gray-600 text-sm">
-            © 2026 FitnessMart. Bảo lưu mọi quyền.
+            Bản quyền © 2026 Fitness Mart. Bảo lưu mọi quyền
           </p>
         </motion.div>
       </div>
