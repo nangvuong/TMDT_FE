@@ -7,9 +7,11 @@ import Input from '../../components/common/Input/Input';
 import Button from '../../components/common/Button/Button';
 import { Mail, Phone, MapPin } from 'lucide-react';
 import { useIsLoggedIn } from '../../hooks/useAuth';
+import { useScrollReset } from '../../hooks/useScrollReset';
 
 const ContactPage: React.FC = () => {
   usePageTitle('Liên Hệ | Fitness Mart');
+  useScrollReset();
   
   // Fetch categories for header
   const {
@@ -25,10 +27,6 @@ const ContactPage: React.FC = () => {
   const [wishlistCount] = useState(5);
   const cartCount = 3;
   
-
-  const handleSearch = (query: string) => {
-    console.log('Search query:', query);
-  };
 
   const handleCartClick = () => {
     console.log('Cart clicked');
@@ -88,7 +86,6 @@ const ContactPage: React.FC = () => {
       cartCount={cartCount}
       wishlistCount={wishlistCount}
       isUserLoggedIn={isLoggedIn}
-      onSearch={handleSearch}
       onCartClick={handleCartClick}
       onWishlistClick={handleWishlistClick}
       currentCategoryPage={categoryPagination.page}

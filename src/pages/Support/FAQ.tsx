@@ -4,10 +4,12 @@ import Layout from '../../components/layout/Layout';
 import { usePageTitle } from '../../hooks/usePageTitle';
 import { useCategories } from '../../hooks/useProduct';
 import { useIsLoggedIn } from '../../hooks/useAuth';
+import { useScrollReset } from '../../hooks/useScrollReset';
 import { ChevronDown } from 'lucide-react';
 
 const FAQPage: React.FC = () => {
   usePageTitle('Câu Hỏi Thường Gặp | Fitness Mart');
+  useScrollReset();
   
   // Fetch categories for header
   const {
@@ -21,10 +23,6 @@ const FAQPage: React.FC = () => {
   const [wishlistCount] = useState(5);
   const cartCount = 3;
   const { isLoggedIn } = useIsLoggedIn();
-
-  const handleSearch = (query: string) => {
-    console.log('Search query:', query);
-  };
 
   const handleCartClick = () => {
     console.log('Cart clicked');
@@ -104,7 +102,6 @@ const FAQPage: React.FC = () => {
       cartCount={cartCount}
       wishlistCount={wishlistCount}
       isUserLoggedIn={isLoggedIn}
-      onSearch={handleSearch}
       onCartClick={handleCartClick}
       onWishlistClick={handleWishlistClick}
       currentCategoryPage={categoryPagination.page}

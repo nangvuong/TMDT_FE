@@ -1,5 +1,28 @@
 export type OrderStatus = 'pending' | 'processing' | 'shipped' | 'delivered' | 'cancelled';
 export type ProductTag = 'bestseller' | 'new' | 'on-sale' | 'featured' | 'trending';
+export type UserRole = 'CUSTOMER' | 'ADMIN';
+
+export interface User {
+  id: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  role: UserRole;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface Review {
+  id: string;
+  user: User;
+  userId: string;
+  productId: string;
+  rating: number;
+  comment: string;
+  createdAt: string;
+  updatedAt: string;
+}
 
 export interface Category {
   id: string; // UUID

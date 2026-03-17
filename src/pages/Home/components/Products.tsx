@@ -43,17 +43,17 @@ const Products: React.FC = () => {
     
     switch (order) {
       case 'price-low':
-        sortBy('price', 'asc');
+        sortBy('price_asc');
         break;
       case 'price-high':
-        sortBy('price', 'desc');
+        sortBy('price_desc');
         break;
       case 'newest':
-        sortBy('createdAt', 'desc');
+        sortBy('newest');
         break;
       case 'featured':
       default:
-        sortBy('createdAt', 'desc');
+        sortBy('newest');
         break;
     }
   };

@@ -151,17 +151,20 @@ const Profile: React.FC = () => {
       totalCategoryPages={pagination.totalPages}
       onCategoryPageChange={(page) => setCategoryPage(page)}
     >
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        {/* Back Button */}
-        <motion.button
-          onClick={() => navigate('/')}
-          className="flex items-center gap-2 text-gray-600 hover:text-black mb-8 text-sm font-medium"
-          whileHover={{ x: -4 }}
-          whileTap={{ scale: 0.98 }}
-        >
-          <ArrowLeft size={18} />
-          Quay lại
-        </motion.button>
+      <div className="w-full bg-gradient-to-b from-gray-50 to-white min-h-screen">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-16">
+          {/* Back Button */}
+          <motion.button
+            onClick={() => navigate(-1)}
+            className="inline-flex items-center gap-2 px-4 py-2 text-gray-700 hover:text-gray-900 rounded-lg hover:bg-gray-100 transition-all font-medium mb-8 group"
+            whileHover={{ x: -4 }}
+            whileTap={{ scale: 0.95 }}
+            initial={{ opacity: 0, x: -10 }}
+            animate={{ opacity: 1, x: 0 }}
+          >
+            <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
+            Quay lại
+          </motion.button>
 
         {/* Header */}
         <motion.div
@@ -346,6 +349,7 @@ const Profile: React.FC = () => {
             </motion.div>
           </motion.form>
         )}
+        </div>
       </div>
     </Layout>
   );

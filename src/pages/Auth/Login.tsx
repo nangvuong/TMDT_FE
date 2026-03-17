@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, type Variants } from 'framer-motion';
-import { Mail, Lock, Home } from 'lucide-react';
+import { Mail, Lock, Home, Eye, EyeOff } from 'lucide-react';
 import Input from '../../components/common/Input/Input';
 import Button from '../../components/common/Button/Button';
 import Checkbox from '../../components/common/Checkbox/Checkbox';
@@ -21,6 +21,7 @@ const Login: React.FC = () => {
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
@@ -156,18 +157,29 @@ const Login: React.FC = () => {
 
               {/* Password Input */}
               <motion.div variants={itemVariants}>
-                <Input
-                  type="password"
-                  label="Mật khẩu"
-                  placeholder="••••••••"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  startIcon={<Lock size={18} />}
-                  variant="outline"
-                  fullWidth
-                  required
-                  disabled={isLoading}
-                />
+                <div className="relative">
+                  <Input
+                    type={showPassword ? 'text' : 'password'}
+                    label="Mật khẩu"
+                    placeholder="••••••••"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    startIcon={<Lock size={18} />}
+                    variant="outline"
+                    fullWidth
+                    required
+                    disabled={isLoading}
+                  />
+                  <motion.button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-12 -translate-y-1/2 p-2 text-gray-600 hover:text-gray-900 transition-colors"
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    {showPassword ? <EyeOff size={23} /> : <Eye size={23} />}
+                  </motion.button>
+                </div>
               </motion.div>
 
               {/* Remember Me */}
@@ -320,18 +332,29 @@ const Login: React.FC = () => {
 
               {/* Password Input */}
               <motion.div variants={itemVariants}>
-                <Input
-                  type="password"
-                  label="Mật khẩu"
-                  placeholder="••••••••"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  startIcon={<Lock size={18} />}
-                  variant="outline"
-                  fullWidth
-                  required
-                  disabled={isLoading}
-                />
+                <div className="relative">
+                  <Input
+                    type={showPassword ? 'text' : 'password'}
+                    label="Mật khẩu"
+                    placeholder="••••••••"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    startIcon={<Lock size={18} />}
+                    variant="outline"
+                    fullWidth
+                    required
+                    disabled={isLoading}
+                  />
+                  <motion.button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-12 -translate-y-1/2 p-2 text-gray-600 hover:text-gray-900 transition-colors"
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    {showPassword ? <EyeOff size={23} /> : <Eye size={23} />}
+                  </motion.button>
+                </div>
               </motion.div>
 
               {/* Remember Me */}

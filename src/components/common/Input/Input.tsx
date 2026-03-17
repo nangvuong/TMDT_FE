@@ -40,7 +40,7 @@ const Input: React.FC<InputProps> = ({
   const baseInputStyles = 'w-full rounded-lg focus:outline-none focus:ring-2 focus:ring-offset-2 transition-colors disabled:bg-gray-100 disabled:cursor-not-allowed disabled:text-gray-400';
 
   const sizeStyles = {
-    sm: 'px-3 py-1.5 text-sm',
+    sm: 'px-3 py-1.5 text-base',
     md: 'px-4 py-2 text-base',
     lg: 'px-5 py-3 text-lg',
   };
@@ -86,6 +86,7 @@ const Input: React.FC<InputProps> = ({
             endIcon ? 'pr-10' : '',
             className
           )}
+          style={{ touchAction: 'manipulation' }}
           disabled={disabled}
           whileFocus={{
             boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',

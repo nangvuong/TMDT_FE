@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Filter, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Filter, ChevronLeft, ChevronRight, ArrowLeft } from 'lucide-react';
 import Layout from '../../components/layout/Layout';
 import ProductList from '../../components/product/ProductList';
 import ProductSkeleton from '../../components/loading/ProductSkeleton';
@@ -104,10 +104,6 @@ const CategoryPage: React.FC = () => {
     console.log('Added to wishlist:', productId);
   };
 
-  const handleSearch = (query: string) => {
-    console.log('Search query:', query);
-  };
-
   const handleCartClick = () => {
     console.log('Cart clicked');
   };
@@ -145,7 +141,6 @@ const CategoryPage: React.FC = () => {
       cartCount={cartCount}
       wishlistCount={wishlistCount}
       isUserLoggedIn={isUserLoggedIn}
-      onSearch={handleSearch}
       onCartClick={handleCartClick}
       onWishlistClick={handleWishlistClick}
       currentCategoryPage={categoryPagination.page}
@@ -153,36 +148,75 @@ const CategoryPage: React.FC = () => {
       totalCategoryPages={categoryPagination.totalPages || 1}
       onCategoryPageChange={handleCategoryPageChange}
     >
-      <section className="w-full bg-white py-8 md:py-12">
+      <section className="w-full bg-gradient-to-b from-gray-50 to-white py-8 md:py-16">
         <div className="container mx-auto max-w-7xl px-4 md:px-6">
-          {/* Breadcrumb */}
-          <motion.div
-            className="mb-6 md:mb-8"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
+          {/* Back Button */}
+          <motion.button
+            onClick={() => navigate(-1)}
+            className="inline-flex items-center gap-2 px-4 py-2 text-gray-700 hover:text-gray-900 rounded-lg hover:bg-gray-100 transition-all font-medium mb-8 group"
+            whileHover={{ x: -4 }}
+            whileTap={{ scale: 0.95 }}
+            initial={{ opacity: 0, x: -10 }}
+            animate={{ opacity: 1, x: 0 }}
           >
-            <button
-              onClick={() => navigate('/')}
-              className="text-sm text-gray-600 hover:text-gray-900 mb-4"
-            >
-              ← Quay lại
-            </button>
+            <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
+            Quay lại
+          </motion.button>
+
+          {/* Header */}
+          <motion.div
+            className="mb-12 md:mb-16"
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+          >
             {isCategoryLoading ? (
-              <>
-                <div className="h-8 bg-gray-200 rounded w-48 animate-pulse mb-2" />
-                <div className="h-4 bg-gray-200 rounded w-96 animate-pulse" />
-              </>
+              <div className="space-y-4">
+                <div className="h-12 bg-gray-200 rounded w-48 animate-pulse" />
+                <div className="h-20 bg-gray-200 rounded w-full animate-pulse" />
+              </div>
             ) : (
-              <>
-                <h1 className="text-3xl md:text-4xl font-bold text-gray-900">
-                  {category?.name}
-                </h1>
+              <div className="space-y-6">
+                {/* Category Header with Icon */}
+                <div className="flex items-start gap-4">
+                  <motion.div
+                    className="p-3 bg-gradient-to-br from-gray-900 to-gray-700 rounded-xl"
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    transition={{ delay: 0.2, type: 'spring', stiffness: 200 }}
+                  >
+                    <Filter className="w-6 h-6 text-white" />
+                  </motion.div>
+                  <div className="flex-1">
+                    <motion.h1
+                      className="text-4xl md:text-5xl font-bold text-gray-900 mb-2"
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: 0.1 }}
+                    >
+                      {category?.name}
+                    </motion.h1>
+                    <motion.div
+                      className="h-1 w-20 bg-gradient-to-r from-gray-900 to-gray-400 rounded-full"
+                      initial={{ scaleX: 0 }}
+                      animate={{ scaleX: 1 }}
+                      transition={{ delay: 0.3 }}
+                    />
+                  </div>
+                </div>
+
+                {/* Category Description */}
                 {category?.description && (
-                  <p className="text-gray-600 text-sm md:text-base mt-2 max-w-2xl">
+                  <motion.p
+                    className="text-gray-600 text-lg leading-relaxed max-w-3xl"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.2 }}
+                  >
                     {category.description}
-                  </p>
+                  </motion.p>
                 )}
-              </>
+              </div>
             )}
           </motion.div>
 

@@ -1,14 +1,13 @@
 import React, { useState, useRef } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Filter, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Filter, ChevronLeft, ChevronRight, Search, X, ArrowLeft } from 'lucide-react';
 import Layout from '../../components/layout/Layout';
 import ProductList from '../../components/product/ProductList';
 import ProductSkeleton from '../../components/loading/ProductSkeleton';
 import { useProducts, useCategories } from '../../hooks/useProduct';
 import { usePageTitle } from '../../hooks/usePageTitle';
 import { useScrollReset } from '../../hooks/useScrollReset';
-import Button from '../../components/common/Button/Button';
 import Checkbox from '../../components/common/Checkbox/Checkbox';
 import Input from '../../components/common/Input/Input';
 import Select from '../../components/common/Select/Select';
@@ -20,9 +19,9 @@ import Modal from '../../components/common/Modal/Modal';
 const ProductPage: React.FC = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const initialSearch = searchParams.get('q') || '';
+  const initialSearch = searchParams.get('search') || '';
 
-  usePageTitle('Sản Phẩm | Fitness Mart');
+  usePageTitle('Product | Fitness Mart');
   useScrollReset([]);
 
   // Fetch categories for header
@@ -37,11 +36,8 @@ const ProductPage: React.FC = () => {
   const {
     products,
     isLoading: isProductsLoading,
-    search: searchProducts,
     filterByPrice,
     filterByCategory,
-    filterByTags,
-    filterByStock,
     sortBy: sortProducts,
     refresh: refreshProducts,
   } = useProducts({
@@ -61,11 +57,6 @@ const ProductPage: React.FC = () => {
   const [priceRange, setPriceRange] = useState({ min: 0, max: 100000000 });
   const [selectedCategory, setSelectedCategory] = useState<string>('');
   const [selectedRating, setSelectedRating] = useState<number>(0);
-  const [inStockOnly, setInStockOnly] = useState(false);
-  const [selectedTags, setSelectedTags] = useState<string[]>([]);
-
-  // Mock tags data (in real app, would come from API)
-  const mockTags = ['Cardio', 'Strength', 'Flexibility', 'Endurance', 'Recovery', 'Weight Loss', 'Muscle Gain', 'Balance'];
 
   // Mock state for header
   const [wishlistCount] = useState(5);
@@ -79,26 +70,22 @@ const ProductPage: React.FC = () => {
     currentPage * pageSize
   );
 
-  const handleHeaderSearch = (query: string) => {
-    searchProducts(query);
-    setCurrentPage(1);
-  };
-
   const handleSortChange = (order: 'featured' | 'price-low' | 'price-high' | 'newest') => {
     setSortOrder(order);
     // Apply sorting based on currentParams
     switch (order) {
       case 'price-low':
-        sortProducts('price', 'asc');
+        sortProducts('price_asc');
         break;
       case 'price-high':
-        sortProducts('price', 'desc');
+        sortProducts('price_desc');
         break;
       case 'newest':
-        sortProducts('createdAt', 'desc');
+        sortProducts('newest');
         break;
       case 'featured':
       default:
+        sortProducts('newest');
         break;
     }
     setCurrentPage(1);
@@ -119,21 +106,6 @@ const ProductPage: React.FC = () => {
       filterByCategory(categoryId);
       setCurrentPage(1);
     }
-  };
-
-  const handleStockChange = (checked: boolean) => {
-    setInStockOnly(checked);
-    filterByStock(checked);
-    setCurrentPage(1);
-  };
-
-  const handleTagChange = (tag: string) => {
-    const updatedTags = selectedTags.includes(tag)
-      ? selectedTags.filter(t => t !== tag)
-      : [...selectedTags, tag];
-    setSelectedTags(updatedTags);
-    filterByTags(updatedTags.join(','));
-    setCurrentPage(1);
   };
 
   const handlePrevPage = () => {
@@ -199,7 +171,6 @@ const ProductPage: React.FC = () => {
       cartCount={cartCount}
       wishlistCount={wishlistCount}
       isUserLoggedIn={isUserLoggedIn}
-      onSearch={handleHeaderSearch}
       onCartClick={handleCartClick}
       onWishlistClick={handleWishlistClick}
       currentCategoryPage={categoryPagination.page}
@@ -207,51 +178,128 @@ const ProductPage: React.FC = () => {
       totalCategoryPages={categoryPagination.totalPages || 1}
       onCategoryPageChange={handleCategoryPageChange}
     >
-      <section className="w-full bg-white py-8 md:py-12">
+      <section className="w-full bg-gradient-to-b from-gray-50 to-white py-8 md:py-16">
         <div className="container mx-auto max-w-7xl px-4 md:px-6">
+          {/* Back Button */}
+          <motion.button
+            onClick={() => navigate(-1)}
+            className="inline-flex items-center gap-2 px-4 py-2 text-gray-700 hover:text-gray-900 rounded-lg hover:bg-gray-100 transition-all font-medium mb-8 group"
+            whileHover={{ x: -4 }}
+            whileTap={{ scale: 0.95 }}
+            initial={{ opacity: 0, x: -10 }}
+            animate={{ opacity: 1, x: 0 }}
+          >
+            <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
+            Quay lại
+          </motion.button>
+
           {/* Header */}
           <motion.div
-            className="mb-8 md:mb-12"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
+            className="mb-12 md:mb-16"
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
           >
-            <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              Tất Cả Sản Phẩm
-            </h1>
-            <p className="text-gray-600 text-sm md:text-base">
-              Khám phá bộ sưu tập sản phẩm fitness toàn diện của chúng tôi
-            </p>
-          </motion.div>
+            {initialSearch ? (
+              <div className="space-y-6">
+                {/* Search Header with Icon */}
+                <div className="flex items-start gap-4">
+                  <motion.div
+                    className="p-3 bg-gray-900 rounded-xl"
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    transition={{ delay: 0.2, type: 'spring', stiffness: 200 }}
+                  >
+                    <Search className="w-6 h-6 text-white" />
+                  </motion.div>
+                  <div className="flex-1">
+                    <motion.h1
+                      className="text-4xl md:text-4xl font-bold text-gray-900 mb-2"
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: 0.1 }}
+                    >
+                      Kết quả tìm kiếm
+                    </motion.h1>
+                    <motion.div
+                      className="h-1 w-20 bg-gradient-to-r from-gray-900 to-gray-400 rounded-full"
+                      initial={{ scaleX: 0 }}
+                      animate={{ scaleX: 1 }}
+                      transition={{ delay: 0.3 }}
+                    />
+                  </div>
+                </div>
 
-          {/* Search Bar */}
-          {initialSearch && (
-            <motion.div
-              className="mb-8 p-4 bg-blue-50 border border-blue-200 rounded-lg flex items-center justify-between"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-            >
-              <div>
-                <p className="text-sm text-gray-600">
-                  Kết quả tìm kiếm cho: <span className="font-semibold text-gray-900">"{initialSearch}"</span>
-                </p>
-                <p className="text-sm text-gray-600 mt-1">
-                  Tìm thấy <span className="font-semibold text-blue-600">{products.length}</span> sản phẩm
-                </p>
+                {/* Search Details and Clear Button */}
+                <div className="flex items-center justify-between gap-6">
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.2 }}
+                  >
+                    <p className="text-gray-600 text-sm font-medium mb-1">Từ khóa</p>
+                    <p className="text-gray-900 text-xl font-bold">"{initialSearch}"</p>
+                  </motion.div>
+
+                  {/* Clear Search Button */}
+                  <motion.button
+                    onClick={() => {
+                      refreshProducts();
+                      setCurrentPage(1);
+                      navigate('/products');
+                    }}
+                    className="inline-flex items-center gap-2 px-5 py-2.5 bg-gray-900 text-white rounded-lg hover:bg-black transition-all font-medium group whitespace-nowrap h-fit"
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    initial={{ opacity: 0, x: 10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.4 }}
+                  >
+                    <X className="w-4 h-4 group-hover:rotate-90 transition-transform" />
+                    Xóa
+                  </motion.button>
+                </div>
               </div>
-              <motion.button
-                onClick={() => {
-                  refreshProducts();
-                  setCurrentPage(1);
-                  navigate('/products');
-                }}
-                className="px-4 py-2 bg-white text-gray-700 rounded-lg hover:bg-gray-100 transition-colors text-sm font-medium border border-gray-300"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                Xóa
-              </motion.button>
-            </motion.div>
-          )}
+            ) : (
+              <div className="space-y-6">
+                {/* All Products Header */}
+                <div className="flex items-start gap-4">
+                  <motion.div
+                    className="p-3 bg-gradient-to-br from-gray-900 to-gray-700 rounded-xl"
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    transition={{ delay: 0.2, type: 'spring', stiffness: 200 }}
+                  >
+                    <Filter className="w-6 h-6 text-white" />
+                  </motion.div>
+                  <div className="flex-1">
+                    <motion.h1
+                      className="text-4xl md:text-5xl font-bold text-gray-900 mb-2"
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: 0.1 }}
+                    >
+                      Tất Cả Sản Phẩm
+                    </motion.h1>
+                    <motion.div
+                      className="h-1 w-20 bg-gradient-to-r from-gray-900 to-gray-400 rounded-full"
+                      initial={{ scaleX: 0 }}
+                      animate={{ scaleX: 1 }}
+                      transition={{ delay: 0.3 }}
+                    />
+                  </div>
+                </div>
+                <motion.p
+                  className="text-gray-600 text-lg leading-relaxed max-w-3xl"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.2 }}
+                >
+                  Khám phá bộ sưu tập sản phẩm fitness toàn diện của chúng tôi. Từ thiết bị tập luyện chuyên nghiệp đến thực phẩm bổ sung và thời trang thể thao.
+                </motion.p>
+              </div>
+            )}
+          </motion.div>
 
           {/* Main Content */}
           <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 md:gap-8">
@@ -325,49 +373,6 @@ const ProductPage: React.FC = () => {
                   )}
                 </div>
 
-                {/* Tag Filter */}
-                <div className="space-y-3">
-                  <h3 className="font-semibold text-gray-900">Thẻ</h3>
-                  <div className="flex flex-wrap gap-2">
-                    {mockTags.map((tag) => (
-                      <button
-                        key={tag}
-                        onClick={() => handleTagChange(tag)}
-                        className={`px-3 py-1 rounded-full text-xs font-medium transition-colors ${
-                          selectedTags.includes(tag)
-                            ? 'bg-gray-900 text-white'
-                            : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-                        }`}
-                      >
-                        {tag}
-                      </button>
-                    ))}
-                  </div>
-                  {selectedTags.length > 0 && (
-                    <button
-                      onClick={() => {
-                        setSelectedTags([]);
-                        filterByTags('');
-                        setCurrentPage(1);
-                      }}
-                      className="text-sm text-red-600 hover:text-red-700 font-medium"
-                    >
-                      Xóa thẻ
-                    </button>
-                  )}
-                </div>
-
-                {/* Stock Filter */}
-                <div className="space-y-3">
-                  <h3 className="font-semibold text-gray-900">Tồn Kho</h3>
-                  <Checkbox
-                    label="Chỉ hiển thị hàng có sẵn"
-                    checked={inStockOnly}
-                    onChange={(e) => handleStockChange(e.target.checked)}
-                    size="sm"
-                  />
-                </div>
-
                 {/* Rating Filter */}
                 <div className="space-y-3">
                   <h3 className="font-semibold text-gray-900">Đánh Giá</h3>
@@ -393,8 +398,6 @@ const ProductPage: React.FC = () => {
                     setPriceRange({ min: 0, max: 100000000 });
                     setSelectedCategory('');
                     setSelectedRating(0);
-                    setInStockOnly(false);
-                    setSelectedTags([]);
                     refreshProducts();
                     setCurrentPage(1);
                   }}
@@ -479,49 +482,6 @@ const ProductPage: React.FC = () => {
                   )}
                 </div>
 
-                {/* Tag Filter */}
-                <div className="space-y-3">
-                  <h3 className="font-semibold text-gray-900">Thẻ</h3>
-                  <div className="flex flex-wrap gap-2">
-                    {mockTags.map((tag) => (
-                      <button
-                        key={tag}
-                        onClick={() => handleTagChange(tag)}
-                        className={`px-3 py-1 rounded-full text-xs font-medium transition-colors ${
-                          selectedTags.includes(tag)
-                            ? 'bg-gray-900 text-white'
-                            : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-                        }`}
-                      >
-                        {tag}
-                      </button>
-                    ))}
-                  </div>
-                  {selectedTags.length > 0 && (
-                    <button
-                      onClick={() => {
-                        setSelectedTags([]);
-                        filterByTags('');
-                        setCurrentPage(1);
-                      }}
-                      className="text-sm text-red-600 hover:text-red-700 font-medium"
-                    >
-                      Xóa thẻ
-                    </button>
-                  )}
-                </div>
-
-                {/* Stock Filter */}
-                <div className="space-y-3">
-                  <h3 className="font-semibold text-gray-900">Tồn Kho</h3>
-                  <Checkbox
-                    label="Chỉ hiển thị hàng có sẵn"
-                    checked={inStockOnly}
-                    onChange={(e) => handleStockChange(e.target.checked)}
-                    size="sm"
-                  />
-                </div>
-
                 {/* Rating Filter */}
                 <div className="space-y-3">
                   <h3 className="font-semibold text-gray-900">Đánh Giá</h3>
@@ -547,8 +507,6 @@ const ProductPage: React.FC = () => {
                     setPriceRange({ min: 0, max: 100000000 });
                     setSelectedCategory('');
                     setSelectedRating(0);
-                    setInStockOnly(false);
-                    setSelectedTags([]);
                     refreshProducts();
                     setCurrentPage(1);
                   }}
@@ -667,27 +625,7 @@ const ProductPage: React.FC = () => {
                     onAddToCart={handleAddToCart}
                     onAddToWishlist={handleAddToWishlist}
                   />
-                ) : (
-                  <motion.div
-                    className="text-center py-12"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                  >
-                    <p className="text-lg text-gray-600 mb-4">Không tìm thấy sản phẩm</p>
-                    <Button
-                      onClick={() => {
-                        setPriceRange({ min: 0, max: 100000000 });
-                        setSelectedCategory('');
-                        setSelectedRating(0);
-                        setInStockOnly(false);
-                        refreshProducts();
-                        setCurrentPage(1);
-                      }}
-                    >
-                      Xóa Bộ Lọc
-                    </Button>
-                  </motion.div>
-                )}
+                ) : null}
               </motion.div>
 
               {/* Bottom Pagination */}

@@ -4,10 +4,12 @@ import Layout from '../../components/layout/Layout';
 import { usePageTitle } from '../../hooks/usePageTitle';
 import { useCategories } from '../../hooks/useProduct';
 import { useIsLoggedIn } from '../../hooks/useAuth';
-import { Target, Heart, Zap } from 'lucide-react';
+import { useScrollReset } from '../../hooks/useScrollReset';
+import { Heart, Target, Zap } from 'lucide-react';
 
 const AboutPage: React.FC = () => {
   usePageTitle('Về Chúng Tôi | Fitness Mart');
+  useScrollReset();
   
   // Fetch categories for header
   const {
@@ -21,10 +23,6 @@ const AboutPage: React.FC = () => {
   const [wishlistCount] = useState(5);
   const cartCount = 3;
   const { isLoggedIn } = useIsLoggedIn();
-
-  const handleSearch = (query: string) => {
-    console.log('Search query:', query);
-  };
 
   const handleCartClick = () => {
     console.log('Cart clicked');
@@ -70,7 +68,6 @@ const AboutPage: React.FC = () => {
       cartCount={cartCount}
       wishlistCount={wishlistCount}
       isUserLoggedIn={isLoggedIn}
-      onSearch={handleSearch}
       onCartClick={handleCartClick}
       onWishlistClick={handleWishlistClick}
       currentCategoryPage={categoryPagination.page}
@@ -104,7 +101,7 @@ const AboutPage: React.FC = () => {
             <h2 className="text-3xl font-bold text-gray-900 mb-6">Câu Chuyện Của Chúng Tôi</h2>
             <div className="space-y-4 text-gray-700 leading-relaxed">
               <p>
-                Fitness Mart được thành lập vào năm 2014 với một mục tiêu đơn giản: cung cấp các sản phẩm fitness chất lượng cao
+                Fitness Mart được thành lập vào năm 2026 với một mục tiêu đơn giản: cung cấp các sản phẩm fitness chất lượng cao
                 với giá cạnh tranh cho mọi người ở Việt Nam.
               </p>
               <p>

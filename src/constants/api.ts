@@ -19,6 +19,12 @@ export const CATEGORIES_ENDPOINTS = {
   GET_BY_ID: '/categories/:id',     // GET - 200 (public)
 } as const;
 
+// ============= REVIEWS Module =============
+export const REVIEWS_ENDPOINTS = {
+  GET_PRODUCT_REVIEWS: '/reviews/product/:productId', // GET - 200 (public)
+  POST_REVIEW: '/reviews',                            // POST - 201 (Authenticated)
+} as const;
+
 // ============= CART Module (Require JWT 🔒) =============
 export const CART_ENDPOINTS = {
   GET_CART: '/cart',                // GET - 200 (Authenticated)
@@ -121,6 +127,7 @@ export const API_ENDPOINTS = {
   ...AUTH_ENDPOINTS,
   ...PRODUCTS_ENDPOINTS,
   ...CATEGORIES_ENDPOINTS,
+  ...REVIEWS_ENDPOINTS,
   ...CART_ENDPOINTS,
   ...ORDERS_ENDPOINTS,
   ...PROFILE_ENDPOINTS,

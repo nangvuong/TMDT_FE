@@ -4,7 +4,9 @@ import Home from '../pages/Home/Home';
 import Login from '../pages/Auth/Login';
 import Register from '../pages/Auth/Register';
 import Profile from '../pages/Profile/Profile';
+import Setting from '../pages/Setting/Setting';
 import ProductPage from '../pages/Product/Product';
+import ProductDetail from '../pages/ProductDetail/ProductDetail';
 import CategoryPage from '../pages/Category/Category';
 import NotFound from '../pages/NotFound/NotFound';
 import ProtectedRoute from '../components/routes/ProtectedRoute';
@@ -37,6 +39,7 @@ const Router: React.FC = () => {
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/products/:productId" element={<ProductDetail />} />
         <Route path="/products" element={<ProductPage />} />
         <Route path="/categories/:categoryId" element={<CategoryPage />} />
         
@@ -63,6 +66,15 @@ const Router: React.FC = () => {
           element={
             <ProtectedRoute>
               <Profile />
+            </ProtectedRoute>
+          } 
+        />
+
+        <Route 
+          path="/setting" 
+          element={
+            <ProtectedRoute>
+              <Setting />
             </ProtectedRoute>
           } 
         />

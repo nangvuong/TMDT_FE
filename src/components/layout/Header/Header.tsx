@@ -15,11 +15,11 @@ import {
 import Input from '../../common/Input/Input';
 import logoSvg from '../../../assets/logo.svg';
 import { useLogout } from '../../../hooks/useAuth';
+import { useProductSearch } from '../../../hooks/useProduct';
 import type { Category } from '../../../types/product';
 
 interface HeaderProps {
   logo?: string;
-  onSearch?: (query: string) => void;
   categories?: Category[];
   isLoadingCategories?: boolean;
   userMenuItems?: UserMenuItem[];
@@ -47,7 +47,6 @@ interface UserMenuItem {
  */
 const Header: React.FC<HeaderProps> = ({
   logo = 'TMDT Logo',
-  onSearch,
   categories = [],
   isLoadingCategories = false,
   userMenuItems = [],
@@ -64,6 +63,7 @@ const Header: React.FC<HeaderProps> = ({
 }) => {
   const navigate = useNavigate();
   const { logout: logoutUser } = useLogout();
+  const { results: searchResults, search: performSearch } = useProductSearch();
   
   const [searchQuery, setSearchQuery] = useState('');
   const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -110,7 +110,31 @@ const Header: React.FC<HeaderProps> = ({
     const query = e.target.value;
     setSearchQuery(query);
     setIsSearchOpen(query.length > 0);
-    onSearch?.(query);
+    performSearch(query); // Show suggestions only, don't update product list
+  };
+
+  // Handle search submission (Enter key)
+  const handleSearchSubmit = (query?: string) => {
+    const finalQuery = query || searchQuery;
+    if (finalQuery.trim()) {
+      setSearchQuery('');
+      setIsSearchOpen(false);
+      navigate(`/products?search=${encodeURIComponent(finalQuery)}`);
+    }
+  };
+
+  // Handle product suggestion click
+  const handleProductSuggestionClick = (productId: string) => {
+    setSearchQuery('');
+    setIsSearchOpen(false);
+    navigate(`/products/${productId}`);
+  };
+
+  // Handle category suggestion click
+  const handleCategorySuggestionClick = (categoryId: string) => {
+    setSearchQuery('');
+    setIsSearchOpen(false);
+    navigate(`/categories/${categoryId}`);
   };
 
   // Filter categories based on search query
@@ -119,12 +143,6 @@ const Header: React.FC<HeaderProps> = ({
         cat.name.toLowerCase().includes(searchQuery.toLowerCase())
       )
     : [];
-
-  const handleCategorySuggestionClick = (categoryId: string) => {
-    setSearchQuery('');
-    setIsSearchOpen(false);
-    navigate(`/categories/${categoryId}`);
-  };
 
   const menuVariants: Variants = {
     hidden: { opacity: 0, y: -10 },
@@ -188,6 +206,11 @@ const Header: React.FC<HeaderProps> = ({
               value={searchQuery}
               onChange={handleSearch}
               onFocus={() => searchQuery.length > 0 && setIsSearchOpen(true)}
+              onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
+                if (e.key === 'Enter') {
+                  handleSearchSubmit();
+                }
+              }}
               startIcon={<Search size={18} />}
               inputSize="md"
               variant="filled"
@@ -196,30 +219,88 @@ const Header: React.FC<HeaderProps> = ({
 
             {/* Search Suggestions Dropdown */}
             <AnimatePresence>
-              {isSearchOpen && filteredCategories.length > 0 && (
+              {isSearchOpen && (searchResults.length > 0 || filteredCategories.length > 0) && (
                 <motion.div
-                  className="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg py-2 z-50"
+                  className="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg py-2 z-50 max-h-96 overflow-y-auto"
                   variants={menuVariants}
                   initial="hidden"
                   animate="visible"
                   exit="exit"
                 >
-                  <div className="px-3 py-1">
-                    <p className="text-xs text-gray-500 font-medium mb-2">Danh mục gợi ý</p>
-                  </div>
-                  {filteredCategories.map((category, i) => (
-                    <motion.button
-                      key={category.id}
-                      onClick={() => handleCategorySuggestionClick(category.id)}
-                      className="w-full px-3 py-2 text-left text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2 transition-colors"
-                      custom={i}
-                      variants={itemVariants}
-                      whileHover={{ backgroundColor: '#f3f4f6' }}
-                    >
-                      <Search size={16} className="text-gray-400" />
-                      <span>{category.name}</span>
-                    </motion.button>
-                  ))}
+                  {/* Products Section */}
+                  {searchResults.length > 0 && (
+                    <>
+                      <div className="px-3 py-1">
+                        <p className="text-xs text-gray-500 font-medium mb-2">Sản phẩm gợi ý</p>
+                      </div>
+                      {searchResults.slice(0, 5).map((product, i) => (
+                        <motion.button
+                          key={product.id}
+                          onClick={() => handleProductSuggestionClick(product.id)}
+                          className="w-full px-3 py-2 text-left text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-3 transition-colors"
+                          custom={i}
+                          variants={itemVariants}
+                          whileHover={{ backgroundColor: '#f3f4f6' }}
+                        >
+                          {product.images && product.images[0] ? (
+                            <img
+                              src={product.images[0]}
+                              alt={product.name}
+                              className="w-8 h-8 rounded object-cover"
+                            />
+                          ) : (
+                            <div className="w-8 h-8 bg-gray-200 rounded" />
+                          )}
+                          <div className="flex-1 min-w-0">
+                            <p className="text-sm font-medium text-gray-900 truncate">
+                              {product.name}
+                            </p>
+                            <p className="text-xs text-gray-500">
+                              {product.price?.toLocaleString('vi-VN')} đ
+                            </p>
+                          </div>
+                        </motion.button>
+                      ))}
+                    </>
+                  )}
+
+                  {/* Categories Section */}
+                  {filteredCategories.length > 0 && (
+                    <>
+                      <div className="border-t border-gray-200 my-2" />
+                      <div className="px-3 py-1">
+                        <p className="text-xs text-gray-500 font-medium mb-2">Danh mục</p>
+                      </div>
+                      {filteredCategories.map((category, i) => (
+                        <motion.button
+                          key={category.id}
+                          onClick={() => handleCategorySuggestionClick(category.id)}
+                          className="w-full px-3 py-2 text-left text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2 transition-colors"
+                          custom={i}
+                          variants={itemVariants}
+                          whileHover={{ backgroundColor: '#f3f4f6' }}
+                        >
+                          <Grid3x3 size={16} className="text-gray-400" />
+                          <span>{category.name}</span>
+                        </motion.button>
+                      ))}
+                    </>
+                  )}
+
+                  {/* Search All Button */}
+                  {searchQuery.trim().length > 0 && (
+                    <>
+                      <div className="border-t border-gray-200 my-2" />
+                      <motion.button
+                        onClick={() => handleSearchSubmit()}
+                        className="w-full px-3 py-2 text-left text-sm font-medium text-gray-900 hover:bg-gray-100 flex items-center gap-2 transition-colors"
+                        whileHover={{ backgroundColor: '#f3f4f6' }}
+                      >
+                        <Search size={16} className="text-gray-600" />
+                        <span>Tìm kiếm "{searchQuery}"</span>
+                      </motion.button>
+                    </>
+                  )}
                 </motion.div>
               )}
             </AnimatePresence>
@@ -515,14 +596,17 @@ const Header: React.FC<HeaderProps> = ({
                           <ShoppingCart size={16} />
                           Đơn hàng của tôi
                         </motion.a>
-                        <motion.a
-                          href="/settings"
-                          className="w-full block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2"
+                        <motion.button
+                          onClick={() => {
+                            navigate('/setting');
+                            setIsUserMenuOpen(false);
+                          }}
+                          className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2"
                           whileHover={{ paddingLeft: '24px', backgroundColor: '#f9fafb' }}
                         >
                           <Settings size={16} />
                           Cài đặt
-                        </motion.a>
+                        </motion.button>
                         <div className="border-t border-gray-200 my-2" />
                         <motion.button
                           onClick={handleLogout}
@@ -595,6 +679,11 @@ const Header: React.FC<HeaderProps> = ({
                 value={searchQuery}
                 onChange={handleSearch}
                 onFocus={() => searchQuery.length > 0 && setIsSearchOpen(true)}
+                onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
+                  if (e.key === 'Enter') {
+                    handleSearchSubmit();
+                  }
+                }}
                 startIcon={<Search size={16} />}
                 inputSize="sm"
                 variant="filled"
@@ -603,30 +692,81 @@ const Header: React.FC<HeaderProps> = ({
 
               {/* Search Suggestions Dropdown (Mobile) */}
               <AnimatePresence>
-                {isSearchOpen && filteredCategories.length > 0 && (
+                {isSearchOpen && (searchResults.length > 0 || filteredCategories.length > 0) && (
                   <motion.div
-                    className="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg py-2 z-50"
+                    className="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg py-2 z-50 max-h-64 overflow-y-auto"
                     variants={menuVariants}
                     initial="hidden"
                     animate="visible"
                     exit="exit"
                   >
-                    <div className="px-3 py-1">
-                      <p className="text-xs text-gray-500 font-medium mb-2">Danh mục gợi ý</p>
-                    </div>
-                    {filteredCategories.slice(0, 5).map((category, i) => (
-                      <motion.button
-                        key={category.id}
-                        onClick={() => handleCategorySuggestionClick(category.id)}
-                        className="w-full px-3 py-2 text-left text-xs text-gray-700 hover:bg-gray-100 flex items-center gap-2 transition-colors"
-                        custom={i}
-                        variants={itemVariants}
-                        whileHover={{ backgroundColor: '#f3f4f6' }}
-                      >
-                        <Search size={14} className="text-gray-400" />
-                        <span>{category.name}</span>
-                      </motion.button>
-                    ))}
+                    {/* Products Section */}
+                    {searchResults.length > 0 && (
+                      <>
+                        <div className="px-3 py-1">
+                          <p className="text-xs text-gray-500 font-medium mb-2">Sản phẩm</p>
+                        </div>
+                        {searchResults.slice(0, 5).map((product, i) => (
+                          <motion.button
+                            key={product.id}
+                            onClick={() => handleProductSuggestionClick(product.id)}
+                            className="w-full px-3 py-2 text-left text-xs text-gray-700 hover:bg-gray-100 flex items-center gap-2 transition-colors"
+                            custom={i}
+                            variants={itemVariants}
+                            whileHover={{ backgroundColor: '#f3f4f6' }}
+                          >
+                            {product.images && product.images[0] ? (
+                              <img
+                                src={product.images[0]}
+                                alt={product.name}
+                                className="w-6 h-6 rounded object-cover flex-shrink-0"
+                              />
+                            ) : (
+                              <div className="w-6 h-6 bg-gray-200 rounded flex-shrink-0" />
+                            )}
+                            <span className="truncate">{product.name}</span>
+                          </motion.button>
+                        ))}
+                      </>
+                    )}
+
+                    {/* Categories Section */}
+                    {filteredCategories.length > 0 && (
+                      <>
+                        <div className="border-t border-gray-200 my-2" />
+                        <div className="px-3 py-1">
+                          <p className="text-xs text-gray-500 font-medium mb-2">Danh mục</p>
+                        </div>
+                        {filteredCategories.slice(0, 5).map((category, i) => (
+                          <motion.button
+                            key={category.id}
+                            onClick={() => handleCategorySuggestionClick(category.id)}
+                            className="w-full px-3 py-2 text-left text-xs text-gray-700 hover:bg-gray-100 flex items-center gap-2 transition-colors"
+                            custom={i}
+                            variants={itemVariants}
+                            whileHover={{ backgroundColor: '#f3f4f6' }}
+                          >
+                            <Grid3x3 size={14} className="text-gray-400" />
+                            <span>{category.name}</span>
+                          </motion.button>
+                        ))}
+                      </>
+                    )}
+
+                    {/* Search All Button */}
+                    {searchQuery.trim().length > 0 && (
+                      <>
+                        <div className="border-t border-gray-200 my-2" />
+                        <motion.button
+                          onClick={() => handleSearchSubmit()}
+                          className="w-full px-3 py-2 text-left text-xs font-medium text-gray-900 hover:bg-gray-100 flex items-center gap-2 transition-colors"
+                          whileHover={{ backgroundColor: '#f3f4f6' }}
+                        >
+                          <Search size={14} className="text-gray-600" />
+                          <span>Tìm kiếm "{searchQuery}"</span>
+                        </motion.button>
+                      </>
+                    )}
                   </motion.div>
                 )}
               </AnimatePresence>
@@ -659,7 +799,7 @@ const Header: React.FC<HeaderProps> = ({
               onClick={() => setIsCategoryMenuOpen(!isCategoryMenuOpen)}
             >
               <Grid3x3 size={20} className="text-gray-700" />
-              <span className="text-xs text-gray-700">Danh mục</span>
+              <span className="text-xs text-gray-700 whitespace-nowrap">Danh mục</span>
             </motion.button>
 
             {/* Category Mobile Menu */}
@@ -872,13 +1012,16 @@ const Header: React.FC<HeaderProps> = ({
                       >
                         Đơn hàng của tôi
                       </motion.a>
-                      <motion.a
-                        href="/settings"
-                        className="w-full block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                      <motion.button
+                        onClick={() => {
+                          navigate('/setting');
+                          setIsUserMenuOpen(false);
+                        }}
+                        className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
                         whileHover={{ paddingLeft: '24px', backgroundColor: '#f9fafb' }}
                       >
                         Cài đặt
-                      </motion.a>
+                      </motion.button>
                       <div className="border-t border-gray-200 my-2" />
                       <motion.button
                         onClick={handleLogout}

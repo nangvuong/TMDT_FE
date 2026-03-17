@@ -5,6 +5,7 @@ import Button from '../../components/common/Button/Button';
 import Layout from '../../components/layout/Layout';
 import { usePageTitle } from '../../hooks/usePageTitle';
 import { useCategories } from '../../hooks/useProduct';
+import { useIsLoggedIn } from '../../hooks/useAuth';
 
 /**
  * NotFound Page (404) - Display when page is not found
@@ -17,6 +18,8 @@ const NotFound: React.FC = () => {
     page: 1,
     limit: 6,
   });
+
+  const { isLoggedIn } = useIsLoggedIn();
 
   const containerVariants = {
     hidden: { opacity: 0, y: 20 },
@@ -33,7 +36,7 @@ const NotFound: React.FC = () => {
       isLoadingCategories={isLoadingCategories}
       cartCount={0}
       wishlistCount={0}
-      isUserLoggedIn={false}
+      isUserLoggedIn={isLoggedIn}
       currentCategoryPage={pagination.page}
       itemsPerPage={pagination.limit}
       totalCategoryPages={pagination.totalPages}
@@ -113,13 +116,15 @@ const NotFound: React.FC = () => {
               >
                 ← Quay lại trang chủ
               </Button>
-              <Button
-                onClick={() => navigate('/login')}
-                variant="outline"
-                size="lg"
-              >
-                Đăng nhập
-              </Button>
+              {!isLoggedIn && (
+                <Button
+                  onClick={() => navigate('/login')}
+                  variant="outline"
+                  size="lg"
+                >
+                  Đăng nhập
+                </Button>
+              )}
             </motion.div>
 
             {/* Suggestion */}

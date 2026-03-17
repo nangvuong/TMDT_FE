@@ -1,8 +1,8 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { CheckCircle2 } from 'lucide-react';
-import image1 from '../../../assets/banner/1.png';
-import image2 from '../../../assets/banner/4.png';
+import image1 from '../../../assets/banner/1.webp';
+import image2 from '../../../assets/banner/4.webp';
 
 interface WhyChooseUsProps {}
 

@@ -4,9 +4,11 @@ import Layout from '../../components/layout/Layout';
 import { usePageTitle } from '../../hooks/usePageTitle';
 import { useCategories } from '../../hooks/useProduct';
 import { useIsLoggedIn } from '../../hooks/useAuth';
+import { useScrollReset } from '../../hooks/useScrollReset';
 
 const SupplementsPage: React.FC = () => {
   usePageTitle('Thực Phẩm Bổ Sung | Fitness Mart');
+  useScrollReset();
   
   // Fetch categories for header
   const {
@@ -20,10 +22,6 @@ const SupplementsPage: React.FC = () => {
   const [wishlistCount] = useState(5);
   const cartCount = 3;
   const { isLoggedIn } = useIsLoggedIn();
-
-  const handleSearch = (query: string) => {
-    console.log('Search query:', query);
-  };
 
   const handleCartClick = () => {
     console.log('Cart clicked');
@@ -44,7 +42,6 @@ const SupplementsPage: React.FC = () => {
       cartCount={cartCount}
       wishlistCount={wishlistCount}
       isUserLoggedIn={isLoggedIn}
-      onSearch={handleSearch}
       onCartClick={handleCartClick}
       onWishlistClick={handleWishlistClick}
       currentCategoryPage={categoryPagination.page}

@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import Button from '../../../components/common/Button/Button';
-import bannerImage from '../../../assets/banner/3.png';
+import bannerImage from '../../../assets/banner/3.webp';
 
 interface HeroProps {
   headline?: string;

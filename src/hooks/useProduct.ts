@@ -1,7 +1,9 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import productService from '../services/productService';
 import type { Product, Category } from '../types/product';
 import type { GetProductsParams, GetCategoryParams } from '../services/productService';
+import { cacheManager, generateCategoriesCacheKey } from '../utils/cache';
+import { useDebouncedCallback } from '../utils/debounce';
 
 /**
  * Hook for fetching products with filters and pagination
@@ -49,32 +51,24 @@ export const useProducts = (initialParams?: GetProductsParams) => {
     setParams((prev: GetProductsParams) => ({ ...prev, limit, page: 1 }));
   }, []);
 
-  const search = useCallback((query: string) => {
+  const debouncedSearch = useDebouncedCallback((query: string) => {
     setParams((prev: GetProductsParams) => ({ ...prev, search: query, page: 1 }));
-  }, []);
+  }, 500); // 500ms debounce delay
+
+  const search = useCallback((query: string) => {
+    debouncedSearch(query);
+  }, [debouncedSearch]);
 
   const filterByCategory = useCallback((categoryId: string) => {
     setParams((prev: GetProductsParams) => ({ ...prev, categoryId, page: 1 }));
-  }, []);
-
-  const filterByTags = useCallback((tags: string) => {
-    setParams((prev: GetProductsParams) => ({ ...prev, tags, page: 1 }));
   }, []);
 
   const filterByPrice = useCallback((minPrice?: number, maxPrice?: number) => {
     setParams((prev: GetProductsParams) => ({ ...prev, minPrice, maxPrice, page: 1 }));
   }, []);
 
-  const filterByStock = useCallback((inStockOnly: boolean) => {
-    setParams((prev: GetProductsParams) => ({ ...prev, inStockOnly, page: 1 }));
-  }, []);
-
-  const sortBy = useCallback((sortBy: 'name' | 'price' | 'stock' | 'rating' | 'createdAt', order: 'asc' | 'desc' = 'desc') => {
-    setParams((prev: GetProductsParams) => ({ ...prev, sortBy, order, page: 1 }));
-  }, []);
-
-  const filterByFitnessGoal = useCallback((fitnessGoal: string) => {
-    setParams((prev: GetProductsParams) => ({ ...prev, fitnessGoal, page: 1 }));
+  const sortBy = useCallback((sortByValue: 'price_asc' | 'price_desc' | 'newest') => {
+    setParams((prev: GetProductsParams) => ({ ...prev, sortBy: sortByValue, page: 1 }));
   }, []);
 
   const clearFilters = useCallback(() => {
@@ -95,11 +89,8 @@ export const useProducts = (initialParams?: GetProductsParams) => {
     setLimit,
     search,
     filterByCategory,
-    filterByTags,
     filterByPrice,
-    filterByStock,
     sortBy,
-    filterByFitnessGoal,
     clearFilters,
     refresh,
     // Current params
@@ -155,7 +146,7 @@ export const useProduct = (productId?: string) => {
 };
 
 /**
- * Hook for searching products
+ * Hook for searching products with debouncing
  */
 export const useProductSearch = (initialQuery?: string) => {
   const [results, setResults] = useState<Product[]>([]);
@@ -163,7 +154,7 @@ export const useProductSearch = (initialQuery?: string) => {
   const [error, setError] = useState<string | null>(null);
   const [query, setQuery] = useState(initialQuery || '');
 
-  const search = useCallback(async (searchQuery: string) => {
+  const performSearch = useCallback(async (searchQuery: string) => {
     if (!searchQuery.trim()) {
       setResults([]);
       return;
@@ -172,8 +163,12 @@ export const useProductSearch = (initialQuery?: string) => {
     try {
       setIsLoading(true);
       setError(null);
-      const data = await productService.search(searchQuery);
-      setResults(data || []);
+      // Use getAll API with search parameter for suggestions (limit to 5 results)
+      const response = await productService.getAll({
+        search: searchQuery,
+        limit: 5,
+      });
+      setResults(response.data || []);
       setQuery(searchQuery);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to search products');
@@ -182,6 +177,13 @@ export const useProductSearch = (initialQuery?: string) => {
       setIsLoading(false);
     }
   }, []);
+
+  const debouncedSearch = useDebouncedCallback(performSearch, 500); // 500ms debounce
+
+  const search = useCallback((searchQuery: string) => {
+    setQuery(searchQuery); // Update UI immediately
+    debouncedSearch(searchQuery); // Debounce API call
+  }, [debouncedSearch]);
 
   useEffect(() => {
     if (initialQuery) {
@@ -220,24 +222,68 @@ export const useCategories = (initialParams?: GetCategoryParams) => {
   });
 
   const [params, setParams] = useState<GetCategoryParams>(initialParams || {});
+  const isFetchingRef = useRef(false); // Prevent duplicate concurrent requests
 
-  const fetchCategories = useCallback(async (fetchParams = params) => {
+  const fetchCategories = useCallback(async (fetchParams = params, useCache = true) => {
+    const cacheKey = generateCategoriesCacheKey(
+      fetchParams.page || 1,
+      fetchParams.limit || 10
+    );
+
+    // Check cache first if caching is enabled
+    if (useCache) {
+      const cachedData = cacheManager.get<{
+        data: Category[];
+        pagination: { page: number; limit: number; totalItems: number; totalPages: number };
+      }>(cacheKey);
+
+      if (cachedData) {
+        setCategories(cachedData.data);
+        setPagination(cachedData.pagination);
+        setIsLoading(false);
+        return;
+      }
+    }
+
+    // Prevent duplicate concurrent requests
+    if (isFetchingRef.current) {
+      return;
+    }
+
     try {
+      isFetchingRef.current = true;
       setIsLoading(true);
       setError(null);
+
       const response = await productService.getAllCategories(fetchParams);
-      setCategories(response.data || []);
-      setPagination({
+      const newCategories = response.data || [];
+      const newPagination = {
         page: response.meta?.page || 1,
         limit: response.meta?.limit || 10,
         totalItems: response.meta?.totalItems || 0,
         totalPages: response.meta?.totalPages || 0,
-      });
+      };
+
+      setCategories(newCategories);
+      setPagination(newPagination);
+
+      // Cache the result (5 minutes TTL)
+      if (useCache) {
+        cacheManager.set(
+          cacheKey,
+          {
+            data: newCategories,
+            pagination: newPagination,
+          },
+          5 * 60 * 1000 // 5 minutes
+        );
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to fetch categories');
       setCategories([]);
     } finally {
       setIsLoading(false);
+      isFetchingRef.current = false;
     }
   }, [params]);
 
@@ -277,6 +323,12 @@ export const useCategories = (initialParams?: GetCategoryParams) => {
     fetchCategories();
   }, [fetchCategories]);
 
+  const clearCache = useCallback(() => {
+    cacheManager.clear(
+      generateCategoriesCacheKey(pagination.page, pagination.limit)
+    );
+  }, [pagination]);
+
   return {
     categories,
     isLoading,
@@ -291,6 +343,7 @@ export const useCategories = (initialParams?: GetCategoryParams) => {
     sortBy,
     clearFilters,
     refresh,
+    clearCache,
     // Current params
     currentParams: params,
   };
@@ -342,3 +395,133 @@ export const useCategory = (categoryId?: string) => {
     refresh,
   };
 };
+
+/**
+ * Hook for fetching categories with explicit cache management
+ * Automatically caches results for configurable TTL to reduce API calls
+ * Use this if you need more control over cache timing
+ */
+interface CategoriesPaginationState {
+  page: number;
+  limit: number;
+  totalItems: number;
+  totalPages: number;
+}
+
+export const useCategoriesWithCache = (
+  initialParams?: GetCategoryParams,
+  cacheTTL?: number // in milliseconds, defaults to 5 minutes
+) => {
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [pagination, setPagination] = useState<CategoriesPaginationState>({
+    page: initialParams?.page || 1,
+    limit: initialParams?.limit || 10,
+    totalItems: 0,
+    totalPages: 0,
+  });
+
+  const [params, setParams] = useState<GetCategoryParams>(initialParams || {});
+  const isFetchingRef = useRef(false); // Prevent duplicate requests
+
+  const fetchCategories = useCallback(
+    async (fetchParams = params) => {
+      const cacheKey = generateCategoriesCacheKey(
+        fetchParams.page || 1,
+        fetchParams.limit || 10
+      );
+
+      // Check cache first
+      const cachedData = cacheManager.get<{
+        data: Category[];
+        pagination: CategoriesPaginationState;
+      }>(cacheKey);
+
+      if (cachedData) {
+        setCategories(cachedData.data);
+        setPagination(cachedData.pagination);
+        setIsLoading(false);
+        return;
+      }
+
+      // Prevent duplicate concurrent requests
+      if (isFetchingRef.current) {
+        return;
+      }
+
+      try {
+        isFetchingRef.current = true;
+        setIsLoading(true);
+        setError(null);
+
+        const response = await productService.getAllCategories(fetchParams);
+
+        const newCategories = response.data || [];
+        const newPagination = {
+          page: response.meta?.page || 1,
+          limit: response.meta?.limit || 10,
+          totalItems: response.meta?.totalItems || 0,
+          totalPages: response.meta?.totalPages || 0,
+        };
+
+        // Update state
+        setCategories(newCategories);
+        setPagination(newPagination);
+
+        // Cache the result with TTL
+        cacheManager.set(
+          cacheKey,
+          {
+            data: newCategories,
+            pagination: newPagination,
+          },
+          cacheTTL || 5 * 60 * 1000 // Default 5 minutes
+        );
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Failed to fetch categories');
+        setCategories([]);
+      } finally {
+        setIsLoading(false);
+        isFetchingRef.current = false;
+      }
+    },
+    [params, cacheTTL]
+  );
+
+  useEffect(() => {
+    fetchCategories();
+  }, [fetchCategories]);
+
+  const setPage = useCallback((page: number) => {
+    setParams((prev) => ({ ...prev, page }));
+  }, []);
+
+  const setLimit = useCallback((limit: number) => {
+    setParams((prev) => ({ ...prev, limit, page: 1 }));
+  }, []);
+
+  const search = useCallback((query: string) => {
+    setParams((prev) => ({ ...prev, search: query, page: 1 }));
+  }, []);
+
+  const clearCache = useCallback(() => {
+    cacheManager.clear(
+      generateCategoriesCacheKey(pagination.page, pagination.limit)
+    );
+  }, [pagination]);
+
+  return {
+    categories,
+    isLoading,
+    error,
+    pagination,
+    setPage,
+    setLimit,
+    search,
+    clearCache,
+    refetch: fetchCategories, // Force refresh bypassing cache
+  };
+};
+
+export { ProductSortBy } from '../services/productService';

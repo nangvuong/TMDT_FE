@@ -1,12 +1,16 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import Button from '../../../components/common/Button/Button';
-import image1 from '../../../assets/banner/5.png';
-import image2 from '../../../assets/banner/2.png';
+import image1 from '../../../assets/banner/5.webp';
+import image2 from '../../../assets/banner/2.webp';
 
 interface AboutPreviewProps {}
 
 const AboutPreview: React.FC<AboutPreviewProps> = () => {
+  
+  const navigate = useNavigate();
+
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -108,7 +112,7 @@ const AboutPreview: React.FC<AboutPreviewProps> = () => {
             {/* Button */}
             <motion.div variants={itemVariants}>
               <Button
-                onClick={() => console.log('Learn More clicked')}
+                onClick={() => navigate('/company/about')}
                 size="lg"
                 className="bg-black text-black hover:bg-gray-100 focus:ring-white font-semibold"
               >

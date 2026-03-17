@@ -10,7 +10,6 @@ interface LayoutProps {
   cartCount?: number;
   wishlistCount?: number;
   isUserLoggedIn?: boolean;
-  onSearch?: (query: string) => void;
   onCartClick?: () => void;
   onWishlistClick?: () => void;
   onProfileMenuClick?: () => void;
@@ -27,7 +26,6 @@ const Layout: React.FC<LayoutProps> = ({
   cartCount = 0,
   wishlistCount = 0,
   isUserLoggedIn = false,
-  onSearch,
   onCartClick,
   onWishlistClick,
   onProfileMenuClick,
@@ -44,7 +42,6 @@ const Layout: React.FC<LayoutProps> = ({
         cartCount={cartCount}
         wishlistCount={wishlistCount}
         isUserLoggedIn={isUserLoggedIn}
-        onSearch={onSearch}
         onCartClick={onCartClick}
         onWishlistClick={onWishlistClick}
         onProfileMenuClick={onProfileMenuClick}

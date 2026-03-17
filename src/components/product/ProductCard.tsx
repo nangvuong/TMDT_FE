@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ShoppingCart, Heart, Star } from 'lucide-react';
 import Button from '../common/Button/Button';
@@ -20,6 +21,7 @@ interface ProductCardProps {
 }
 
 const ProductCard: React.FC<ProductCardProps> = ({
+  id,
   name,
   price,
   description,
@@ -32,8 +34,14 @@ const ProductCard: React.FC<ProductCardProps> = ({
   onAddToCart,
   onAddToWishlist,
 }) => {
+  const navigate = useNavigate();
   const isInStock = stock > 0;
   const rating = typeof averageRating === 'string' ? parseFloat(averageRating) : (averageRating || 0);
+
+  const handleProductClick = () => {
+    navigate(`/products/${id}`);
+    onClick?.();
+  };
   const tagColors: Record<string, string> = {
     'bestseller': 'bg-red-600',
     'new': 'bg-blue-600',
@@ -49,16 +57,21 @@ const ProductCard: React.FC<ProductCardProps> = ({
       transition={{ type: 'spring', stiffness: 400, damping: 20 }}
     >
       {/* Image Container */}
-      <div
+      <motion.div
         className="relative w-full h-36 sm:h-40 md:h-48 lg:h-56 overflow-hidden bg-gray-200 cursor-pointer group"
-        onClick={onClick}
+        onClick={handleProductClick}
+        whileHover="hover"
+        initial="initial"
       >
         {image ? (
           <motion.img
             src={image}
             alt={name}
             className="w-full h-full object-cover"
-            whileHover={{ scale: 1.1 }}
+            variants={{
+              initial: { scale: 1 },
+              hover: { scale: 1.1 }
+            }}
             transition={{ duration: 0.3 }}
           />
         ) : (
@@ -88,9 +101,36 @@ const ProductCard: React.FC<ProductCardProps> = ({
           </div>
         )}
 
+        {/* Hover Overlay - Mua ngay Button */}
+        {isInStock && (
+          <motion.div
+            className="absolute inset-0 bg-black/50 flex items-center justify-center"
+            variants={{
+              initial: { opacity: 0 },
+              hover: { opacity: 1 }
+            }}
+            transition={{ duration: 0.2 }}
+          >
+            <motion.button
+              className="px-4 py-2 bg-white text-black font-semibold rounded-lg hover:bg-gray-100 transition-colors text-sm sm:text-base"
+              onClick={(e) => {
+                e.stopPropagation();
+                handleProductClick();
+              }}
+              variants={{
+                initial: { scale: 0.8, opacity: 0 },
+                hover: { scale: 1, opacity: 1 }
+              }}
+              transition={{ type: 'spring', stiffness: 400, damping: 20 }}
+            >
+              Mua ngay
+            </motion.button>
+          </motion.div>
+        )}
+
         {/* Wishlist Button */}
         <motion.button
-          className="absolute top-3 right-3 p-2 bg-white rounded-full shadow-md hover:bg-gray-100 transition-colors"
+          className="absolute top-3 right-3 p-2 bg-white rounded-full shadow-md hover:bg-gray-100 transition-colors z-10"
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.95 }}
           onClick={(e) => {
@@ -100,14 +140,14 @@ const ProductCard: React.FC<ProductCardProps> = ({
         >
           <Heart size={18} className="text-red-500" />
         </motion.button>
-      </div>
+      </motion.div>
 
       {/* Content */}
       <div className="flex-1 p-2 sm:p-3 md:p-4 lg:p-5 flex flex-col">
         {/* Name */}
         <h3
           className="font-semibold text-gray-800 text-xs sm:text-sm md:text-base line-clamp-2 cursor-pointer hover:text-black transition-colors"
-          onClick={onClick}
+          onClick={handleProductClick}
         >
           {name}
         </h3>

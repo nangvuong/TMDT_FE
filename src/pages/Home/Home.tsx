@@ -40,10 +40,6 @@ const Home: React.FC = () => {
   const cartCount = 3;
   const isUserLoggedIn = isLoggedIn;
 
-  const handleSearch = (query: string) => {
-    console.log('Search query:', query);
-  };
-
   const handleCartClick = () => {
     console.log('Cart clicked');
   };
@@ -100,7 +96,6 @@ const Home: React.FC = () => {
       cartCount={cartCount}
       wishlistCount={wishlistCount}
       isUserLoggedIn={isUserLoggedIn}
-      onSearch={handleSearch}
       onCartClick={handleCartClick}
       onWishlistClick={handleWishlistClick}
       currentCategoryPage={pagination.page}

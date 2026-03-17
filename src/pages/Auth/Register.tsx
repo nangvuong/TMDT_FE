@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, type Variants } from 'framer-motion';
-import { Mail, Lock, Home, User } from 'lucide-react';
+import { Mail, Lock, Home, User, Eye, EyeOff } from 'lucide-react';
 import Input from '../../components/common/Input/Input';
 import Button from '../../components/common/Button/Button';
 import registerImage from '../../assets/1.svg';
@@ -26,6 +26,7 @@ const Register: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
 
   const containerVariants: Variants = {
     hidden: { opacity: 0 },
@@ -225,19 +226,30 @@ const Register: React.FC = () => {
 
               {/* Password Input */}
               <motion.div variants={itemVariants}>
-                <Input
-                  type="password"
-                  name="password"
-                  label="Mật khẩu"
-                  placeholder="••••••••"
-                  value={formData.password}
-                  onChange={handleChange}
-                  startIcon={<Lock size={18} />}
-                  variant="outline"
-                  fullWidth
-                  required
-                  disabled={isLoading}
-                />
+                <div className="relative">
+                  <Input
+                    type={showPassword ? 'text' : 'password'}
+                    name="password"
+                    label="Mật khẩu"
+                    placeholder="••••••••"
+                    value={formData.password}
+                    onChange={handleChange}
+                    startIcon={<Lock size={18} />}
+                    variant="outline"
+                    fullWidth
+                    required
+                    disabled={isLoading}
+                  />
+                  <motion.button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-12 -translate-y-1/2 p-2 text-gray-600 hover:text-gray-900 transition-colors"
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    {showPassword ? <EyeOff size={23} /> : <Eye size={23} />}
+                  </motion.button>
+                </div>
                 <p className="text-xs text-gray-500 mt-2">Mật khẩu phải có ít nhất 8 ký tự</p>
               </motion.div>
 
@@ -422,19 +434,30 @@ const Register: React.FC = () => {
 
               {/* Password Input */}
               <motion.div variants={itemVariants}>
-                <Input
-                  type="password"
-                  name="password"
-                  label="Mật khẩu"
-                  placeholder="••••••••"
-                  value={formData.password}
-                  onChange={handleChange}
-                  startIcon={<Lock size={18} />}
-                  variant="outline"
-                  fullWidth
-                  required
-                  disabled={isLoading}
-                />
+                <div className="relative">
+                  <Input
+                    type={showPassword ? 'text' : 'password'}
+                    name="password"
+                    label="Mật khẩu"
+                    placeholder="••••••••"
+                    value={formData.password}
+                    onChange={handleChange}
+                    startIcon={<Lock size={18} />}
+                    variant="outline"
+                    fullWidth
+                    required
+                    disabled={isLoading}
+                  />
+                  <motion.button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-12 -translate-y-1/2 p-2 text-gray-600 hover:text-gray-900 transition-colors"
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    {showPassword ? <EyeOff size={23} /> : <Eye size={23} />}
+                  </motion.button>
+                </div>
                 <p className="text-xs text-gray-500 mt-2">Mật khẩu phải có ít nhất 8 ký tự</p>
               </motion.div>
 
