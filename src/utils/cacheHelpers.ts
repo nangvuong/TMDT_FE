@@ -20,6 +20,20 @@ export const getCategoriesCacheStatus = (page: number = 1, limit: number = 6) =>
 };
 
 /**
+ * Get wishlist cache status
+ */
+export const getWishlistCacheStatus = () => {
+  const itemsCached = cacheManager.has('wishlist_items');
+  const countCached = cacheManager.has('wishlist_count');
+  
+  return {
+    itemsCached,
+    countCached,
+    timestamp: itemsCached ? new Date().toISOString() : null,
+  };
+};
+
+/**
  * Clear all application cache
  */
 export const clearAllCache = () => {
@@ -37,6 +51,15 @@ export const clearCategoriesCache = (page: number = 1, limit: number = 6) => {
 };
 
 /**
+ * Clear wishlist cache
+ */
+export const clearWishlistCache = () => {
+  cacheManager.clear('wishlist_items');
+  cacheManager.clear('wishlist_count');
+  console.log('Wishlist cache cleared');
+};
+
+/**
  * Log cache diagnostics to console (useful for debugging)
  */
 export const logCacheDiagnostics = () => {
@@ -45,8 +68,9 @@ export const logCacheDiagnostics = () => {
     cacheStatus: {
       categoriesP1L6: getCategoriesCacheStatus(1, 6),
       categoriesP1L12: getCategoriesCacheStatus(1, 12),
+      wishlist: getWishlistCacheStatus(),
     },
-    note: 'Cache is automatically persisted to localStorage for 5 minutes',
+    note: 'Cache is automatically persisted to localStorage for 5 minutes (categories) or 30 minutes (wishlist)',
   };
   
   console.log('Cache Diagnostics:', diagnostics);

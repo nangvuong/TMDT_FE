@@ -32,7 +32,7 @@ const Setting: React.FC = () => {
   } = useCategories({ page: 1, limit: 6 });
 
   // Mock state for header
-  const [wishlistCount] = useState(5);
+
   const cartCount = 3;
 
   // Settings state
@@ -149,10 +149,7 @@ const Setting: React.FC = () => {
         categories={categories}
         isLoadingCategories={isLoadingCategories}
         cartCount={cartCount}
-        wishlistCount={wishlistCount}
-        isUserLoggedIn={isLoggedIn}
         onCartClick={() => navigate('/cart')}
-        onWishlistClick={() => navigate('/wishlist')}
         currentCategoryPage={categoryPagination.page}
         itemsPerPage={categoryPagination.limit}
         totalCategoryPages={categoryPagination.totalPages || 1}
@@ -182,10 +179,7 @@ const Setting: React.FC = () => {
       categories={categories}
       isLoadingCategories={isLoadingCategories}
       cartCount={cartCount}
-      wishlistCount={wishlistCount}
-      isUserLoggedIn={isLoggedIn}
       onCartClick={() => navigate('/cart')}
-      onWishlistClick={() => navigate('/wishlist')}
       currentCategoryPage={categoryPagination.page}
       itemsPerPage={categoryPagination.limit}
       totalCategoryPages={categoryPagination.totalPages || 1}

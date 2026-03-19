@@ -14,8 +14,10 @@ import {
 } from 'lucide-react';
 import Input from '../../common/Input/Input';
 import logoSvg from '../../../assets/logo.svg';
-import { useLogout } from '../../../hooks/useAuth';
+import { useLogout, useIsLoggedIn } from '../../../hooks/useAuth';
 import { useProductSearch } from '../../../hooks/useProduct';
+import { useWishlistCount } from '../../../hooks/useWishlist';
+import { useCart } from '../../../hooks/useCart';
 import type { Category } from '../../../types/product';
 
 interface HeaderProps {
@@ -24,10 +26,7 @@ interface HeaderProps {
   isLoadingCategories?: boolean;
   userMenuItems?: UserMenuItem[];
   cartCount?: number;
-  wishlistCount?: number;
-  isUserLoggedIn?: boolean;
   onCartClick?: () => void;
-  onWishlistClick?: () => void;
   onUserMenuClick?: () => void;
   onProfileMenuClick?: () => void;
   currentCategoryPage?: number;
@@ -51,10 +50,7 @@ const Header: React.FC<HeaderProps> = ({
   isLoadingCategories = false,
   userMenuItems = [],
   cartCount = 0,
-  wishlistCount = 0,
-  isUserLoggedIn = false,
   onCartClick,
-  onWishlistClick,
   onUserMenuClick,
   currentCategoryPage = 1,
   itemsPerPage = 6,
@@ -63,7 +59,14 @@ const Header: React.FC<HeaderProps> = ({
 }) => {
   const navigate = useNavigate();
   const { logout: logoutUser } = useLogout();
+  const { isLoggedIn } = useIsLoggedIn();
   const { results: searchResults, search: performSearch } = useProductSearch();
+  const wishlistCount = useWishlistCount();
+  const { cartCount: fetchedCartCount } = useCart();
+  
+  // Use cached counts for better performance
+  const computedWishlistCount = wishlistCount;
+  const computedCartCount = fetchedCartCount || cartCount;
   
   const [searchQuery, setSearchQuery] = useState('');
   const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -77,6 +80,15 @@ const Header: React.FC<HeaderProps> = ({
     logoutUser();
     setIsUserMenuOpen(false);
     navigate('/');
+  };
+
+  const handleWishlistClick = () => {
+    navigate('/wishlist');
+  };
+
+  const handleCartClick = () => {
+    navigate('/cart');
+    onCartClick?.();
   };
 
   // Handle outside click for menus
@@ -483,17 +495,17 @@ const Header: React.FC<HeaderProps> = ({
               className="relative p-2 hover:bg-gray-100 rounded-lg flex items-center gap-1"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.98 }}
-              onClick={onWishlistClick}
+              onClick={handleWishlistClick}
             >
               <Heart size={20} className="text-gray-700" />
-              {wishlistCount > 0 && (
+              {computedWishlistCount > 0 && (
                 <motion.span
                   className="absolute -top-1 -right-1 bg-gray-900 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-medium"
                   initial={{ scale: 0 }}
                   animate={{ scale: 1 }}
                   transition={{ type: 'spring', stiffness: 400, damping: 20 }}
                 >
-                  {wishlistCount}
+                  {computedWishlistCount}
                 </motion.span>
               )}
               <span className="text-xs text-gray-700">Yêu thích</span>
@@ -504,17 +516,17 @@ const Header: React.FC<HeaderProps> = ({
               className="relative p-2 hover:bg-gray-100 rounded-lg flex items-center gap-1"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.98 }}
-              onClick={onCartClick}
+              onClick={handleCartClick}
             >
               <ShoppingCart size={20} className="text-gray-700" />
-              {cartCount > 0 && (
+              {computedCartCount > 0 && (
                 <motion.span
                   className="absolute -top-1 -right-1 bg-gray-900 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-medium"
                   initial={{ scale: 0 }}
                   animate={{ scale: 1 }}
                   transition={{ type: 'spring', stiffness: 400, damping: 20 }}
                 >
-                  {cartCount}
+                  {computedCartCount}
                 </motion.span>
               )}
               <span className="text-xs text-gray-700">Giỏ hàng</span>
@@ -538,7 +550,7 @@ const Header: React.FC<HeaderProps> = ({
               >
                 <User size={20} className="text-gray-700" />
                 <span className="text-xs text-gray-700">
-                  {isUserLoggedIn ? 'Tài khoản' : 'Đăng nhập'}
+                  {isLoggedIn ? 'Tài khoản' : 'Đăng nhập'}
                 </span>
                 <motion.div
                   animate={{ rotate: isUserMenuOpen ? 180 : 0 }}
@@ -558,7 +570,7 @@ const Header: React.FC<HeaderProps> = ({
                     animate="visible"
                     exit="exit"
                   >
-                    {!isUserLoggedIn ? (
+                    {!isLoggedIn ? (
                       <>
                         <motion.a
                           href="/login"
@@ -914,17 +926,17 @@ const Header: React.FC<HeaderProps> = ({
             className="flex-1 relative flex flex-col items-center gap-1 py-2 px-2 hover:bg-gray-50 rounded-lg"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.98 }}
-            onClick={onWishlistClick}
+            onClick={handleWishlistClick}
           >
             <Heart size={20} className="text-gray-700" />
-            {wishlistCount > 0 && (
+            {computedWishlistCount > 0 && (
               <motion.span
                 className="absolute top-0 right-1 bg-gray-900 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center font-medium"
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
                 transition={{ type: 'spring', stiffness: 400, damping: 20 }}
               >
-                {wishlistCount}
+                {computedWishlistCount}
               </motion.span>
             )}
             <span className="text-xs text-gray-700">Yêu thích</span>
@@ -935,17 +947,17 @@ const Header: React.FC<HeaderProps> = ({
             className="flex-1 relative flex flex-col items-center gap-1 py-2 px-2 hover:bg-gray-50 rounded-lg"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.98 }}
-            onClick={onCartClick}
+            onClick={handleCartClick}
           >
             <ShoppingCart size={20} className="text-gray-700" />
-            {cartCount > 0 && (
+            {computedCartCount > 0 && (
               <motion.span
                 className="absolute top-0 right-1 bg-gray-900 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center font-medium"
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
                 transition={{ type: 'spring', stiffness: 400, damping: 20 }}
               >
-                {cartCount}
+                {computedCartCount}
               </motion.span>
             )}
             <span className="text-xs text-gray-700">Giỏ hàng</span>
@@ -963,7 +975,7 @@ const Header: React.FC<HeaderProps> = ({
               }}
             >
               <User size={20} className="text-gray-700" />
-              <span className="text-xs text-gray-700">{isUserLoggedIn ? "Tài khoản" : "Đăng nhập"}</span>
+              <span className="text-xs text-gray-700">{isLoggedIn ? "Tài khoản" : "Đăng nhập"}</span>
             </motion.button>
 
             {/* User Menu Dropdown */}
@@ -976,7 +988,7 @@ const Header: React.FC<HeaderProps> = ({
                   animate="visible"
                   exit="exit"
                 >
-                  {!isUserLoggedIn ? (
+                  {!isLoggedIn ? (
                     <>
                       <motion.a
                         href="/login"

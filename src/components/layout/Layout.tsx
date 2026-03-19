@@ -1,6 +1,8 @@
 import React from 'react';
 import Header from './Header/Header';
 import Footer from './Footer/Footer';
+import FloatingActionButton from '../common/FAB/FloatingActionButton';
+import ScrollToTopButton from '../common/FAB/ScrollToTopButton';
 import type { Category } from '../../types/product';
 
 interface LayoutProps {
@@ -8,10 +10,7 @@ interface LayoutProps {
   categories?: Category[];
   isLoadingCategories?: boolean;
   cartCount?: number;
-  wishlistCount?: number;
-  isUserLoggedIn?: boolean;
   onCartClick?: () => void;
-  onWishlistClick?: () => void;
   onProfileMenuClick?: () => void;
   currentCategoryPage?: number;
   itemsPerPage?: number;
@@ -24,10 +23,7 @@ const Layout: React.FC<LayoutProps> = ({
   categories = [],
   isLoadingCategories = false,
   cartCount = 0,
-  wishlistCount = 0,
-  isUserLoggedIn = false,
   onCartClick,
-  onWishlistClick,
   onProfileMenuClick,
   currentCategoryPage = 1,
   itemsPerPage = 6,
@@ -40,10 +36,7 @@ const Layout: React.FC<LayoutProps> = ({
         categories={categories}
         isLoadingCategories={isLoadingCategories}
         cartCount={cartCount}
-        wishlistCount={wishlistCount}
-        isUserLoggedIn={isUserLoggedIn}
         onCartClick={onCartClick}
-        onWishlistClick={onWishlistClick}
         onProfileMenuClick={onProfileMenuClick}
         currentCategoryPage={currentCategoryPage}
         itemsPerPage={itemsPerPage}
@@ -54,6 +47,8 @@ const Layout: React.FC<LayoutProps> = ({
         {children}
       </main>
       <Footer />
+      <FloatingActionButton />
+      <ScrollToTopButton />
     </div>
   );
 };

@@ -35,8 +35,6 @@ const NotFound: React.FC = () => {
       categories={categories}
       isLoadingCategories={isLoadingCategories}
       cartCount={0}
-      wishlistCount={0}
-      isUserLoggedIn={isLoggedIn}
       currentCategoryPage={pagination.page}
       itemsPerPage={pagination.limit}
       totalCategoryPages={pagination.totalPages}

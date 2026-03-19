@@ -6,7 +6,6 @@ import { useCategories } from '../../hooks/useProduct';
 import Input from '../../components/common/Input/Input';
 import Button from '../../components/common/Button/Button';
 import { Mail, Phone, MapPin } from 'lucide-react';
-import { useIsLoggedIn } from '../../hooks/useAuth';
 import { useScrollReset } from '../../hooks/useScrollReset';
 
 const ContactPage: React.FC = () => {
@@ -21,10 +20,11 @@ const ContactPage: React.FC = () => {
     setPage: setCategoryPage,
   } = useCategories({ page: 1, limit: 6 });
 
-  const { isLoggedIn } = useIsLoggedIn();
+  // Auth check
+  // Support page content
 
   // Mock state for header
-  const [wishlistCount] = useState(5);
+
   const cartCount = 3;
   
 
@@ -32,9 +32,7 @@ const ContactPage: React.FC = () => {
     console.log('Cart clicked');
   };
 
-  const handleWishlistClick = () => {
-    console.log('Wishlist clicked');
-  };
+
 
   const handleCategoryPageChange = (page: number) => {
     setCategoryPage(page);
@@ -84,10 +82,7 @@ const ContactPage: React.FC = () => {
       categories={categories}
       isLoadingCategories={isLoadingCategories}
       cartCount={cartCount}
-      wishlistCount={wishlistCount}
-      isUserLoggedIn={isLoggedIn}
       onCartClick={handleCartClick}
-      onWishlistClick={handleWishlistClick}
       currentCategoryPage={categoryPagination.page}
       itemsPerPage={categoryPagination.limit}
       totalCategoryPages={categoryPagination.totalPages || 1}

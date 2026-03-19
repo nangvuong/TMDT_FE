@@ -9,7 +9,6 @@ interface ProductListProps {
   isEmpty?: boolean;
   onProductClick?: (productId: string) => void;
   onAddToCart?: (productId: string) => void;
-  onAddToWishlist?: (productId: string) => void;
 }
 
 const ProductList: React.FC<ProductListProps> = ({
@@ -18,7 +17,6 @@ const ProductList: React.FC<ProductListProps> = ({
   isEmpty = false,
   onProductClick,
   onAddToCart,
-  onAddToWishlist,
 }) => {
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -102,7 +100,7 @@ const ProductList: React.FC<ProductListProps> = ({
   // Products grid
   return (
     <motion.div
-      className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6"
+      className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6"
       variants={containerVariants}
       initial="hidden"
       animate="visible"
@@ -121,7 +119,6 @@ const ProductList: React.FC<ProductListProps> = ({
             reviewCount={product.reviewCount}
             onClick={() => onProductClick?.(product.id)}
             onAddToCart={() => onAddToCart?.(product.id)}
-            onAddToWishlist={() => onAddToWishlist?.(product.id)}
           />
         </motion.div>
       ))}

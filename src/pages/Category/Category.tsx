@@ -42,9 +42,8 @@ const CategoryPage: React.FC = () => {
   const productsGridRef = useRef<HTMLDivElement>(null);
 
   // Mock state for header
-  const [wishlistCount] = useState(5);
+
   const cartCount = 3;
-  const isUserLoggedIn = false;
 
   // Get products from category response or empty array
   const allProducts = category?.products || [];
@@ -100,17 +99,11 @@ const CategoryPage: React.FC = () => {
     console.log('Added to cart:', productId);
   };
 
-  const handleAddToWishlist = (productId: string) => {
-    console.log('Added to wishlist:', productId);
-  };
-
   const handleCartClick = () => {
     console.log('Cart clicked');
   };
 
-  const handleWishlistClick = () => {
-    console.log('Wishlist clicked');
-  };
+
 
   const handleCategoryPageChange = (page: number) => {
     setCategoryPage(page);
@@ -139,21 +132,18 @@ const CategoryPage: React.FC = () => {
       categories={categories}
       isLoadingCategories={isLoadingCategories}
       cartCount={cartCount}
-      wishlistCount={wishlistCount}
-      isUserLoggedIn={isUserLoggedIn}
       onCartClick={handleCartClick}
-      onWishlistClick={handleWishlistClick}
       currentCategoryPage={categoryPagination.page}
       itemsPerPage={categoryPagination.limit}
       totalCategoryPages={categoryPagination.totalPages || 1}
       onCategoryPageChange={handleCategoryPageChange}
     >
-      <section className="w-full bg-gradient-to-b from-gray-50 to-white py-8 md:py-16">
-        <div className="container mx-auto max-w-7xl px-4 md:px-6">
+      <section className="w-full bg-gradient-to-b from-gray-50 to-white py-4 md:py-8 lg:py-16">
+        <div className="container mx-auto max-w-7xl px-3 sm:px-4 md:px-6">
           {/* Back Button */}
           <motion.button
             onClick={() => navigate(-1)}
-            className="inline-flex items-center gap-2 px-4 py-2 text-gray-700 hover:text-gray-900 rounded-lg hover:bg-gray-100 transition-all font-medium mb-8 group"
+            className="inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 text-sm sm:text-base text-gray-700 hover:text-gray-900 rounded-lg hover:bg-gray-100 transition-all font-medium mb-6 sm:mb-8 group"
             whileHover={{ x: -4 }}
             whileTap={{ scale: 0.95 }}
             initial={{ opacity: 0, x: -10 }}
@@ -165,31 +155,31 @@ const CategoryPage: React.FC = () => {
 
           {/* Header */}
           <motion.div
-            className="mb-12 md:mb-16"
+            className="mb-8 sm:mb-10 md:mb-12 lg:mb-16"
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
           >
             {isCategoryLoading ? (
               <div className="space-y-4">
-                <div className="h-12 bg-gray-200 rounded w-48 animate-pulse" />
-                <div className="h-20 bg-gray-200 rounded w-full animate-pulse" />
+                <div className="h-10 sm:h-12 bg-gray-200 rounded w-48 animate-pulse" />
+                <div className="h-16 sm:h-20 bg-gray-200 rounded w-full animate-pulse" />
               </div>
             ) : (
-              <div className="space-y-6">
+              <div className="space-y-4 sm:space-y-6">
                 {/* Category Header with Icon */}
-                <div className="flex items-start gap-4">
+                <div className="flex items-start gap-3 sm:gap-4">
                   <motion.div
-                    className="p-3 bg-gradient-to-br from-gray-900 to-gray-700 rounded-xl"
+                    className="p-3 bg-gradient-to-br from-gray-900 to-gray-700 rounded-xl flex-shrink-0"
                     initial={{ scale: 0 }}
                     animate={{ scale: 1 }}
                     transition={{ delay: 0.2, type: 'spring', stiffness: 200 }}
                   >
-                    <Filter className="w-6 h-6 text-white" />
+                    <Filter className="w-5 sm:w-6 h-5 sm:h-6 text-white" />
                   </motion.div>
                   <div className="flex-1">
                     <motion.h1
-                      className="text-4xl md:text-5xl font-bold text-gray-900 mb-2"
+                      className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-2"
                       initial={{ opacity: 0, x: -20 }}
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: 0.1 }}
@@ -208,7 +198,7 @@ const CategoryPage: React.FC = () => {
                 {/* Category Description */}
                 {category?.description && (
                   <motion.p
-                    className="text-gray-600 text-lg leading-relaxed max-w-3xl"
+                    className="text-gray-600 text-sm sm:text-base leading-relaxed max-w-3xl"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ delay: 0.2 }}
@@ -222,20 +212,20 @@ const CategoryPage: React.FC = () => {
 
           {/* Filter & Sort Controls */}
           <motion.div
-            className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-8"
+            className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4 mb-8"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.1 }}
           >
             {/* Mobile Filter Button */}
             <motion.button
-              className="md:hidden flex items-center gap-2 px-4 py-2 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+              className="md:hidden flex items-center gap-2 px-3 sm:px-4 py-2 sm:py-2.5 bg-gray-100 text-sm sm:text-base rounded-lg hover:bg-gray-200 transition-colors"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => setFilterOpen(!filterOpen)}
             >
               <Filter size={18} />
-              <span className="text-sm font-medium">Lọc & Sắp xếp</span>
+              <span className="font-medium">Lọc & Sắp xếp</span>
             </motion.button>
 
             {/* Desktop Sort Controls */}
@@ -249,7 +239,7 @@ const CategoryPage: React.FC = () => {
                 <motion.button
                   key={option.value}
                   onClick={() => handleSortChange(option.value)}
-                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                  className={`px-3 sm:px-4 py-2 sm:py-2.5 rounded-lg text-xs sm:text-sm font-medium transition-colors ${
                     sortOrder === option.value
                       ? 'bg-gray-900 text-white'
                       : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
@@ -265,29 +255,30 @@ const CategoryPage: React.FC = () => {
             {/* Pagination Controls */}
             {!isLoading && totalPages > 1 && (
               <motion.div
-                className="flex items-center gap-2"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
+                className="flex md:hidden items-center justify-center gap-2 mb-6"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3 }}
               >
                 <motion.button
                   onClick={handlePrevPage}
                   disabled={currentPage === 1}
-                  className="p-2 hover:bg-gray-100 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  className="p-2 hover:bg-gray-100 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed"
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                 >
                   <ChevronLeft size={20} />
                 </motion.button>
 
-                <div className="flex gap-1">
+                <div className="flex gap-1 flex-wrap justify-center max-w-xs">
                   {pageNumbers.map((page) => (
                     <motion.button
                       key={page}
                       onClick={() => setCurrentPage(page)}
-                      className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+                      className={`px-2 py-1 rounded text-xs font-medium transition-colors ${
                         currentPage === page
                           ? 'bg-gray-900 text-white'
-                          : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                          : 'bg-gray-100 text-gray-700'
                       }`}
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
@@ -300,7 +291,7 @@ const CategoryPage: React.FC = () => {
                 <motion.button
                   onClick={handleNextPage}
                   disabled={currentPage >= totalPages}
-                  className="p-2 hover:bg-gray-100 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  className="p-2 hover:bg-gray-100 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed"
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                 >
@@ -329,7 +320,7 @@ const CategoryPage: React.FC = () => {
                     handleSortChange(option.value);
                     setFilterOpen(false);
                   }}
-                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                  className={`px-3 sm:px-4 py-2 sm:py-2.5 rounded-lg text-xs sm:text-sm font-medium transition-colors ${
                     sortOrder === option.value
                       ? 'bg-gray-900 text-white'
                       : 'bg-gray-100 text-gray-700'
@@ -405,7 +396,6 @@ const CategoryPage: React.FC = () => {
                 products={paginatedProducts}
                 onProductClick={handleProductClick}
                 onAddToCart={handleAddToCart}
-                onAddToWishlist={handleAddToWishlist}
               />
             )}
           </motion.div>

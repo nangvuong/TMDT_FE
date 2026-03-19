@@ -53,6 +53,13 @@ export const UPLOAD_ENDPOINTS = {
   DELETE: '/upload/:publicId',      // DELETE - 200 (Authenticated)
 } as const;
 
+// ============= WISHLIST Module (Require JWT 🔒) =============
+export const WISHLIST_ENDPOINTS = {
+  GET: '/wishlist',                 // GET - 200 (Authenticated, with pagination)
+  ADD: '/wishlist/:productId',      // POST - 201 (Authenticated)
+  REMOVE: '/wishlist/:productId',   // DELETE - 200 (Authenticated)
+} as const;
+
 // ============= HTTP Status Codes =============
 export const HTTP_STATUS = {
   OK: 200,
@@ -132,4 +139,5 @@ export const API_ENDPOINTS = {
   ...ORDERS_ENDPOINTS,
   ...PROFILE_ENDPOINTS,
   ...UPLOAD_ENDPOINTS,
+  ...WISHLIST_ENDPOINTS,
 } as const;

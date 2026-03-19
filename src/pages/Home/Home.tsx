@@ -1,11 +1,10 @@
-import React, { useState, useRef } from 'react';
+import React, { useRef } from 'react';
 import Layout from '../../components/layout/Layout'
 import Hero from './components/Hero';
 import AboutPreview from './components/AboutPreview';
 import Category from './components/Category';
 import Products from './components/Products';
 import WhyChooseUs from './components/WhyChooseUs';
-import { useIsLoggedIn } from '../../hooks/useAuth'
 import { usePageTitle } from '../../hooks/usePageTitle';
 import { useCategories } from '../../hooks/useProduct';
 
@@ -16,7 +15,6 @@ const Home: React.FC = () => {
   // Update page title
   usePageTitle('Home | Fitness Mart');
 
-  const { isLoggedIn } = useIsLoggedIn();
 
   // Reset scroll position on page load
   React.useEffect(() => {
@@ -36,16 +34,10 @@ const Home: React.FC = () => {
   } = useCategories({ page: 1, limit: 6 });
 
   // Mock state for header
-  const [wishlistCount] = useState(5);
   const cartCount = 3;
-  const isUserLoggedIn = isLoggedIn;
 
   const handleCartClick = () => {
     console.log('Cart clicked');
-  };
-
-  const handleWishlistClick = () => {
-    console.log('Wishlist clicked');
   };
 
 
@@ -94,10 +86,7 @@ const Home: React.FC = () => {
       categories={categories}
       isLoadingCategories={isLoadingCategories}
       cartCount={cartCount}
-      wishlistCount={wishlistCount}
-      isUserLoggedIn={isUserLoggedIn}
       onCartClick={handleCartClick}
-      onWishlistClick={handleWishlistClick}
       currentCategoryPage={pagination.page}
       itemsPerPage={pagination.limit}
       totalCategoryPages={pagination.totalPages}

@@ -59,9 +59,8 @@ const ProductPage: React.FC = () => {
   const [selectedRating, setSelectedRating] = useState<number>(0);
 
   // Mock state for header
-  const [wishlistCount] = useState(5);
+
   const cartCount = 3;
-  const isUserLoggedIn = false;
 
   // Pagination logic
   const totalPages = Math.ceil(products.length / pageSize);
@@ -130,17 +129,12 @@ const ProductPage: React.FC = () => {
     console.log('Added to cart:', productId);
   };
 
-  const handleAddToWishlist = (productId: string) => {
-    console.log('Added to wishlist:', productId);
-  };
 
   const handleCartClick = () => {
     console.log('Cart clicked');
   };
 
-  const handleWishlistClick = () => {
-    console.log('Wishlist clicked');
-  };
+
 
   const handleCategoryPageChange = (page: number) => {
     setCategoryPage(page);
@@ -169,21 +163,18 @@ const ProductPage: React.FC = () => {
       categories={categories}
       isLoadingCategories={isLoadingCategories}
       cartCount={cartCount}
-      wishlistCount={wishlistCount}
-      isUserLoggedIn={isUserLoggedIn}
       onCartClick={handleCartClick}
-      onWishlistClick={handleWishlistClick}
       currentCategoryPage={categoryPagination.page}
       itemsPerPage={categoryPagination.limit}
       totalCategoryPages={categoryPagination.totalPages || 1}
       onCategoryPageChange={handleCategoryPageChange}
     >
-      <section className="w-full bg-gradient-to-b from-gray-50 to-white py-8 md:py-16">
-        <div className="container mx-auto max-w-7xl px-4 md:px-6">
+      <section className="w-full bg-gradient-to-b from-gray-50 to-white py-4 md:py-8 lg:py-16">
+        <div className="container mx-auto max-w-7xl px-3 sm:px-4 md:px-6">
           {/* Back Button */}
           <motion.button
             onClick={() => navigate(-1)}
-            className="inline-flex items-center gap-2 px-4 py-2 text-gray-700 hover:text-gray-900 rounded-lg hover:bg-gray-100 transition-all font-medium mb-8 group"
+            className="inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 text-sm sm:text-base text-gray-700 hover:text-gray-900 rounded-lg hover:bg-gray-100 transition-all font-medium mb-6 sm:mb-8 group"
             whileHover={{ x: -4 }}
             whileTap={{ scale: 0.95 }}
             initial={{ opacity: 0, x: -10 }}
@@ -195,26 +186,26 @@ const ProductPage: React.FC = () => {
 
           {/* Header */}
           <motion.div
-            className="mb-12 md:mb-16"
+            className="mb-8 sm:mb-10 md:mb-12 lg:mb-16"
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
           >
             {initialSearch ? (
-              <div className="space-y-6">
+              <div className="space-y-4 sm:space-y-6">
                 {/* Search Header with Icon */}
-                <div className="flex items-start gap-4">
+                <div className="flex items-start gap-3 sm:gap-4">
                   <motion.div
-                    className="p-3 bg-gray-900 rounded-xl"
+                    className="p-3 bg-gray-900 rounded-xl flex-shrink-0"
                     initial={{ scale: 0 }}
                     animate={{ scale: 1 }}
                     transition={{ delay: 0.2, type: 'spring', stiffness: 200 }}
                   >
-                    <Search className="w-6 h-6 text-white" />
+                    <Search className="w-5 sm:w-6 h-5 sm:h-6 text-white" />
                   </motion.div>
                   <div className="flex-1">
                     <motion.h1
-                      className="text-4xl md:text-4xl font-bold text-gray-900 mb-2"
+                      className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-2"
                       initial={{ opacity: 0, x: -20 }}
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: 0.1 }}
@@ -231,14 +222,14 @@ const ProductPage: React.FC = () => {
                 </div>
 
                 {/* Search Details and Clear Button */}
-                <div className="flex items-center justify-between gap-6">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-6">
                   <motion.div
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.2 }}
                   >
-                    <p className="text-gray-600 text-sm font-medium mb-1">Từ khóa</p>
-                    <p className="text-gray-900 text-xl font-bold">"{initialSearch}"</p>
+                    <p className="text-gray-600 text-xs sm:text-sm font-medium mb-1">Từ khóa</p>
+                    <p className="text-gray-900 text-base sm:text-lg md:text-xl font-bold break-words">"{initialSearch}"</p>
                   </motion.div>
 
                   {/* Clear Search Button */}
@@ -248,7 +239,7 @@ const ProductPage: React.FC = () => {
                       setCurrentPage(1);
                       navigate('/products');
                     }}
-                    className="inline-flex items-center gap-2 px-5 py-2.5 bg-gray-900 text-white rounded-lg hover:bg-black transition-all font-medium group whitespace-nowrap h-fit"
+                    className="inline-flex items-center gap-2 px-4 sm:px-5 py-2 sm:py-2.5 bg-gray-900 text-white rounded-lg hover:bg-black transition-all font-medium text-sm sm:text-base group h-fit"
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                     initial={{ opacity: 0, x: 10 }}
@@ -261,20 +252,20 @@ const ProductPage: React.FC = () => {
                 </div>
               </div>
             ) : (
-              <div className="space-y-6">
+              <div className="space-y-4 sm:space-y-6">
                 {/* All Products Header */}
-                <div className="flex items-start gap-4">
+                <div className="flex items-start gap-3 sm:gap-4">
                   <motion.div
-                    className="p-3 bg-gradient-to-br from-gray-900 to-gray-700 rounded-xl"
+                    className="p-3 bg-gradient-to-br from-gray-900 to-gray-700 rounded-xl flex-shrink-0"
                     initial={{ scale: 0 }}
                     animate={{ scale: 1 }}
                     transition={{ delay: 0.2, type: 'spring', stiffness: 200 }}
                   >
-                    <Filter className="w-6 h-6 text-white" />
+                    <Filter className="w-5 sm:w-6 h-5 sm:h-6 text-white" />
                   </motion.div>
                   <div className="flex-1">
                     <motion.h1
-                      className="text-4xl md:text-5xl font-bold text-gray-900 mb-2"
+                      className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-2"
                       initial={{ opacity: 0, x: -20 }}
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: 0.1 }}
@@ -290,7 +281,7 @@ const ProductPage: React.FC = () => {
                   </div>
                 </div>
                 <motion.p
-                  className="text-gray-600 text-lg leading-relaxed max-w-3xl"
+                  className="text-gray-600 text-sm sm:text-base leading-relaxed max-w-3xl"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.2 }}
@@ -302,7 +293,7 @@ const ProductPage: React.FC = () => {
           </motion.div>
 
           {/* Main Content */}
-          <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 md:gap-8">
+          <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 sm:gap-6 md:gap-8">
             {/* Sidebar Filters - Desktop Only */}
             <motion.div
               className="hidden lg:block lg:col-span-1"
@@ -623,7 +614,6 @@ const ProductPage: React.FC = () => {
                     products={paginatedProducts}
                     onProductClick={handleProductClick}
                     onAddToCart={handleAddToCart}
-                    onAddToWishlist={handleAddToWishlist}
                   />
                 ) : null}
               </motion.div>

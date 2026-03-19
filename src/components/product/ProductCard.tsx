@@ -1,8 +1,10 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ShoppingCart, Heart, Star } from 'lucide-react';
 import Button from '../common/Button/Button';
+import { useWishlist } from '../../hooks/useWishlist';
+import { useIsLoggedIn } from '../../hooks/useAuth';
 import { formatVND } from '../../utils/formatPrice';
 
 interface ProductCardProps {
@@ -17,7 +19,6 @@ interface ProductCardProps {
   reviewCount?: number;
   onClick?: () => void;
   onAddToCart?: () => void;
-  onAddToWishlist?: () => void;
 }
 
 const ProductCard: React.FC<ProductCardProps> = ({
@@ -32,15 +33,44 @@ const ProductCard: React.FC<ProductCardProps> = ({
   reviewCount = 0,
   onClick,
   onAddToCart,
-  onAddToWishlist,
 }) => {
   const navigate = useNavigate();
+  const { isLoggedIn } = useIsLoggedIn();
+  const { items: wishlistItems, toggleWishlist, isLoading: isTogglingWishlist } = useWishlist();
+  const [isInWishlist, setIsInWishlist] = useState(false);
+  const [isAddingToWishlist, setIsAddingToWishlist] = useState(false);
+
   const isInStock = stock > 0;
   const rating = typeof averageRating === 'string' ? parseFloat(averageRating) : (averageRating || 0);
+
+  // Check if product is in wishlist
+  useEffect(() => {
+    const productInWishlist = wishlistItems.some((item) => item.product.id === id);
+    setIsInWishlist(productInWishlist);
+  }, [wishlistItems, id]);
 
   const handleProductClick = () => {
     navigate(`/products/${id}`);
     onClick?.();
+  };
+
+  const handleWishlistClick = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+
+    // Check if user is logged in
+    if (!isLoggedIn) {
+      navigate('/login', { state: { returnTo: window.location.pathname } });
+      return;
+    }
+
+    try {
+      setIsAddingToWishlist(true);
+      await toggleWishlist(id);
+    } catch (err) {
+      console.error('Failed to toggle wishlist:', err);
+    } finally {
+      setIsAddingToWishlist(false);
+    }
   };
   const tagColors: Record<string, string> = {
     'bestseller': 'bg-red-600',
@@ -133,10 +163,9 @@ const ProductCard: React.FC<ProductCardProps> = ({
           className="absolute top-3 right-3 p-2 bg-white rounded-full shadow-md hover:bg-gray-100 transition-colors z-10"
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.95 }}
-          onClick={(e) => {
-            e.stopPropagation();
-            onAddToWishlist?.();
-          }}
+          onClick={handleWishlistClick}
+          disabled={isAddingToWishlist || isTogglingWishlist}
+          title={isLoggedIn ? (isInWishlist ? 'Xóa khỏi yêu thích' : 'Thêm vào yêu thích') : 'Đăng nhập để thêm vào yêu thích'}
         >
           <Heart size={18} className="text-red-500" />
         </motion.button>

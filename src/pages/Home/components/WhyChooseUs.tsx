@@ -68,30 +68,30 @@ const WhyChooseUs: React.FC<WhyChooseUsProps> = () => {
   };
 
   return (
-    <section className="w-full bg-black py-16 md:py-24">
+    <section className="w-full bg-black py-8 md:py-24">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
-          className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center"
+          className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-12 items-center"
           variants={containerVariants}
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, amount: 0.3 }}
         >
           {/* Left: Features */}
-          <motion.div className="space-y-6">
+          <motion.div className="space-y-4 md:space-y-6">
             {/* Heading */}
             <motion.div variants={itemVariants}>
-              <h2 className="text-4xl md:text-5xl font-bold text-white mb-4 leading-tight">
+              <h2 className="text-3xl md:text-5xl font-bold text-white mb-2 md:mb-4 leading-tight">
                 Tại Sao Chọn Chúng Tôi?
               </h2>
-              <p className="text-base md:text-lg text-gray-400">
+              <p className="text-sm md:text-lg text-gray-400">
                 Chúng tôi cam kết mang đến trải nghiệm mua sắm tốt nhất cho bạn
               </p>
             </motion.div>
 
             {/* Features List */}
             <motion.div
-              className="space-y-4"
+              className="space-y-3 md:space-y-4"
               variants={containerVariants}
               initial="hidden"
               whileInView="visible"
@@ -100,20 +100,20 @@ const WhyChooseUs: React.FC<WhyChooseUsProps> = () => {
               {features.map((feature, index) => (
                 <motion.div
                   key={index}
-                  className="flex gap-4 items-start"
+                  className="flex gap-3 md:gap-4 items-start"
                   variants={itemVariants}
                 >
                   <motion.div
                     className="flex-shrink-0 mt-1"
                     whileHover={{ scale: 1.2 }}
                   >
-                    <CheckCircle2 size={24} className="text-emerald-600" />
+                    <CheckCircle2 size={20} className="text-emerald-600 md:w-6 md:h-6" />
                   </motion.div>
                   <div className="flex-1">
-                    <h3 className="text-lg font-semibold text-white mb-1">
+                    <h3 className="text-base md:text-lg font-semibold text-white mb-1">
                       {feature.title}
                     </h3>
-                    <p className="text-sm md:text-base text-gray-400">
+                    <p className="text-xs md:text-base text-gray-400">
                       {feature.description}
                     </p>
                   </div>

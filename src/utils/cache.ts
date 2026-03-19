@@ -10,6 +10,7 @@ interface CacheEntry<T> {
 
 class CacheManager {
   private cache: Map<string, CacheEntry<any>> = new Map();
+  private listeners: Map<string, Set<(value: any) => void>> = new Map();
   private readonly DEFAULT_TTL = 5 * 60 * 1000; // 5 minutes default
 
   /**
@@ -31,6 +32,39 @@ class CacheManager {
     } catch (e) {
       // localStorage might be unavailable in some scenarios
       console.warn('Failed to persist cache to localStorage:', e);
+    }
+    // Notify all listeners for this key
+    this.notifyListeners(key, data);
+  }
+
+  /**
+   * Subscribe to cache changes
+   */
+  subscribe(key: string, callback: (value: any) => void): () => void {
+    if (!this.listeners.has(key)) {
+      this.listeners.set(key, new Set());
+    }
+    this.listeners.get(key)!.add(callback);
+
+    // Return unsubscribe function
+    return () => {
+      this.listeners.get(key)?.delete(callback);
+    };
+  }
+
+  /**
+   * Notify all listeners of cache change
+   */
+  private notifyListeners(key: string, value: any): void {
+    const callbacks = this.listeners.get(key);
+    if (callbacks) {
+      callbacks.forEach(callback => {
+        try {
+          callback(value);
+        } catch (e) {
+          console.error('Error in cache listener callback:', e);
+        }
+      });
     }
   }
 

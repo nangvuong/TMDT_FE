@@ -1,9 +1,8 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { motion } from 'framer-motion';
 import Layout from '../../components/layout/Layout';
 import { usePageTitle } from '../../hooks/usePageTitle';
 import { useCategories } from '../../hooks/useProduct';
-import { useIsLoggedIn } from '../../hooks/useAuth';
 import { useScrollReset } from '../../hooks/useScrollReset';
 import { MapPin, DollarSign, ArrowRight } from 'lucide-react';
 
@@ -20,17 +19,14 @@ const CareersPage: React.FC = () => {
   } = useCategories({ page: 1, limit: 6 });
 
   // Mock state for header
-  const [wishlistCount] = useState(5);
+
   const cartCount = 3;
-  const { isLoggedIn } = useIsLoggedIn();
 
   const handleCartClick = () => {
     console.log('Cart clicked');
   };
 
-  const handleWishlistClick = () => {
-    console.log('Wishlist clicked');
-  };
+
 
   const handleCategoryPageChange = (page: number) => {
     setCategoryPage(page);
@@ -109,10 +105,7 @@ const CareersPage: React.FC = () => {
       categories={categories}
       isLoadingCategories={isLoadingCategories}
       cartCount={cartCount}
-      wishlistCount={wishlistCount}
-      isUserLoggedIn={isLoggedIn}
       onCartClick={handleCartClick}
-      onWishlistClick={handleWishlistClick}
       currentCategoryPage={categoryPagination.page}
       itemsPerPage={categoryPagination.limit}
       totalCategoryPages={categoryPagination.totalPages || 1}

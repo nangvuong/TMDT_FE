@@ -80,11 +80,6 @@ const Products: React.FC = () => {
     // TODO: Implement add to cart functionality
   };
 
-  const handleAddToWishlist = (productId: string) => {
-    console.log('Added to wishlist:', productId);
-    // TODO: Implement add to wishlist functionality
-  };
-
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -323,7 +318,6 @@ const Products: React.FC = () => {
               isEmpty={products.length === 0}
               onProductClick={handleProductClick}
               onAddToCart={handleAddToCart}
-              onAddToWishlist={handleAddToWishlist}
             />
           )}
         </motion.div>

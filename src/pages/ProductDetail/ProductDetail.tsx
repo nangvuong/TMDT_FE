@@ -9,7 +9,6 @@ import ProductSkeleton from '../../components/loading/ProductSkeleton';
 import { useCategories } from '../../hooks/useProduct';
 import { usePageTitle } from '../../hooks/usePageTitle';
 import { useScrollReset } from '../../hooks/useScrollReset';
-import { useIsLoggedIn } from '../../hooks/useAuth';
 import productService from '../../services/productService';
 import type { Product } from '../../types/product';
 
@@ -36,10 +35,9 @@ const ProductDetail: React.FC = () => {
   } = useCategories({ page: 1, limit: 6 });
 
   // Get authentication status
-  const { isLoggedIn } = useIsLoggedIn();
 
   // Mock state for header
-  const [wishlistCount] = useState(5);
+
   const cartCount = 3;
 
   // Fetch product details
@@ -78,18 +76,11 @@ const ProductDetail: React.FC = () => {
     // TODO: Implement buy now logic
   };
 
-  const handleAddToWishlist = (id: string) => {
-    console.log(`Added product ${id} to wishlist`);
-    // TODO: Implement wishlist logic
-  };
-
   const handleCartClick = () => {
     console.log('Cart clicked');
   };
 
-  const handleWishlistClick = () => {
-    console.log('Wishlist clicked');
-  };
+
 
   const handleCategoryPageChange = (page: number) => {
     setCategoryPage(page);
@@ -101,26 +92,23 @@ const ProductDetail: React.FC = () => {
         categories={categories}
         isLoadingCategories={isLoadingCategories}
         cartCount={cartCount}
-        wishlistCount={wishlistCount}
-        isUserLoggedIn={isLoggedIn}
         onCartClick={handleCartClick}
-        onWishlistClick={handleWishlistClick}
         currentCategoryPage={categoryPagination.page}
         itemsPerPage={categoryPagination.limit}
         totalCategoryPages={categoryPagination.totalPages || 1}
         onCategoryPageChange={handleCategoryPageChange}
       >
-        <section className="w-full bg-gradient-to-b from-gray-50 to-white py-8 md:py-16">
-          <div className="container mx-auto max-w-7xl px-4 md:px-6">
+        <section className="w-full bg-gradient-to-b from-gray-50 to-white py-4 md:py-8 lg:py-16">
+          <div className="container mx-auto max-w-7xl px-3 sm:px-4 md:px-6">
             <button
               onClick={() => navigate(-1)}
-              className="inline-flex items-center gap-2 px-4 py-2 text-gray-700 hover:text-gray-900 rounded-lg hover:bg-gray-100 transition-all font-medium mb-8"
+              className="inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 text-gray-700 hover:text-gray-900 rounded-lg hover:bg-gray-100 transition-all font-medium mb-4 sm:mb-6 md:mb-8 text-sm sm:text-base"
             >
               <ArrowLeft className="w-4 h-4" />
               Quay lại
             </button>
-            <div className="text-center py-12">
-              <p className="text-xl text-gray-600">{error}</p>
+            <div className="text-center py-8 sm:py-12">
+              <p className="text-base sm:text-lg text-gray-600">{error}</p>
             </div>
           </div>
         </section>
@@ -133,21 +121,18 @@ const ProductDetail: React.FC = () => {
       categories={categories}
       isLoadingCategories={isLoadingCategories}
       cartCount={cartCount}
-      wishlistCount={wishlistCount}
-      isUserLoggedIn={isLoggedIn}
       onCartClick={handleCartClick}
-      onWishlistClick={handleWishlistClick}
       currentCategoryPage={categoryPagination.page}
       itemsPerPage={categoryPagination.limit}
       totalCategoryPages={categoryPagination.totalPages || 1}
       onCategoryPageChange={handleCategoryPageChange}
     >
-      <section className="w-full bg-gradient-to-b from-gray-50 to-white py-8 md:py-16">
-        <div className="container mx-auto max-w-7xl px-4 md:px-6">
+      <section className="w-full bg-gradient-to-b from-gray-50 to-white py-4 md:py-8 lg:py-16">
+        <div className="container mx-auto max-w-7xl px-3 sm:px-4 md:px-6">
           {/* Back Button */}
           <motion.button
             onClick={() => navigate(-1)}
-            className="inline-flex items-center gap-2 px-4 py-2 text-gray-700 hover:text-gray-900 rounded-lg hover:bg-gray-100 transition-all font-medium mb-8 group"
+            className="inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 text-gray-700 hover:text-gray-900 rounded-lg hover:bg-gray-100 transition-all font-medium mb-4 sm:mb-6 md:mb-8 group text-sm sm:text-base"
             whileHover={{ x: -4 }}
             whileTap={{ scale: 0.95 }}
             initial={{ opacity: 0, x: -10 }}
@@ -158,16 +143,16 @@ const ProductDetail: React.FC = () => {
           </motion.button>
 
           {/* Product Detail Grid */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 md:gap-8 lg:gap-12">
             {/* Product Images */}
             <motion.div
-              className="space-y-4"
+              className="space-y-3 sm:space-y-4"
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.5 }}
             >
               {isLoading ? (
-                <div className="h-96 md:h-[500px] bg-gray-200 rounded-lg animate-pulse" />
+                <div className="h-64 sm:h-80 md:h-96 lg:h-[500px] bg-gray-200 rounded-lg animate-pulse" />
               ) : product?.images && product.images.length > 0 ? (
                 <motion.img
                   src={product.images[0]}
@@ -177,8 +162,8 @@ const ProductDetail: React.FC = () => {
                   animate={{ opacity: 1 }}
                 />
               ) : (
-                <div className="h-96 md:h-[500px] bg-gray-200 rounded-lg flex items-center justify-center">
-                  <span className="text-gray-500">No image available</span>
+                <div className="h-64 sm:h-80 md:h-96 lg:h-[500px] bg-gray-200 rounded-lg flex items-center justify-center">
+                  <span className="text-gray-500 text-sm sm:text-base">No image available</span>
                 </div>
               )}
               {/* Thumbnail Images */}
@@ -189,7 +174,7 @@ const ProductDetail: React.FC = () => {
                       key={index}
                       src={image}
                       alt={`${product.name} ${index + 1}`}
-                      className="w-full h-20 rounded-lg object-cover cursor-pointer hover:opacity-80 transition-opacity"
+                      className="w-full h-16 sm:h-20 rounded-lg object-cover cursor-pointer hover:opacity-80 transition-opacity"
                       whileHover={{ scale: 1.05 }}
                     />
                   ))}
@@ -210,18 +195,17 @@ const ProductDetail: React.FC = () => {
                   product={product}
                   onAddToCart={handleAddToCart}
                   onBuyNow={handleBuyNow}
-                  onAddToWishlist={handleAddToWishlist}
                 />
               ) : null}
             </motion.div>
           </div>
 
           {/* Product Tabs */}
-          <div className="mt-12 pt-8 border-t border-gray-200">
+          <div className="mt-8 sm:mt-10 md:mt-12 pt-6 sm:pt-8 border-t border-gray-200">
             {isLoading ? (
               <div className="h-96 bg-gray-200 rounded-lg animate-pulse" />
             ) : product ? (
-              <ProductTabs product={product} isUserLoggedIn={isLoggedIn} />
+              <ProductTabs product={product} />
             ) : null}
           </div>
         </div>

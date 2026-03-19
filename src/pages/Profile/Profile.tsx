@@ -35,7 +35,7 @@ const Profile: React.FC = () => {
   } = useCategories({ page: 1, limit: 6 });
 
   // Mock state for header
-  const [wishlistCount] = useState(5);
+
   const cartCount = 3;
 
   // Form state
@@ -144,8 +144,6 @@ const Profile: React.FC = () => {
       categories={categories}
       isLoadingCategories={isLoadingCategories}
       cartCount={cartCount}
-      wishlistCount={wishlistCount}
-      isUserLoggedIn={isLoggedIn}
       currentCategoryPage={pagination.page}
       itemsPerPage={pagination.limit}
       totalCategoryPages={pagination.totalPages}

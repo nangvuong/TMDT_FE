@@ -1,5 +1,6 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { CountersProvider } from '../contexts/CountersContext';
 import Home from '../pages/Home/Home';
 import Login from '../pages/Auth/Login';
 import Register from '../pages/Auth/Register';
@@ -29,13 +30,17 @@ import BlogPage from '../pages/Company/Blog';
 import CareersPage from '../pages/Company/Careers';
 import PrivacyPage from '../pages/Company/Privacy';
 
+// Wishlist Page
+import WishlistPage from '../pages/Wishlist/Wishlist';
+
 /**
  * Router Configuration - Main routing setup for the application
  */
 const Router: React.FC = () => {
   return (
-    <BrowserRouter>
-      <Routes>
+    <CountersProvider>
+      <BrowserRouter>
+        <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
@@ -78,10 +83,21 @@ const Router: React.FC = () => {
             </ProtectedRoute>
           } 
         />
+
+        <Route 
+          path="/wishlist" 
+          element={
+            <ProtectedRoute>
+              <WishlistPage />
+            </ProtectedRoute>
+          } 
+        />
+        
         {/* 404 Not Found - Catch all undefined routes */}
         <Route path="*" element={<NotFound />} />
       </Routes>
-    </BrowserRouter>
+      </BrowserRouter>
+    </CountersProvider>
   );
 };
 
