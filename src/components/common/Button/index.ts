@@ -9,6 +9,4 @@ export type { default as ButtonGroupType } from './ButtonGroup';
 
 export { default as LinkButton } from './LinkButton';
 export type { default as LinkButtonType } from './LinkButton';
-
-export { default as ButtonDemo } from './ButtonDemo';
 export { default as IconsDemo } from './IconsDemo';

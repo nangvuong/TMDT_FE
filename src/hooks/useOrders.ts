@@ -2,13 +2,6 @@ import { useState, useCallback } from 'react';
 import type { Order } from '../types/product';
 import orderService from '../services/orderService';
 
-interface OrdersResponse {
-  data: Order[];
-  total: number;
-  page: number;
-  limit: number;
-}
-
 export const useOrders = () => {
   const [orders, setOrders] = useState<Order[]>([]);
   const [total, setTotal] = useState(0);
@@ -22,8 +15,8 @@ export const useOrders = () => {
     try {
       const response = await orderService.getMyOrders({ page, limit });
       setOrders(response.data);
-      setTotal(response.total);
-      setCurrentPage(response.page);
+      setTotal(response.meta.totalItems);
+      setCurrentPage(response.meta.page);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to fetch orders');
     } finally {

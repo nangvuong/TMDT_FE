@@ -34,6 +34,10 @@ import PrivacyPage from '../pages/Company/Privacy';
 // Wishlist Page
 import WishlistPage from '../pages/Wishlist/Wishlist';
 
+// Order/History Page
+import HistoryPage from '../pages/History/History';
+import HistoryDetailPage from '../pages/History/Detail';
+
 /**
  * Router Configuration - Main routing setup for the application
  */
@@ -91,6 +95,24 @@ const Router: React.FC = () => {
           element={
             <ProtectedRoute>
               <WishlistPage />
+            </ProtectedRoute>
+          } 
+        />
+
+        <Route 
+          path="/orders" 
+          element={
+            <ProtectedRoute>
+              <HistoryPage />
+            </ProtectedRoute>
+          } 
+        />
+
+        <Route 
+          path="/orders/:orderId" 
+          element={
+            <ProtectedRoute>
+              <HistoryDetailPage />
             </ProtectedRoute>
           } 
         />

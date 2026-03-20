@@ -88,11 +88,11 @@ export const HTTP_STATUS = {
 
 // ============= Order Status Values =============
 export const ORDER_STATUS = {
-  PENDING: 'PENDING',           // Chờ xử lý
-  PROCESSING: 'PROCESSING',     // Đang xử lý
-  SHIPPED: 'SHIPPED',           // Đã gửi
-  DELIVERED: 'DELIVERED',       // Đã giao
-  CANCELLED: 'CANCELLED',       // Đã hủy
+  PENDING: 'pending',           // Chờ xử lý
+  CONFIRMED: 'confirmed',       // Đã xác nhận
+  PROCESSING: 'processing',     // Đang xử lý
+  DELIVERED: 'delivered',       // Đã giao
+  CANCELLED: 'cancelled',       // Đã hủy
 } as const;
 
 // ============= User Roles =============

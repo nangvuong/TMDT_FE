@@ -26,10 +26,10 @@ export interface GetOrdersParams {
 
   /**
    * Filter orders by status
-   * @example "DELIVERED"
+   * @example "delivered"
    * @optional
    */
-  status?: 'PENDING' | 'PROCESSING' | 'SHIPPED' | 'DELIVERED' | 'CANCELLED';
+  status?: 'pending' | 'processing' | 'confirmed' | 'delivered' | 'cancelled';
 
   /**
    * Sort field: 'totalAmount', 'status', 'createdAt'
@@ -97,7 +97,7 @@ const orderService = {
 
   // Get user's orders (Authenticated 🔒)
   getMyOrders: (params?: GetOrdersParams) =>
-    axiosClient.get<any, { data: Order[]; total: number; page: number; limit: number }>(
+    axiosClient.get<any, { data: Order[]; meta: { page: number; limit: number; totalItems: number; totalPages: number } }>(
       ORDERS_ENDPOINTS.GET_MY_ORDERS,
       { params: {
         [QUERY_PARAMS.PAGE]: params?.page || DEFAULT_PAGINATION.PAGE,
@@ -115,6 +115,7 @@ const orderService = {
     ),
 
   // Get order by ID (Authenticated 🔒)
+  // Response: { id, userId, status, totalAmount, discountAmount, items: [{ productId, quantity, priceAtPurchase }], coupon: { code, discountType }, createdAt, updatedAt }
   getById: (id: string) =>
     axiosClient.get<any, Order>(ORDERS_ENDPOINTS.GET_BY_ID.replace(':id', id)),
 };

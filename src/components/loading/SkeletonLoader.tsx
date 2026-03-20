@@ -30,12 +30,11 @@ const SkeletonLoader: React.FC<SkeletonLoaderProps> = ({
 }) => {
   const shimmer = {
     initial: { opacity: 0.6 },
-    animate: {
+    visible: {
       opacity: [0.6, 1, 0.6],
       transition: {
         duration: 1.5,
         repeat: Infinity,
-        ease: 'easeInOut',
       },
     },
   };
@@ -74,7 +73,7 @@ const SkeletonLoader: React.FC<SkeletonLoaderProps> = ({
           }}
           variants={shimmer}
           initial="initial"
-          animate={animate ? 'animate' : 'initial'}
+          animate={animate ? 'visible' : 'initial'}
         />
       ))}
     </motion.div>

@@ -1,4 +1,4 @@
-export type OrderStatus = 'pending' | 'processing' | 'shipped' | 'delivered' | 'cancelled';
+export type OrderStatus = 'pending' | 'processing' | 'confirmed' | 'delivered' | 'cancelled';
 export type ProductTag = 'bestseller' | 'new' | 'on-sale' | 'featured' | 'trending';
 export type UserRole = 'CUSTOMER' | 'ADMIN';
 

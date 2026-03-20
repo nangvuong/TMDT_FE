@@ -569,14 +569,17 @@ const Header: React.FC<HeaderProps> = ({ logo = 'TMDT Logo', hideFAB = false }) 
                           <User size={16} />
                           Hồ sơ thể chất
                         </motion.button>
-                        <motion.a
-                          href="/orders"
-                          className="w-full block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2"
+                        <motion.button
+                          onClick={() => {
+                            navigate('/orders');
+                            setIsUserMenuOpen(false);
+                          }}
+                          className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2"
                           whileHover={{ paddingLeft: '24px', backgroundColor: '#f9fafb' }}
                         >
                           <ShoppingCart size={16} />
                           Đơn hàng của tôi
-                        </motion.a>
+                        </motion.button>
                         <motion.button
                           onClick={() => {
                             navigate('/setting');
@@ -969,13 +972,16 @@ const Header: React.FC<HeaderProps> = ({ logo = 'TMDT Logo', hideFAB = false }) 
                       >
                         Hồ sơ thể chất
                       </motion.button>
-                      <motion.a
-                        href="/orders"
-                        className="w-full block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                      <motion.button
+                        onClick={() => {
+                          navigate('/orders');
+                          setIsUserMenuOpen(false);
+                        }}
+                        className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
                         whileHover={{ paddingLeft: '24px', backgroundColor: '#f9fafb' }}
                       >
                         Đơn hàng của tôi
-                      </motion.a>
+                      </motion.button>
                       <motion.button
                         onClick={() => {
                           navigate('/setting');
