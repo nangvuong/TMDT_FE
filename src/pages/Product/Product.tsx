@@ -24,14 +24,6 @@ const ProductPage: React.FC = () => {
   usePageTitle('Product | Fitness Mart');
   useScrollReset([]);
 
-  // Fetch categories for header
-  const {
-    categories,
-    isLoading: isLoadingCategories,
-    pagination: categoryPagination,
-    setPage: setCategoryPage,
-  } = useCategories({ page: 1, limit: 6 });
-
   // Fetch products with filters
   const {
     products,
@@ -46,6 +38,16 @@ const ProductPage: React.FC = () => {
     search: initialSearch,
   });
 
+  // Fetch categories with pagination
+  const {
+    categories,
+    pagination: categoryPagination,
+    setPage: setCategoryPage,
+  } = useCategories({
+    page: 1,
+    limit: 6,
+  });
+
   // Local state for UI
   const [sortOrder, setSortOrder] = useState<'featured' | 'price-low' | 'price-high' | 'newest'>('featured');
   const [filterOpen, setFilterOpen] = useState(false);
@@ -57,10 +59,6 @@ const ProductPage: React.FC = () => {
   const [priceRange, setPriceRange] = useState({ min: 0, max: 100000000 });
   const [selectedCategory, setSelectedCategory] = useState<string>('');
   const [selectedRating, setSelectedRating] = useState<number>(0);
-
-  // Mock state for header
-
-  const cartCount = 3;
 
   // Pagination logic
   const totalPages = Math.ceil(products.length / pageSize);
@@ -92,19 +90,19 @@ const ProductPage: React.FC = () => {
 
   const handlePriceChange = (min: number, max: number) => {
     setPriceRange({ min, max });
-    filterByPrice(min, max);
-    setCurrentPage(1);
   };
 
   const handleCategoryChange = (categoryId: string) => {
     setSelectedCategory(selectedCategory === categoryId ? '' : categoryId);
-    if (selectedCategory === categoryId) {
-      // Remove filter
-      setCurrentPage(1);
-    } else {
-      filterByCategory(categoryId);
-      setCurrentPage(1);
+  };
+
+  const handleApplyFilters = () => {
+    filterByPrice(priceRange.min, priceRange.max);
+    if (selectedCategory) {
+      filterByCategory(selectedCategory);
     }
+    setCurrentPage(1);
+    setFilterOpen(false);
   };
 
   const handlePrevPage = () => {
@@ -123,21 +121,6 @@ const ProductPage: React.FC = () => {
 
   const handleProductClick = (productId: string) => {
     navigate(`/products/${productId}`);
-  };
-
-  const handleAddToCart = (productId: string) => {
-    console.log('Added to cart:', productId);
-  };
-
-
-  const handleCartClick = () => {
-    console.log('Cart clicked');
-  };
-
-
-
-  const handleCategoryPageChange = (page: number) => {
-    setCategoryPage(page);
   };
 
   const startPage = Math.max(1, currentPage - 2);
@@ -159,16 +142,7 @@ const ProductPage: React.FC = () => {
   };
 
   return (
-    <Layout
-      categories={categories}
-      isLoadingCategories={isLoadingCategories}
-      cartCount={cartCount}
-      onCartClick={handleCartClick}
-      currentCategoryPage={categoryPagination.page}
-      itemsPerPage={categoryPagination.limit}
-      totalCategoryPages={categoryPagination.totalPages || 1}
-      onCategoryPageChange={handleCategoryPageChange}
-    >
+    <Layout>
       <section className="w-full bg-gradient-to-b from-gray-50 to-white py-4 md:py-8 lg:py-16">
         <div className="container mx-auto max-w-7xl px-3 sm:px-4 md:px-6">
           {/* Back Button */}
@@ -205,7 +179,7 @@ const ProductPage: React.FC = () => {
                   </motion.div>
                   <div className="flex-1">
                     <motion.h1
-                      className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-2"
+                      className="text-lg sm:text-xl md:text-2xl font-bold text-gray-900 mb-1"
                       initial={{ opacity: 0, x: -20 }}
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: 0.1 }}
@@ -265,7 +239,7 @@ const ProductPage: React.FC = () => {
                   </motion.div>
                   <div className="flex-1">
                     <motion.h1
-                      className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-2"
+                      className="text-lg sm:text-xl md:text-2xl font-bold text-gray-900 mb-1"
                       initial={{ opacity: 0, x: -20 }}
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: 0.1 }}
@@ -383,19 +357,30 @@ const ProductPage: React.FC = () => {
                   />
                 </div>
 
-                {/* Clear Filters */}
-                <button
-                  onClick={() => {
-                    setPriceRange({ min: 0, max: 100000000 });
-                    setSelectedCategory('');
-                    setSelectedRating(0);
-                    refreshProducts();
-                    setCurrentPage(1);
-                  }}
-                  className="w-full px-4 py-2 bg-gray-200 text-gray-900 rounded-lg hover:bg-gray-300 transition-colors text-sm font-medium"
-                >
-                  Xóa Bộ Lọc
-                </button>
+                {/* Filters Actions */}
+                <div className="flex gap-3">
+                  {/* Apply Filters Button */}
+                  <button
+                    onClick={handleApplyFilters}
+                    className="flex-1 px-4 py-2 bg-gray-900 text-white rounded-lg hover:bg-black transition-colors text-sm font-medium"
+                  >
+                    Áp dụng
+                  </button>
+
+                  {/* Clear Filters */}
+                  <button
+                    onClick={() => {
+                      setPriceRange({ min: 0, max: 100000000 });
+                      setSelectedCategory('');
+                      setSelectedRating(0);
+                      refreshProducts();
+                      setCurrentPage(1);
+                    }}
+                    className="flex-1 px-4 py-2 bg-gray-200 text-gray-900 rounded-lg hover:bg-gray-300 transition-colors text-sm font-medium"
+                  >
+                    Xóa
+                  </button>
+                </div>
               </div>
             </motion.div>
 
@@ -492,19 +477,30 @@ const ProductPage: React.FC = () => {
                   />
                 </div>
 
-                {/* Clear Filters - Modal Footer */}
-                <button
-                  onClick={() => {
-                    setPriceRange({ min: 0, max: 100000000 });
-                    setSelectedCategory('');
-                    setSelectedRating(0);
-                    refreshProducts();
-                    setCurrentPage(1);
-                  }}
-                  className="w-full px-4 py-3 bg-gray-200 text-gray-900 rounded-lg hover:bg-gray-300 transition-colors text-sm font-medium mt-6"
-                >
-                  Xóa Bộ Lọc
-                </button>
+                {/* Filters Actions - Modal */}
+                <div className="flex gap-3 mt-6">
+                  {/* Apply Filters - Modal */}
+                  <button
+                    onClick={handleApplyFilters}
+                    className="flex-1 px-4 py-3 bg-gray-900 text-white rounded-lg hover:bg-black transition-colors text-sm font-medium"
+                  >
+                    Áp dụng
+                  </button>
+
+                  {/* Clear Filters - Modal Footer */}
+                  <button
+                    onClick={() => {
+                      setPriceRange({ min: 0, max: 100000000 });
+                      setSelectedCategory('');
+                      setSelectedRating(0);
+                      refreshProducts();
+                      setCurrentPage(1);
+                    }}
+                    className="flex-1 px-4 py-3 bg-gray-200 text-gray-900 rounded-lg hover:bg-gray-300 transition-colors text-sm font-medium"
+                  >
+                    Xóa
+                  </button>
+                </div>
               </div>
             </Modal>
 
@@ -613,7 +609,6 @@ const ProductPage: React.FC = () => {
                   <ProductList
                     products={paginatedProducts}
                     onProductClick={handleProductClick}
-                    onAddToCart={handleAddToCart}
                   />
                 ) : null}
               </motion.div>

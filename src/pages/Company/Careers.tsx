@@ -101,16 +101,7 @@ const CareersPage: React.FC = () => {
   ];
 
   return (
-    <Layout
-      categories={categories}
-      isLoadingCategories={isLoadingCategories}
-      cartCount={cartCount}
-      onCartClick={handleCartClick}
-      currentCategoryPage={categoryPagination.page}
-      itemsPerPage={categoryPagination.limit}
-      totalCategoryPages={categoryPagination.totalPages || 1}
-      onCategoryPageChange={handleCategoryPageChange}
-    >
+    <Layout>
       <section className="w-full bg-white py-12 md:py-16">
         <div className="container mx-auto max-w-7xl px-4 md:px-6">
           {/* Header */}

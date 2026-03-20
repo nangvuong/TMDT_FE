@@ -70,13 +70,7 @@ const Login: React.FC = () => {
     setIsLoading(true);
 
     try {
-      await login(email, password);
-      // Store remember me preference
-      if (rememberMe) {
-        localStorage.setItem('rememberMe', 'true');
-      } else {
-        localStorage.removeItem('rememberMe');
-      }
+      await login(email, password, rememberMe);
       // If login succeeds, redirect to home page
       navigate('/');
     } catch (err) {

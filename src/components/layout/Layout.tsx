@@ -3,52 +3,27 @@ import Header from './Header/Header';
 import Footer from './Footer/Footer';
 import FloatingActionButton from '../common/FAB/FloatingActionButton';
 import ScrollToTopButton from '../common/FAB/ScrollToTopButton';
-import type { Category } from '../../types/product';
 
 interface LayoutProps {
   children: React.ReactNode;
-  categories?: Category[];
-  isLoadingCategories?: boolean;
-  cartCount?: number;
-  onCartClick?: () => void;
-  onProfileMenuClick?: () => void;
-  currentCategoryPage?: number;
-  itemsPerPage?: number;
-  totalCategoryPages?: number;
-  onCategoryPageChange?: (page: number, limit?: number) => void;
+  logo?: string;
+  hideFAB?: boolean;
 }
 
 const Layout: React.FC<LayoutProps> = ({
   children,
-  categories = [],
-  isLoadingCategories = false,
-  cartCount = 0,
-  onCartClick,
-  onProfileMenuClick,
-  currentCategoryPage = 1,
-  itemsPerPage = 6,
-  totalCategoryPages = 1,
-  onCategoryPageChange,
+  logo,
+  hideFAB = false,
 }) => {
   return (
     <div className="flex flex-col min-h-screen">
-      <Header
-        categories={categories}
-        isLoadingCategories={isLoadingCategories}
-        cartCount={cartCount}
-        onCartClick={onCartClick}
-        onProfileMenuClick={onProfileMenuClick}
-        currentCategoryPage={currentCategoryPage}
-        itemsPerPage={itemsPerPage}
-        totalCategoryPages={totalCategoryPages}
-        onCategoryPageChange={onCategoryPageChange}
-      />
+      <Header logo={logo} hideFAB={hideFAB} />
       <main className="flex-1">
         {children}
       </main>
-      <Footer />
-      <FloatingActionButton />
-      <ScrollToTopButton />
+      {!hideFAB && <Footer />}
+      {!hideFAB && <FloatingActionButton />}
+      {!hideFAB && <ScrollToTopButton />}
     </div>
   );
 };

@@ -6,7 +6,6 @@ import Category from './components/Category';
 import Products from './components/Products';
 import WhyChooseUs from './components/WhyChooseUs';
 import { usePageTitle } from '../../hooks/usePageTitle';
-import { useCategories } from '../../hooks/useProduct';
 
 /**
  * Home Page - Main landing page with product categories, hero section, and featured products
@@ -24,30 +23,7 @@ const Home: React.FC = () => {
   // Create ref for Products section
   const productsRef = useRef<HTMLDivElement>(null);
 
-  // Use categories hook with initial pagination
-  const { 
-    categories, 
-    isLoading: isLoadingCategories, 
-    pagination,
-    setPage: setCategoryPage,
-    setLimit: setCategoryLimit,
-  } = useCategories({ page: 1, limit: 6 });
 
-  // Mock state for header
-  const cartCount = 3;
-
-  const handleCartClick = () => {
-    console.log('Cart clicked');
-  };
-
-
-
-  const handleCategoryPageChange = (page: number, limit?: number) => {
-    setCategoryPage(page);
-    if (limit && limit !== pagination.limit) {
-      setCategoryLimit(limit);
-    }
-  };
 
   const handleHeroButtonClick = () => {
     console.log('Shop Now clicked');
@@ -82,16 +58,7 @@ const Home: React.FC = () => {
   };
 
   return (
-    <Layout
-      categories={categories}
-      isLoadingCategories={isLoadingCategories}
-      cartCount={cartCount}
-      onCartClick={handleCartClick}
-      currentCategoryPage={pagination.page}
-      itemsPerPage={pagination.limit}
-      totalCategoryPages={pagination.totalPages}
-      onCategoryPageChange={handleCategoryPageChange}
-    >
+    <Layout>
       <Hero
         headline="Nâng Tầm Hành Trình Của Bạn"
         subheadline="Thiết bị tập gym, thực phẩm bổ sung và thời trang thể thao dành cho mọi cấp độ luyện tập"

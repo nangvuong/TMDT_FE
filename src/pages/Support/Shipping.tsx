@@ -2,34 +2,12 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import Layout from '../../components/layout/Layout';
 import { usePageTitle } from '../../hooks/usePageTitle';
-import { useCategories } from '../../hooks/useProduct';
 import { useScrollReset } from '../../hooks/useScrollReset';
 import { Truck, Clock, MapPin } from 'lucide-react';
 
 const ShippingPage: React.FC = () => {
   usePageTitle('Vận Chuyển | Fitness Mart');
   useScrollReset();
-  
-  // Fetch categories for header
-  const {
-    categories,
-    isLoading: isLoadingCategories,
-    pagination: categoryPagination,
-    setPage: setCategoryPage,
-  } = useCategories({ page: 1, limit: 6 });
-
-  // Mock state for header
-  const cartCount = 3;
-
-  const handleCartClick = () => {
-    console.log('Cart clicked');
-  };
-
-
-
-  const handleCategoryPageChange = (page: number) => {
-    setCategoryPage(page);
-  };
 
   const shippingMethods = [
     {
@@ -62,16 +40,7 @@ const ShippingPage: React.FC = () => {
   ];
 
   return (
-    <Layout
-      categories={categories}
-      isLoadingCategories={isLoadingCategories}
-      cartCount={cartCount}
-      onCartClick={handleCartClick}
-      currentCategoryPage={categoryPagination.page}
-      itemsPerPage={categoryPagination.limit}
-      totalCategoryPages={categoryPagination.totalPages || 1}
-      onCategoryPageChange={handleCategoryPageChange}
-    >
+    <Layout>
       <section className="w-full bg-white py-12 md:py-16">
         <div className="container mx-auto max-w-7xl px-4 md:px-6">
           <motion.div

@@ -27,10 +27,10 @@ export const REVIEWS_ENDPOINTS = {
 
 // ============= CART Module (Require JWT 🔒) =============
 export const CART_ENDPOINTS = {
-  GET_CART: '/cart',                // GET - 200 (Authenticated)
-  ADD_ITEM: '/cart/items',          // POST - 201 (Authenticated)
-  REMOVE_ITEM: '/cart/items/:itemId', // DELETE - 200 (Authenticated)
-  CLEAR_CART: '/cart',              // DELETE - 200 (Authenticated)
+  GET_CART: '/cart',                // GET - 200 (Authenticated) - Returns: { id, userId, items }
+  ADD_ITEM: '/cart/items',          // POST - 201 (Authenticated) - Body: { productId, quantity } - Returns: { success: true }
+  REMOVE_ITEM: '/cart/items/:itemId', // DELETE - 200 (Authenticated) - Returns: { success: true }
+  CLEAR_CART: '/cart',              // DELETE - 200 (Authenticated) - Returns: { success: true }
 } as const;
 
 // ============= ORDERS Module (Require JWT 🔒) =============
@@ -58,6 +58,20 @@ export const WISHLIST_ENDPOINTS = {
   GET: '/wishlist',                 // GET - 200 (Authenticated, with pagination)
   ADD: '/wishlist/:productId',      // POST - 201 (Authenticated)
   REMOVE: '/wishlist/:productId',   // DELETE - 200 (Authenticated)
+} as const;
+
+// ============= COUPONS Module (Require JWT 🔒) =============
+export const COUPONS_ENDPOINTS = {
+  VALIDATE: '/coupons/validate',    // POST - 200 (Authenticated) - Query: ?orderAmount=500000
+} as const;
+
+// ============= ADDRESSES Module (Require JWT 🔒) =============
+export const ADDRESSES_ENDPOINTS = {
+  GET_ALL: '/addresses',            // GET - 200 (Authenticated) - Returns all user addresses
+  GET_BY_ID: '/addresses/:id',      // GET - 200 (Authenticated)
+  CREATE: '/addresses',             // POST - 201 (Authenticated) - Body: CreateAddressDto
+  UPDATE: '/addresses/:id',         // PUT - 200 (Authenticated) - Body: UpdateAddressDto
+  DELETE: '/addresses/:id',         // DELETE - 200 (Authenticated)
 } as const;
 
 // ============= HTTP Status Codes =============
@@ -140,4 +154,5 @@ export const API_ENDPOINTS = {
   ...PROFILE_ENDPOINTS,
   ...UPLOAD_ENDPOINTS,
   ...WISHLIST_ENDPOINTS,
+  ...COUPONS_ENDPOINTS,
 } as const;

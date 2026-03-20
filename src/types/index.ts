@@ -9,6 +9,13 @@ export type {
   Cart, 
   CartItem, 
   Order, 
-  OrderItem 
+  OrderItem,
+  Coupon,
+  ValidateCouponResponse,
+  DiscountType,
+  Address,
+  CreateAddressDto,
+  UpdateAddressDto
 } from './product';
+export { DISCOUNT_TYPE } from './product';
 export type { OrderStatus, ProductTag } from './product';

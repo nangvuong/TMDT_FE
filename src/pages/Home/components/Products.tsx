@@ -75,11 +75,6 @@ const Products: React.FC = () => {
     // TODO: Navigate to product detail page
   };
 
-  const handleAddToCart = (productId: string) => {
-    console.log('Added to cart:', productId);
-    // TODO: Implement add to cart functionality
-  };
-
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -99,7 +94,7 @@ const Products: React.FC = () => {
           className="text-center mb-12"
           initial={{ opacity: 0, y: -20 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
+          viewport={{ once: false }}
           transition={{ type: 'spring', stiffness: 300 }}
         >
           <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">
@@ -116,7 +111,7 @@ const Products: React.FC = () => {
           className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-8"
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
+          viewport={{ once: false }}
           transition={{ delay: 0.1 }}
         >
           {/* Filter Button (Mobile) */}
@@ -249,7 +244,7 @@ const Products: React.FC = () => {
             className="flex md:hidden items-center justify-center gap-2 mb-6"
             initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            viewport={{ once: false }}
             transition={{ delay: 0.3 }}
           >
             <motion.button
@@ -307,7 +302,7 @@ const Products: React.FC = () => {
           variants={containerVariants}
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: true }}
+          viewport={{ once: false }}
         >
           {isLoading ? (
             <ProductSkeleton count={12} />
@@ -317,7 +312,6 @@ const Products: React.FC = () => {
               isLoading={false}
               isEmpty={products.length === 0}
               onProductClick={handleProductClick}
-              onAddToCart={handleAddToCart}
             />
           )}
         </motion.div>
@@ -328,7 +322,7 @@ const Products: React.FC = () => {
             className="flex justify-center mt-8"
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
+            viewport={{ once: false }}
             transition={{ delay: 0.4 }}
           >
             <Button

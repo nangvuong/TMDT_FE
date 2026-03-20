@@ -24,6 +24,22 @@ export const useProducts = (initialParams?: GetProductsParams) => {
     try {
       setIsLoading(true);
       setError(null);
+      
+      // Try to get from cache first
+      const cacheKey = `products_${JSON.stringify(fetchParams)}`;
+      const cachedProducts = cacheManager.get<any>(cacheKey);
+      if (cachedProducts) {
+        setProducts(cachedProducts.data || []);
+        setPagination({
+          page: cachedProducts.page || 1,
+          limit: cachedProducts.limit || 10,
+          total: cachedProducts.total || 0,
+        });
+        setIsLoading(false);
+        return;
+      }
+
+      // If no cache, fetch from API
       const response = await productService.getAll(fetchParams);
       setProducts(response.data || []);
       setPagination({
@@ -31,6 +47,8 @@ export const useProducts = (initialParams?: GetProductsParams) => {
         limit: response.limit || 10,
         total: response.total || 0,
       });
+      // Cache the result for 5 minutes
+      cacheManager.set(cacheKey, response, 5 * 60 * 1000);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to fetch products');
       setProducts([]);
@@ -39,9 +57,10 @@ export const useProducts = (initialParams?: GetProductsParams) => {
     }
   }, [params]);
 
+  // Use effect to fetch when params change
   useEffect(() => {
-    fetchProducts();
-  }, [fetchProducts]);
+    fetchProducts(params);
+  }, [params]);
 
   const setPage = useCallback((page: number) => {
     setParams((prev: GetProductsParams) => ({ ...prev, page }));
@@ -76,8 +95,10 @@ export const useProducts = (initialParams?: GetProductsParams) => {
   }, []);
 
   const refresh = useCallback(() => {
-    fetchProducts();
-  }, [fetchProducts]);
+    const cacheKey = `products_${JSON.stringify(params)}`;
+    cacheManager.clear(cacheKey);
+    fetchProducts(params);
+  }, [params, fetchProducts]);
 
   return {
     products,
@@ -288,8 +309,8 @@ export const useCategories = (initialParams?: GetCategoryParams) => {
   }, [params]);
 
   useEffect(() => {
-    fetchCategories();
-  }, [fetchCategories]);
+    fetchCategories(params);
+  }, [params]);
 
   const setPage = useCallback((page: number) => {
     setParams((prev) => ({ ...prev, page }));
@@ -320,8 +341,9 @@ export const useCategories = (initialParams?: GetCategoryParams) => {
   }, []);
 
   const refresh = useCallback(() => {
-    fetchCategories();
-  }, [fetchCategories]);
+    cacheManager.clear(generateCategoriesCacheKey(params.page || 1, params.limit || 10));
+    fetchCategories(params, false); // useCache=false to force API call
+  }, [params, fetchCategories]);
 
   const clearCache = useCallback(() => {
     cacheManager.clear(

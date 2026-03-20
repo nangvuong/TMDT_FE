@@ -1,12 +1,15 @@
 import { useState, useCallback, useEffect } from 'react';
 import wishlistService, { type WishlistItem, type GetWishlistParams } from '../services/wishlistService';
 import { useCountersContext } from '../contexts/CountersContext';
+import { useIsLoggedIn } from './useAuth';
+import { cacheManager } from '../utils/cache';
 
 /**
  * Hook for managing user's wishlist
  * Handles fetching, adding, removing items from wishlist
  */
 export const useWishlist = (initialParams?: GetWishlistParams) => {
+  const { isLoggedIn } = useIsLoggedIn();
   const [items, setItems] = useState<WishlistItem[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -21,24 +24,32 @@ export const useWishlist = (initialParams?: GetWishlistParams) => {
   const { setWishlistCount } = useCountersContext();
 
   /**
-   * Update wishlist count in context
-   */
-  const updateWishlistCount = useCallback((count: number) => {
-    setWishlistCount(count);
-  }, [setWishlistCount]);
-
-  /**
    * Fetch wishlist items
    */
   const fetchWishlist = useCallback(async (fetchParams = params) => {
     try {
       setIsLoading(true);
       setError(null);
+
+      // Try to get from cache first (only if no custom params)
+      if (fetchParams === params || Object.keys(fetchParams).length === 0) {
+        const cachedWishlist = cacheManager.get<WishlistItem[]>('wishlist');
+        if (cachedWishlist) {
+          setWishlistCount(cachedWishlist.length);
+          setItems(cachedWishlist);
+          setIsLoading(false);
+          return;
+        }
+      }
+
+      // If no cache, fetch from API
       const response = await wishlistService.getWishlist(fetchParams);
       const wishlistItems = response.data || [];
       // Update context count immediately
-      updateWishlistCount(wishlistItems.length);
+      setWishlistCount(wishlistItems.length);
       setItems(wishlistItems);
+      // Cache the result for 5 minutes
+      cacheManager.set('wishlist', wishlistItems, 5 * 60 * 1000);
       setPagination({
         page: response.pagination.page || 1,
         limit: response.pagination.limit || 10,
@@ -48,18 +59,20 @@ export const useWishlist = (initialParams?: GetWishlistParams) => {
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to fetch wishlist');
       setItems([]);
-      updateWishlistCount(0);
+      setWishlistCount(0);
     } finally {
       setIsLoading(false);
     }
-  }, [params, updateWishlistCount]);
+  }, [params, setWishlistCount]);
 
   /**
-   * Initial load: fetch wishlist
+   * Initial load: fetch wishlist only if user is logged in
    */
   useEffect(() => {
-    fetchWishlist();
-  }, [fetchWishlist]);
+    if (isLoggedIn) {
+      fetchWishlist();
+    }
+  }, [isLoggedIn]);
 
   /**
    * Add product to wishlist and refetch
@@ -68,7 +81,8 @@ export const useWishlist = (initialParams?: GetWishlistParams) => {
     try {
       setError(null);
       const newItem = await wishlistService.addToWishlist(productId);
-      // Refetch wishlist to ensure state is in sync
+      // Invalidate cache and refetch
+      cacheManager.clear('wishlist');
       await fetchWishlist(params);
       return newItem;
     } catch (err) {
@@ -76,7 +90,7 @@ export const useWishlist = (initialParams?: GetWishlistParams) => {
       setError(errorMessage);
       throw err;
     }
-  }, [params]);
+  }, [fetchWishlist, params]);
 
   /**
    * Remove product from wishlist and refetch
@@ -85,14 +99,15 @@ export const useWishlist = (initialParams?: GetWishlistParams) => {
     try {
       setError(null);
       await wishlistService.removeFromWishlist(productId);
-      // Refetch wishlist to ensure state is in sync
+      // Invalidate cache and refetch
+      cacheManager.clear('wishlist');
       await fetchWishlist(params);
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to remove from wishlist';
       setError(errorMessage);
       throw err;
     }
-  }, [params]);
+  }, [fetchWishlist, params]);
 
   /**
    * Toggle product in wishlist
@@ -151,9 +166,9 @@ export const useWishlist = (initialParams?: GetWishlistParams) => {
    * Clear all items from wishlist
    */
   const clearWishlist = useCallback(() => {
-    updateWishlistCount(0);
+    setWishlistCount(0);
     setItems([]);
-  }, [updateWishlistCount]);
+  }, [setWishlistCount]);
 
   /**
    * Get actual wishlist count

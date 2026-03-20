@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Heart, Star, ShoppingCart, Zap, CheckCircle2 } from 'lucide-react';
+import { Heart, Star, ShoppingCart, Zap, CheckCircle2, Check } from 'lucide-react';
 import type { Product } from '../../../types/product';
 import Button from '../../../components/common/Button/Button';
 import { useWishlist } from '../../../hooks/useWishlist';
 import { useIsLoggedIn } from '../../../hooks/useAuth';
+import { useCart } from '../../../hooks/useCart';
 
 interface ProductInfoProps {
   product: Product;
@@ -26,8 +27,11 @@ const ProductInfo: React.FC<ProductInfoProps> = ({
   const navigate = useNavigate();
   const { isLoggedIn } = useIsLoggedIn();
   const { items: wishlistItems, toggleWishlist, isLoading: isTogglingWishlist } = useWishlist();
+  const { addItem } = useCart();
   const [quantity, setQuantity] = useState(1);
   const [isInWishlist, setIsInWishlist] = useState(false);
+  const [isAddingToCart, setIsAddingToCart] = useState(false);
+  const [addedSuccess, setAddedSuccess] = useState(false);
 
   // Check if product is in wishlist
   useEffect(() => {
@@ -63,8 +67,30 @@ const ProductInfo: React.FC<ProductInfoProps> = ({
     }
   };
 
-  const handleAddToCart = () => {
-    onAddToCart?.(product.id, quantity);
+  const handleAddToCart = async () => {
+    // Check if user is logged in
+    if (!isLoggedIn) {
+      navigate('/login', { state: { returnTo: window.location.pathname } });
+      return;
+    }
+
+    try {
+      setIsAddingToCart(true);
+      await addItem(product.id, quantity);
+      
+      // Show success feedback
+      setAddedSuccess(true);
+      setTimeout(() => {
+        setAddedSuccess(false);
+      }, 2000);
+
+      // Call optional callback
+      onAddToCart?.(product.id, quantity);
+    } catch (error) {
+      console.error('Failed to add to cart:', error);
+    } finally {
+      setIsAddingToCart(false);
+    }
   };
 
   const handleBuyNow = () => {
@@ -106,27 +132,27 @@ const ProductInfo: React.FC<ProductInfoProps> = ({
 
   return (
     <motion.div
-      className="space-y-4 md:space-y-6"
+      className="space-y-3 md:space-y-4"
       variants={containerVariants}
       initial="hidden"
       animate="visible"
     >
       {/* Product Name */}
       <motion.h1
-        className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 leading-tight"
+        className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 leading-tight"
         variants={itemVariants}
       >
         {product.name}
       </motion.h1>
 
       {/* Rating and Review */}
-      <motion.div className="flex items-center gap-2 sm:gap-3 text-sm sm:text-base" variants={itemVariants}>
+      <motion.div className="flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm" variants={itemVariants}>
         <div className="flex items-center gap-0.5">
           {[...Array(5)].map((_, i) => (
             <Star
               key={i}
-              size={16}
-              className={`sm:w-5 sm:h-5 ${
+              size={14}
+              className={`sm:w-4 sm:h-4 ${
                 i < Math.floor(rating)
                   ? 'fill-yellow-400 text-yellow-400'
                   : 'text-gray-300'
@@ -142,26 +168,26 @@ const ProductInfo: React.FC<ProductInfoProps> = ({
 
       {/* Price and Wishlist */}
       <motion.div
-        className="flex items-end justify-between gap-3 sm:gap-4"
+        className="flex items-end justify-between gap-2 sm:gap-3"
         variants={itemVariants}
       >
         <div>
-          <p className="text-xs sm:text-sm text-gray-600 mb-0.5">Giá</p>
-          <p className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900">
+          <p className="text-xs text-gray-600 mb-0.5">Giá</p>
+          <p className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900">
             {price.toLocaleString('vi-VN')}đ
           </p>
         </div>
         <motion.button
           onClick={handleWishlist}
           disabled={isTogglingWishlist}
-          className="p-2.5 sm:p-3 rounded-lg bg-gray-100 hover:bg-red-100 transition-colors disabled:opacity-50 flex-shrink-0"
+          className="p-2 sm:p-2.5 rounded-lg bg-gray-100 hover:bg-red-100 transition-colors disabled:opacity-50 flex-shrink-0"
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.95 }}
           title={isLoggedIn ? (isInWishlist ? 'Xóa khỏi yêu thích' : 'Thêm vào yêu thích') : 'Đăng nhập để thêm vào yêu thích'}
         >
           <Heart
-            size={20}
-            className={`sm:w-6 sm:h-6 ${
+            size={18}
+            className={`sm:w-5 sm:h-5 ${
               isInWishlist
                 ? 'fill-red-500 text-red-500'
                 : 'text-gray-600'
@@ -171,9 +197,9 @@ const ProductInfo: React.FC<ProductInfoProps> = ({
       </motion.div>
 
       {/* Stock Status */}
-      <motion.div className="flex items-center gap-2 text-sm sm:text-base" variants={itemVariants}>
+      <motion.div className="flex items-center gap-1.5 text-xs sm:text-sm" variants={itemVariants}>
         <div
-          className={`w-2.5 h-2.5 rounded-full ${
+          className={`w-2 h-2 rounded-full ${
             inStock ? 'bg-green-500' : 'bg-red-500'
           }`}
         />
@@ -183,14 +209,14 @@ const ProductInfo: React.FC<ProductInfoProps> = ({
       </motion.div>
 
       {/* Quantity Selector */}
-      <motion.div className="space-y-2" variants={itemVariants}>
-        <p className="text-xs sm:text-sm font-medium text-gray-900">Số lượng</p>
-        <div className="flex items-center gap-3">
+      <motion.div className="space-y-1.5" variants={itemVariants}>
+        <p className="text-xs font-medium text-gray-900">Số lượng</p>
+        <div className="flex items-center gap-2">
           <div className="flex items-center border border-gray-300 rounded-lg">
             <motion.button
               onClick={handleDecrement}
               disabled={quantity <= 1}
-              className="px-3 sm:px-4 py-2 sm:py-2.5 text-gray-600 hover:text-gray-900 disabled:opacity-50 font-semibold text-lg sm:text-xl"
+              className="px-2 sm:px-3 py-1.5 sm:py-2 text-gray-600 hover:text-gray-900 disabled:opacity-50 font-semibold text-sm sm:text-base"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
@@ -219,12 +245,12 @@ const ProductInfo: React.FC<ProductInfoProps> = ({
                   setQuantity(1);
                 }
               }}
-              className="w-14 sm:w-16 text-center font-semibold text-gray-900 border-0 outline-none text-sm sm:text-base"
+              className="w-12 sm:w-14 text-center font-semibold text-gray-900 border-0 outline-none text-xs sm:text-sm"
             />
             <motion.button
               onClick={handleIncrement}
               disabled={quantity >= product.stock}
-              className="px-3 sm:px-4 py-2 sm:py-2.5 text-gray-600 hover:text-gray-900 disabled:opacity-50 font-semibold text-lg sm:text-xl"
+              className="px-2 sm:px-3 py-1.5 sm:py-2 text-gray-600 hover:text-gray-900 disabled:opacity-50 font-semibold text-sm sm:text-base"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
@@ -235,42 +261,61 @@ const ProductInfo: React.FC<ProductInfoProps> = ({
       </motion.div>
 
       {/* Action Buttons */}
-      <motion.div className="flex flex-col sm:flex-row gap-2.5 sm:gap-3 pt-1" variants={itemVariants}>
+      <motion.div className="flex flex-col sm:flex-row gap-2 pt-1" variants={itemVariants}>
         <Button
           onClick={handleBuyNow}
           disabled={!inStock}
-          className="flex-1 bg-gray-900 text-white hover:bg-black text-sm sm:text-base py-3 sm:py-2.5"
+          className="flex-1 bg-gray-900 text-white hover:bg-black text-xs sm:text-sm py-2.5 sm:py-2"
         >
-          <Zap size={16} className="sm:w-[18px] sm:h-[18px] mr-1.5 sm:mr-2" />
+          <Zap size={14} className="sm:w-4 sm:h-4 mr-1.5" />
           Mua ngay
         </Button>
-        <Button
+        <motion.button
           onClick={handleAddToCart}
-          disabled={!inStock}
-          variant="outline"
-          className="flex-1 text-sm sm:text-base py-3 sm:py-2.5"
+          disabled={!inStock || isAddingToCart}
+          className={`flex-1 py-2.5 sm:py-2 px-3 sm:px-4 rounded-lg font-medium text-xs sm:text-sm flex items-center justify-center gap-2 transition-all duration-200 border ${
+            addedSuccess
+              ? 'bg-emerald-600 text-white border-emerald-600'
+              : inStock
+              ? 'bg-white text-gray-900 border-gray-300 hover:border-gray-900'
+              : 'bg-gray-300 text-gray-600 cursor-not-allowed border-gray-300'
+          }`}
+          whileHover={inStock && !isAddingToCart ? { scale: 1.02 } : {}}
+          whileTap={inStock && !isAddingToCart ? { scale: 0.98 } : {}}
+          animate={isAddingToCart ? { opacity: 0.7 } : { opacity: 1 }}
         >
-          <ShoppingCart size={16} className="sm:w-[18px] sm:h-[18px] mr-1.5 sm:mr-2" />
-          Thêm vào giỏ
-        </Button>
+          <motion.div
+            animate={isAddingToCart ? { rotate: 360 } : { rotate: 0 }}
+            transition={isAddingToCart ? { duration: 1, repeat: Infinity, ease: 'linear' } : { duration: 0.2 }}
+          >
+            {addedSuccess ? (
+              <Check size={16} className="sm:w-5 sm:h-5" />
+            ) : (
+              <ShoppingCart size={14} className="sm:w-4 sm:h-4" />
+            )}
+          </motion.div>
+          <span className="font-medium">
+            {isAddingToCart ? 'Đang thêm...' : addedSuccess ? 'Đã thêm!' : 'Thêm vào giỏ'}
+          </span>
+        </motion.button>
       </motion.div>
 
       {/* Features */}
       <motion.div
-        className="space-y-2 pt-4 sm:pt-6 border-t border-gray-200"
+        className="space-y-1.5 pt-3 sm:pt-4 border-t border-gray-200"
         variants={itemVariants}
       >
-        <div className="flex items-start sm:items-center gap-2.5 sm:gap-3">
-          <CheckCircle2 size={18} className="sm:w-5 sm:h-5 text-green-600 flex-shrink-0 mt-0.5 sm:mt-0" />
-          <span className="text-gray-700 text-sm sm:text-base">Giao hàng nhanh (1-2 ngày)</span>
+        <div className="flex items-start sm:items-center gap-2 sm:gap-2.5">
+          <CheckCircle2 size={16} className="sm:w-4 sm:h-4 text-green-600 flex-shrink-0 mt-0.5 sm:mt-0" />
+          <span className="text-gray-700 text-xs sm:text-sm">Giao hàng nhanh (1-2 ngày)</span>
         </div>
-        <div className="flex items-start sm:items-center gap-2.5 sm:gap-3">
-          <CheckCircle2 size={18} className="sm:w-5 sm:h-5 text-green-600 flex-shrink-0 mt-0.5 sm:mt-0" />
-          <span className="text-gray-700 text-sm sm:text-base">Đổi trả dễ dàng 30 ngày</span>
+        <div className="flex items-start sm:items-center gap-2 sm:gap-2.5">
+          <CheckCircle2 size={16} className="sm:w-4 sm:h-4 text-green-600 flex-shrink-0 mt-0.5 sm:mt-0" />
+          <span className="text-gray-700 text-xs sm:text-sm">Đổi trả dễ dàng 30 ngày</span>
         </div>
-        <div className="flex items-start sm:items-center gap-2.5 sm:gap-3">
-          <CheckCircle2 size={18} className="sm:w-5 sm:h-5 text-green-600 flex-shrink-0 mt-0.5 sm:mt-0" />
-          <span className="text-gray-700 text-sm sm:text-base">Bảo hành 100% hài lòng</span>
+        <div className="flex items-start sm:items-center gap-2 sm:gap-2.5">
+          <CheckCircle2 size={16} className="sm:w-4 sm:h-4 text-green-600 flex-shrink-0 mt-0.5 sm:mt-0" />
+          <span className="text-gray-700 text-xs sm:text-sm">Bảo hành 100% hài lòng</span>
         </div>
       </motion.div>
     </motion.div>

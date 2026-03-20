@@ -9,6 +9,7 @@ import Setting from '../pages/Setting/Setting';
 import ProductPage from '../pages/Product/Product';
 import ProductDetail from '../pages/ProductDetail/ProductDetail';
 import CategoryPage from '../pages/Category/Category';
+import Cart from '../pages/Cart/Cart';
 import NotFound from '../pages/NotFound/NotFound';
 import ProtectedRoute from '../components/routes/ProtectedRoute';
 
@@ -47,6 +48,7 @@ const Router: React.FC = () => {
         <Route path="/products/:productId" element={<ProductDetail />} />
         <Route path="/products" element={<ProductPage />} />
         <Route path="/categories/:categoryId" element={<CategoryPage />} />
+        <Route path="/cart" element={<Cart />} />
         
         {/* Shop Routes */}
         <Route path="/shop/equipment" element={<EquipmentPage />} />

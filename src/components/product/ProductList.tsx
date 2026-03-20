@@ -8,7 +8,6 @@ interface ProductListProps {
   isLoading?: boolean;
   isEmpty?: boolean;
   onProductClick?: (productId: string) => void;
-  onAddToCart?: (productId: string) => void;
 }
 
 const ProductList: React.FC<ProductListProps> = ({
@@ -16,7 +15,6 @@ const ProductList: React.FC<ProductListProps> = ({
   isLoading = false,
   isEmpty = false,
   onProductClick,
-  onAddToCart,
 }) => {
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -118,7 +116,6 @@ const ProductList: React.FC<ProductListProps> = ({
             averageRating={product.averageRating}
             reviewCount={product.reviewCount}
             onClick={() => onProductClick?.(product.id)}
-            onAddToCart={() => onAddToCart?.(product.id)}
           />
         </motion.div>
       ))}

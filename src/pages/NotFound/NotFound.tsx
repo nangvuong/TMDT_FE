@@ -31,15 +31,7 @@ const NotFound: React.FC = () => {
   };
 
   return (
-    <Layout
-      categories={categories}
-      isLoadingCategories={isLoadingCategories}
-      cartCount={0}
-      currentCategoryPage={pagination.page}
-      itemsPerPage={pagination.limit}
-      totalCategoryPages={pagination.totalPages}
-      onCategoryPageChange={(page) => setCategoryPage(page)}
-    >
+    <Layout>
       <section className="w-full bg-white py-16 md:py-24 lg:py-32 flex items-center justify-center min-h-[calc(100vh-200px)]">
         <div className="container mx-auto max-w-7xl px-4 md:px-6">
           <motion.div

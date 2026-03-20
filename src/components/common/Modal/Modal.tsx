@@ -104,7 +104,7 @@ const Modal: React.FC<ModalProps> = ({
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           {/* Backdrop */}
           <motion.div
-            className="absolute inset-0 bg-black/50"
+            className="absolute inset-0 bg-black/50 backdrop-blur-sm"
             variants={backdropVariants}
             initial="hidden"
             animate="visible"
@@ -116,7 +116,7 @@ const Modal: React.FC<ModalProps> = ({
           {/* Modal Content */}
           <motion.div
             className={cn(
-              'relative w-full bg-white rounded-lg shadow-2xl',
+              'relative w-full bg-white rounded-2xl shadow-2xl overflow-hidden',
               sizeStyles[size],
               className
             )}
@@ -128,8 +128,8 @@ const Modal: React.FC<ModalProps> = ({
           >
             {/* Header */}
             {(title || header || closeButton) && (
-              <div className="flex items-center justify-between border-b border-gray-200 px-6 py-4">
-                <div className="flex-1">
+              <div className="flex items-start justify-between border-b border-gray-200 px-6 py-5">
+                <div className="flex-1 pr-4">
                   {header ? (
                     header
                   ) : title ? (
@@ -142,11 +142,12 @@ const Modal: React.FC<ModalProps> = ({
                 {closeButton && (
                   <motion.button
                     onClick={onClose}
-                    className="ml-4 p-1 text-gray-500 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors"
+                    className="ml-2 p-1.5 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors flex-shrink-0"
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.95 }}
+                    aria-label="Close modal"
                   >
-                    <X size={24} />
+                    <X size={20} />
                   </motion.button>
                 )}
               </div>
@@ -159,7 +160,7 @@ const Modal: React.FC<ModalProps> = ({
 
             {/* Footer */}
             {footer && (
-              <div className="border-t border-gray-200 px-6 py-4 bg-gray-50 rounded-b-lg">
+              <div className="border-t border-gray-200 px-6 py-4 bg-gray-50 rounded-b-2xl">
                 {footer}
               </div>
             )}

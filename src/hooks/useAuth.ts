@@ -2,6 +2,8 @@ import { useState, useCallback, useEffect } from 'react';
 import type { AuthResponse } from '../types/user';
 import { getToken, setToken, removeToken, subscribeToTokenChange } from '../utils/token';
 import authService from '../services/authService';
+import { useCountersContext } from '../contexts/CountersContext';
+import { cacheManager } from '../utils/cache';
 
 /**
  * Custom hook for user login
@@ -10,12 +12,12 @@ export const useLogin = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const login = useCallback(async (email: string, password: string): Promise<AuthResponse> => {
+  const login = useCallback(async (email: string, password: string, rememberMe: boolean = false): Promise<AuthResponse> => {
     setIsLoading(true);
     setError(null);
     try {
       const response = await authService.login({ email, password });
-      setToken(response.accessToken);
+      setToken(response.accessToken, rememberMe);
       return response;
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Login failed';
@@ -33,10 +35,17 @@ export const useLogin = () => {
  * Custom hook for user logout
  */
 export const useLogout = () => {
+  const { setWishlistCount, setCartCount } = useCountersContext();
+
   const logout = useCallback(() => {
     removeToken();
-    localStorage.removeItem('rememberMe');
-  }, []);
+    // Clear counters when logging out
+    setWishlistCount(0);
+    setCartCount(0);
+    // Clear cached data
+    cacheManager.clear('cart');
+    cacheManager.clear('wishlist');
+  }, [setWishlistCount, setCartCount]);
 
   return { logout };
 };

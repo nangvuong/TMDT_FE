@@ -5,7 +5,7 @@ import { Filter, ChevronLeft, ChevronRight, ArrowLeft } from 'lucide-react';
 import Layout from '../../components/layout/Layout';
 import ProductList from '../../components/product/ProductList';
 import ProductSkeleton from '../../components/loading/ProductSkeleton';
-import { useCategories, useCategory } from '../../hooks/useProduct';
+import { useCategory } from '../../hooks/useProduct';
 import { usePageTitle } from '../../hooks/usePageTitle';
 import { useScrollReset } from '../../hooks/useScrollReset';
 
@@ -27,23 +27,12 @@ const CategoryPage: React.FC = () => {
   const { category, isLoading: isCategoryLoading } = useCategory(categoryId);
   usePageTitle(`${category?.name || 'Category'} | Fitness Mart`);
 
-  // Fetch categories for header
-  const {
-    categories,
-    isLoading: isLoadingCategories,
-    pagination: categoryPagination,
-    setPage: setCategoryPage,
-  } = useCategories({ page: 1, limit: 6 });
-
   const [sortOrder, setSortOrder] = useState<'featured' | 'price-low' | 'price-high' | 'newest'>('featured');
   const [filterOpen, setFilterOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize] = useState(12);
   const productsGridRef = useRef<HTMLDivElement>(null);
 
-  // Mock state for header
-
-  const cartCount = 3;
 
   // Get products from category response or empty array
   const allProducts = category?.products || [];
@@ -95,20 +84,6 @@ const CategoryPage: React.FC = () => {
     navigate(`/products/${productId}`);
   };
 
-  const handleAddToCart = (productId: string) => {
-    console.log('Added to cart:', productId);
-  };
-
-  const handleCartClick = () => {
-    console.log('Cart clicked');
-  };
-
-
-
-  const handleCategoryPageChange = (page: number) => {
-    setCategoryPage(page);
-  };
-
   const startPage = Math.max(1, currentPage - 2);
   const endPage = Math.min(totalPages, currentPage + 2);
   const pageNumbers = Array.from(
@@ -128,16 +103,7 @@ const CategoryPage: React.FC = () => {
   };
 
   return (
-    <Layout
-      categories={categories}
-      isLoadingCategories={isLoadingCategories}
-      cartCount={cartCount}
-      onCartClick={handleCartClick}
-      currentCategoryPage={categoryPagination.page}
-      itemsPerPage={categoryPagination.limit}
-      totalCategoryPages={categoryPagination.totalPages || 1}
-      onCategoryPageChange={handleCategoryPageChange}
-    >
+    <Layout>
       <section className="w-full bg-gradient-to-b from-gray-50 to-white py-4 md:py-8 lg:py-16">
         <div className="container mx-auto max-w-7xl px-3 sm:px-4 md:px-6">
           {/* Back Button */}
@@ -179,7 +145,7 @@ const CategoryPage: React.FC = () => {
                   </motion.div>
                   <div className="flex-1">
                     <motion.h1
-                      className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-2"
+                      className="text-lg sm:text-xl md:text-2xl font-bold text-gray-900 mb-1"
                       initial={{ opacity: 0, x: -20 }}
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: 0.1 }}
@@ -395,7 +361,6 @@ const CategoryPage: React.FC = () => {
               <ProductList
                 products={paginatedProducts}
                 onProductClick={handleProductClick}
-                onAddToCart={handleAddToCart}
               />
             )}
           </motion.div>

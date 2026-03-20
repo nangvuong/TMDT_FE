@@ -1,16 +1,18 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
-import { ArrowLeft, Bell, Lock, Globe, User, LogOut } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { ArrowLeft, Bell, Lock, Globe, User, LogOut, MapPin, Plus, Edit, Trash2, Check } from 'lucide-react';
 import Layout from '../../components/layout/Layout';
 import Button from '../../components/common/Button/Button';
 import Input from '../../components/common/Input/Input';
 import Checkbox from '../../components/common/Checkbox/Checkbox';
 import Select from '../../components/common/Select/Select';
-import { useCategories } from '../../hooks/useProduct';
+import Modal from '../../components/common/Modal/Modal';
 import { usePageTitle } from '../../hooks/usePageTitle';
 import { useScrollReset } from '../../hooks/useScrollReset';
 import { useIsLoggedIn, useLogout } from '../../hooks/useAuth';
+import { useAddresses } from '../../hooks/useAddresses';
+import type { Address, CreateAddressDto, UpdateAddressDto } from '../../types';
 
 /**
  * Setting Page - User settings and preferences
@@ -22,18 +24,6 @@ const Setting: React.FC = () => {
 
   usePageTitle('Cài đặt | Fitness Mart');
   useScrollReset([]);
-
-  // Fetch categories for header
-  const {
-    categories,
-    isLoading: isLoadingCategories,
-    pagination: categoryPagination,
-    setPage: setCategoryPage,
-  } = useCategories({ page: 1, limit: 6 });
-
-  // Mock state for header
-
-  const cartCount = 3;
 
   // Settings state
   const [email, setEmail] = useState('user@example.com');
@@ -52,6 +42,28 @@ const Setting: React.FC = () => {
 
   const [language, setLanguage] = useState('vi');
   const [theme, setTheme] = useState('light');
+
+  // Address management state
+  const { 
+    addresses, 
+    loading: addressLoading, 
+    createAddress,
+    updateAddress,
+    deleteAddress,
+    setDefaultAddress,
+  } = useAddresses();
+
+  const [showAddressModal, setShowAddressModal] = useState(false);
+  const [editingAddressId, setEditingAddressId] = useState<string | null>(null);
+  const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
+  const [addressForm, setAddressForm] = useState({
+    street: '',
+    state: '',
+    city: '',
+    isDefault: false,
+  });
+  const [addressSaving, setAddressSaving] = useState(false);
+  const [addressMessage, setAddressMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
 
   const [isSaving, setIsSaving] = useState(false);
   const [saveMessage, setSaveMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
@@ -139,22 +151,105 @@ const Setting: React.FC = () => {
     navigate('/');
   };
 
-  const handleCategoryPageChange = (page: number) => {
-    setCategoryPage(page);
+  // Address management handlers
+  const openAddressModal = (address?: Address) => {
+    if (address) {
+      // Edit mode
+      setEditingAddressId(address.id);
+      setAddressForm({
+        street: address.street,
+        state: address.state,
+        city: address.city,
+        isDefault: address.isDefault,
+      });
+    } else {
+      // Add mode
+      setEditingAddressId(null);
+      setAddressForm({
+        street: '',
+        state: '',
+        city: '',
+        isDefault: false,
+      });
+    }
+    setShowAddressModal(true);
+    setAddressMessage(null);
+  };
+
+  const closeAddressModal = () => {
+    setShowAddressModal(false);
+    setEditingAddressId(null);
+    setAddressForm({
+      street: '',
+      state: '',
+      city: '',
+      isDefault: false,
+    });
+    setAddressMessage(null);
+  };
+
+  const handleSaveAddress = async () => {
+    if (!addressForm.street.trim() || !addressForm.state.trim() || !addressForm.city.trim()) {
+      setAddressMessage({ type: 'error', text: 'Vui lòng điền đầy đủ thông tin địa chỉ!' });
+      return;
+    }
+
+    try {
+      setAddressSaving(true);
+      setAddressMessage(null);
+
+      if (editingAddressId) {
+        // Update
+        const result = await updateAddress(editingAddressId, addressForm as UpdateAddressDto);
+        if (result) {
+          setAddressMessage({ type: 'success', text: 'Cập nhật địa chỉ thành công!' });
+          setTimeout(closeAddressModal, 1000);
+        } else {
+          setAddressMessage({ type: 'error', text: 'Có lỗi xảy ra khi cập nhật địa chỉ!' });
+        }
+      } else {
+        // Create
+        const result = await createAddress(addressForm as CreateAddressDto);
+        if (result) {
+          setAddressMessage({ type: 'success', text: 'Thêm địa chỉ thành công!' });
+          setTimeout(closeAddressModal, 1000);
+        } else {
+          setAddressMessage({ type: 'error', text: 'Có lỗi xảy ra khi thêm địa chỉ!' });
+        }
+      }
+    } finally {
+      setAddressSaving(false);
+    }
+  };
+
+  const handleDeleteAddress = async (id: string) => {
+    try {
+      setAddressSaving(true);
+      const result = await deleteAddress(id);
+      if (result) {
+        setAddressMessage({ type: 'success', text: 'Xoá địa chỉ thành công!' });
+        setDeleteConfirmId(null);
+      } else {
+        setAddressMessage({ type: 'error', text: 'Có lỗi xảy ra khi xoá địa chỉ!' });
+      }
+    } finally {
+      setAddressSaving(false);
+    }
+  };
+
+  const handleSetDefault = async (id: string) => {
+    try {
+      setAddressSaving(true);
+      await setDefaultAddress(id);
+      setAddressMessage({ type: 'success', text: 'Đặt làm địa chỉ mặc định thành công!' });
+    } finally {
+      setAddressSaving(false);
+    }
   };
 
   if (!isLoggedIn) {
     return (
-      <Layout
-        categories={categories}
-        isLoadingCategories={isLoadingCategories}
-        cartCount={cartCount}
-        onCartClick={() => navigate('/cart')}
-        currentCategoryPage={categoryPagination.page}
-        itemsPerPage={categoryPagination.limit}
-        totalCategoryPages={categoryPagination.totalPages || 1}
-        onCategoryPageChange={handleCategoryPageChange}
-      >
+      <Layout>
         <section className="w-full bg-gradient-to-b from-gray-50 to-white py-8 md:py-16 min-h-screen">
           <div className="container mx-auto max-w-7xl px-4 md:px-6">
             <button
@@ -175,16 +270,7 @@ const Setting: React.FC = () => {
   }
 
   return (
-    <Layout
-      categories={categories}
-      isLoadingCategories={isLoadingCategories}
-      cartCount={cartCount}
-      onCartClick={() => navigate('/cart')}
-      currentCategoryPage={categoryPagination.page}
-      itemsPerPage={categoryPagination.limit}
-      totalCategoryPages={categoryPagination.totalPages || 1}
-      onCategoryPageChange={handleCategoryPageChange}
-    >
+    <Layout>
       <section className="w-full bg-gradient-to-b from-gray-50 to-white py-8 md:py-16 min-h-screen pb-20 md:pb-8">
         <div className="container mx-auto max-w-5xl px-4 md:px-6">
           {/* Back Button */}
@@ -202,11 +288,11 @@ const Setting: React.FC = () => {
 
           {/* Page Header */}
           <motion.div
-            className="mb-12"
+            className="mb-8 md:mb-12"
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
           >
-            <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-3">
+            <h1 className="text-4xl md:text-6xl font-bold text-gray-900 mb-2 md:mb-3">
               Cài đặt
             </h1>
             <div className="flex items-center gap-2 text-gray-600">
@@ -471,15 +557,379 @@ const Setting: React.FC = () => {
             </motion.div>
           </div>
 
+          {/* Address Management Section */}
+          <motion.div
+            className="mt-12"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.28 }}
+          >
+            {/* Section Header */}
+            <div className="flex items-center gap-2 md:gap-4 mb-6 md:mb-8">
+              <div className="p-2 md:p-3 bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl">
+                <MapPin size={24} className="md:w-7 md:h-7 text-blue-600" />
+              </div>
+              <div className="min-w-0 flex-1">
+                <h2 className="text-2xl md:text-3xl font-bold text-gray-900 truncate">Địa chỉ giao hàng</h2>
+                <p className="text-xs md:text-sm text-gray-500 mt-0.5 md:mt-1 truncate">Quản lý địa chỉ nhận hàng của bạn</p>
+              </div>
+            </div>
+
+            {/* Address Section Container */}
+            <motion.div
+              className="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 md:p-8 hover:shadow-md transition-shadow"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 }}
+            >
+              {/* Add Address Button */}
+              <div className="mb-6 md:mb-8">
+                <motion.button
+                  onClick={() => openAddressModal()}
+                  className="w-full md:w-auto inline-flex items-center justify-center md:justify-start gap-2 px-4 md:px-6 py-2.5 md:py-3 bg-blue-600 text-white rounded-lg md:rounded-xl hover:bg-blue-700 transition-all shadow-sm hover:shadow-md font-semibold text-sm md:text-base"
+                  whileHover={{ y: -2 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  <Plus size={18} className="md:w-5 md:h-5" />
+                  Thêm địa chỉ
+                </motion.button>
+              </div>
+
+              {/* Address Message */}
+              <AnimatePresence>
+                {addressMessage && (
+                  <motion.div
+                    className={`mb-6 p-4 rounded-xl border-l-4 flex items-start gap-3 ${
+                      addressMessage.type === 'success'
+                        ? 'bg-green-50 border-l-green-500 text-green-900'
+                        : 'bg-red-50 border-l-red-500 text-red-900'
+                    }`}
+                    initial={{ opacity: 0, y: -10, x: -20 }}
+                    animate={{ opacity: 1, y: 0, x: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                  >
+                    <div className="mt-0.5 text-lg">
+                      {addressMessage.type === 'success' ? '✓' : '⚠'}
+                    </div>
+                    <p className="font-medium">{addressMessage.text}</p>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+
+              {/* Address List */}
+              {addressLoading ? (
+                <motion.div
+                  className="text-center py-12"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                >
+                  <div className="inline-flex items-center justify-center w-12 h-12 bg-blue-50 rounded-full mb-4">
+                    <div className="w-6 h-6 border-2 border-blue-200 border-t-blue-600 rounded-full animate-spin" />
+                  </div>
+                  <p className="text-gray-600 font-medium">Đang tải địa chỉ...</p>
+                </motion.div>
+              ) : addresses.length === 0 ? (
+                <motion.div
+                  className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-6 md:p-12 text-center border border-blue-200"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                >
+                  <MapPin size={40} className="md:w-12 md:h-12 text-blue-300 mx-auto mb-3 md:mb-4" />
+                  <h3 className="text-base md:text-lg font-bold text-gray-900 mb-1 md:mb-2">Chưa có địa chỉ nào</h3>
+                  <p className="text-xs md:text-sm text-gray-600 mb-4 md:mb-6">Thêm địa chỉ giao hàng đầu tiên của bạn</p>
+                  <motion.button
+                    onClick={() => openAddressModal()}
+                    className="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-all font-semibold"
+                    whileHover={{ y: -2 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    <Plus size={18} />
+                    Thêm địa chỉ đầu tiên
+                  </motion.button>
+                </motion.div>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-6 mb-6 md:mb-8">
+                  <AnimatePresence>
+                    {addresses.map((address, idx) => (
+                      <motion.div
+                        key={address.id}
+                        className={`relative rounded-xl md:rounded-2xl shadow-sm border transition-all hover:shadow-md group ${
+                          address.isDefault
+                            ? 'bg-gradient-to-br from-blue-50 to-white border-blue-200'
+                            : 'bg-white border-gray-100 hover:border-blue-200'
+                        }`}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -20 }}
+                        transition={{ delay: idx * 0.05 }}
+                      >
+                        {/* Default Badge */}
+                        <AnimatePresence>
+                          {address.isDefault && (
+                            <motion.div
+                              className="absolute top-2 right-2 md:top-4 md:right-4 inline-flex items-center gap-1 px-2 md:px-3 py-0.5 md:py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-bold"
+                              initial={{ opacity: 0, scale: 0.8 }}
+                              animate={{ opacity: 1, scale: 1 }}
+                            >
+                              <Check size={12} className="md:w-3.5 md:h-3.5 stroke-[3]" />
+                              <span className="hidden sm:inline">Mặc định</span>
+                            </motion.div>
+                          )}
+                        </AnimatePresence>
+
+                        {/* Address Content */}
+                        <div className="p-4 md:p-6">
+                          {/* Address Header */}
+                          <div className="mb-3 md:mb-4">
+                            <h3 className="text-base md:text-lg font-bold text-gray-900 line-clamp-1">
+                              {address.street}
+                            </h3>
+                            <p className="text-xs md:text-sm text-gray-600 mt-1 line-clamp-1">
+                              {address.state}, {address.city}
+                            </p>
+                          </div>
+
+                          {/* Action Buttons */}
+                          <div className="flex flex-col sm:flex-row gap-2">
+                            {!address.isDefault && (
+                              <motion.button
+                                onClick={() => handleSetDefault(address.id)}
+                                className="flex-1 px-2 md:px-3 py-2 md:py-2.5 text-xs md:text-sm font-semibold text-blue-600 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors border border-blue-200 hover:border-blue-300"
+                                whileHover={{ y: -1 }}
+                                whileTap={{ scale: 0.95 }}
+                                title="Đặt làm địa chỉ mặc định"
+                              >
+                                <Check size={13} className="md:w-3.5 md:h-3.5 inline mr-1" />
+                                <span className="hidden xs:inline">Mặc định</span>
+                              </motion.button>
+                            )}
+                            <motion.button
+                              onClick={() => openAddressModal(address)}
+                              className="flex-1 px-2 md:px-3 py-2 md:py-2.5 text-xs md:text-sm font-semibold text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors border border-gray-200 hover:border-gray-300"
+                              whileHover={{ y: -1 }}
+                              whileTap={{ scale: 0.95 }}
+                              title="Chỉnh sửa địa chỉ"
+                            >
+                              <Edit size={13} className="md:w-3.5 md:h-3.5 inline mr-1" />
+                              <span className="hidden xs:inline">Sửa</span>
+                            </motion.button>
+                            <motion.button
+                              onClick={() => setDeleteConfirmId(address.id)}
+                              className="flex-1 px-2 md:px-3 py-2 md:py-2.5 text-xs md:text-sm font-semibold text-red-600 bg-red-50 rounded-lg hover:bg-red-100 transition-colors border border-red-200 hover:border-red-300"
+                              whileHover={{ y: -1 }}
+                              whileTap={{ scale: 0.95 }}
+                              title="Xoá địa chỉ"
+                            >
+                              <Trash2 size={13} className="md:w-3.5 md:h-3.5 inline mr-1" />
+                              <span className="hidden xs:inline">Xoá</span>
+                            </motion.button>
+                          </div>
+                        </div>
+
+                        {/* Delete Confirmation Modal */}
+                        <AnimatePresence>
+                          {deleteConfirmId === address.id && (
+                            <motion.div
+                              className="absolute inset-0 bg-black/40 rounded-2xl flex items-center justify-center backdrop-blur-sm z-50"
+                              initial={{ opacity: 0 }}
+                              animate={{ opacity: 1 }}
+                              exit={{ opacity: 0 }}
+                              onClick={() => setDeleteConfirmId(null)}
+                            >
+                              <motion.div
+                                className="bg-white rounded-xl p-6 text-center max-w-xs"
+                                initial={{ scale: 0.9, y: 20 }}
+                                animate={{ scale: 1, y: 0 }}
+                                exit={{ scale: 0.9, y: 20 }}
+                                onClick={(e) => e.stopPropagation()}
+                              >
+                                <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                                  <Trash2 size={24} className="text-red-600" />
+                                </div>
+                                <h3 className="text-lg font-bold text-gray-900 mb-2">
+                                  Xác nhận xoá
+                                </h3>
+                                <p className="text-sm text-gray-600 mb-6">
+                                  Bạn có chắc chắn muốn xoá địa chỉ này? Hành động này không thể hoàn tác.
+                                </p>
+                                <div className="flex gap-3">
+                                  <motion.button
+                                    onClick={() => setDeleteConfirmId(null)}
+                                    className="flex-1 px-4 py-2 text-gray-700 font-semibold bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+                                    whileHover={{ y: -1 }}
+                                    whileTap={{ scale: 0.95 }}
+                                  >
+                                    Huỷ
+                                  </motion.button>
+                                  <motion.button
+                                    onClick={() => handleDeleteAddress(address.id)}
+                                    disabled={addressSaving}
+                                    className="flex-1 px-4 py-2 bg-red-600 text-white font-semibold rounded-lg hover:bg-red-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                    whileHover={{ y: -1 }}
+                                    whileTap={{ scale: 0.95 }}
+                                  >
+                                    {addressSaving ? 'Đang xoá...' : 'Xoá'}
+                                  </motion.button>
+                                </div>
+                              </motion.div>
+                            </motion.div>
+                          )}
+                        </AnimatePresence>
+                      </motion.div>
+                    ))}
+                  </AnimatePresence>
+                </div>
+              )}
+
+              {/* Add/Edit Address Form Modal */}
+              <Modal 
+                isOpen={showAddressModal} 
+                onClose={closeAddressModal}
+                size="sm"
+                closeButton={true}
+                header={
+                  <div>
+                    <h2 className="text-xl md:text-2xl font-bold text-gray-900">
+                      {editingAddressId ? 'Chỉnh sửa địa chỉ' : 'Thêm địa chỉ mới'}
+                    </h2>
+                    <p className="text-xs md:text-sm text-gray-500 mt-1">
+                      {editingAddressId ? 'Cập nhật thông tin địa chỉ' : 'Thêm một địa chỉ giao hàng'}
+                    </p>
+                  </div>
+                }
+                footer={
+                  <div className="flex flex-col-reverse md:flex-row gap-2 md:gap-3">
+                    <motion.button
+                      onClick={closeAddressModal}
+                      className="flex-1 px-3 md:px-4 py-2.5 md:py-2 text-sm md:text-base text-gray-700 font-semibold bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors border border-gray-200"
+                      whileHover={{ y: -1 }}
+                      whileTap={{ scale: 0.95 }}
+                    >
+                      Huỷ
+                    </motion.button>
+                    <motion.button
+                      onClick={handleSaveAddress}
+                      disabled={addressSaving}
+                      className="flex-1 px-3 md:px-4 py-2.5 md:py-2 text-sm md:text-base bg-gradient-to-r from-blue-600 to-blue-500 text-white font-semibold rounded-lg hover:from-blue-700 hover:to-blue-600 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                      whileHover={{ y: -1 }}
+                      whileTap={{ scale: 0.95 }}
+                    >
+                      {addressSaving ? 'Đang lưu...' : editingAddressId ? 'Cập nhật' : 'Thêm địa chỉ'}
+                    </motion.button>
+                  </div>
+                }
+              >
+                {/* Form Message */}
+                <AnimatePresence>
+                  {addressMessage && (
+                    <motion.div
+                      className={`-mx-6 -mt-4 mb-6 px-6 py-3 md:py-4 rounded-t-2xl border-l-4 flex items-start gap-3 ${
+                        addressMessage.type === 'success'
+                          ? 'bg-green-50 border-l-green-500 text-green-900'
+                          : 'bg-red-50 border-l-red-500 text-red-900'
+                      }`}
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -10 }}
+                    >
+                      <div className="mt-0.5 text-lg md:text-xl flex-shrink-0 leading-none">
+                        {addressMessage.type === 'success' ? '✓' : '⚠'}
+                      </div>
+                      <p className="font-medium text-xs md:text-sm leading-relaxed">
+                        {addressMessage.text}
+                      </p>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+
+                {/* Form Fields */}
+                <div className={`space-y-3 md:space-y-4 ${addressMessage ? 'mt-4' : ''}`}>
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.05 }}
+                  >
+                    <label className="block text-xs md:text-sm font-semibold text-gray-900 mb-1.5 md:mb-2">
+                      Đường/Phố <span className="text-red-500">*</span>
+                    </label>
+                    <Input
+                      value={addressForm.street}
+                      onChange={(e) =>
+                        setAddressForm({ ...addressForm, street: e.target.value })
+                      }
+                      placeholder="Ví dụ: 123 Trần Phú"
+                      autoComplete="street-address"
+                    />
+                  </motion.div>
+
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.1 }}
+                  >
+                    <label className="block text-xs md:text-sm font-semibold text-gray-900 mb-1.5 md:mb-2">
+                      Quận/Huyện <span className="text-red-500">*</span>
+                    </label>
+                    <Input
+                      value={addressForm.state}
+                      onChange={(e) =>
+                        setAddressForm({ ...addressForm, state: e.target.value })
+                      }
+                      placeholder="Ví dụ: Hà Đông"
+                      autoComplete="address-level2"
+                    />
+                  </motion.div>
+
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.15 }}
+                  >
+                    <label className="block text-xs md:text-sm font-semibold text-gray-900 mb-1.5 md:mb-2">
+                      Thành phố/Tỉnh <span className="text-red-500">*</span>
+                    </label>
+                    <Input
+                      value={addressForm.city}
+                      onChange={(e) =>
+                        setAddressForm({ ...addressForm, city: e.target.value })
+                      }
+                      placeholder="Ví dụ: Hà Nội"
+                      autoComplete="address-level1"
+                    />
+                  </motion.div>
+
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.2 }}
+                    className="pt-1 md:pt-2"
+                  >
+                    <Checkbox
+                      label="Đặt làm địa chỉ mặc định"
+                      checked={addressForm.isDefault}
+                      onChange={(e) =>
+                        setAddressForm({ ...addressForm, isDefault: e.target.checked })
+                      }
+                      size="md"
+                    />
+                    <p className="text-xs text-gray-500 mt-1.5 md:mt-2 ml-6">
+                      Địa chỉ mặc định sẽ được dùng cho các đơn hàng tiếp theo
+                    </p>
+                  </motion.div>
+                </div>
+              </Modal>
+            </motion.div>
+          </motion.div>
+
           {/* Logout Section */}
           <motion.div
-            className="mt-8 bg-gradient-to-br from-red-50 to-red-100 rounded-2xl shadow-sm border border-red-200 p-8"
+            className="mt-12 bg-gradient-to-br from-red-50 to-red-100 rounded-2xl shadow-sm border border-red-200 p-8"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
           >
             <div className="flex items-center gap-4 mb-6">
-              <div className="p-3 bg-white rounded-xl">
+              <div className="p-3 bg-white rounded-xl shadow-sm">
                 <LogOut size={28} className="text-red-600" />
               </div>
               <div>
@@ -489,13 +939,13 @@ const Setting: React.FC = () => {
             </div>
 
             <p className="text-red-800 font-medium mb-6">
-              Bạn sẽ cần đăng nhập lại để truy cập tài khoản của mình
+              Bạn sẽ cần đăng nhập lại để tiếp tục sử dụng tài khoản của mình.
             </p>
 
-            <motion.div whileHover={{ y: -2 }} whileTap={{ y: 0 }}>
+            <motion.div whileHover={{ y: -2 }} whileTap={{ scale: 0.95 }}>
               <Button
                 onClick={handleLogout}
-                className="w-full bg-gradient-to-r from-red-600 to-red-500 text-white hover:from-red-700 hover:to-red-600 font-semibold py-3 rounded-xl flex items-center justify-center gap-2"
+                className="w-full bg-gradient-to-r from-red-600 to-red-500 text-white hover:from-red-700 hover:to-red-600 font-semibold py-3 rounded-xl flex items-center justify-center gap-2 transition-all"
               >
                 <LogOut size={20} />
                 Đăng xuất ngay

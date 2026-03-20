@@ -11,3 +11,5 @@ export {
   useCategories,
   useCategory,
 } from './useProduct';
+export { useCoupon } from './useCoupon';
+export { useAddresses } from './useAddresses';

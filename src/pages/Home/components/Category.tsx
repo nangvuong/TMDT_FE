@@ -65,7 +65,7 @@ const Category: React.FC = () => {
           className="text-center mb-12"
           initial={{ opacity: 0, y: -20 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
+          viewport={{ once: false }}
           transition={{ type: 'spring', stiffness: 300 }}
         >
           <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">
@@ -104,7 +104,7 @@ const Category: React.FC = () => {
               variants={containerVariants}
               initial="hidden"
               whileInView="visible"
-              viewport={{ once: true }}
+              viewport={{ once: false }}
             >
               {categories.map((category) => (
                 <motion.div
@@ -189,7 +189,7 @@ const Category: React.FC = () => {
                 className="flex items-center justify-center gap-4 mt-8 md:mt-12"
                 initial={{ opacity: 0, y: 10 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
+                viewport={{ once: false }}
                 transition={{ delay: 0.3 }}
               >
                 <motion.button

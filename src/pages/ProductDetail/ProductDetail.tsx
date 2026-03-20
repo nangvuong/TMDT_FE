@@ -6,9 +6,9 @@ import Layout from '../../components/layout/Layout';
 import ProductInfo from './components/ProductInfo';
 import ProductTabs from './components/ProductTabs';
 import ProductSkeleton from '../../components/loading/ProductSkeleton';
-import { useCategories } from '../../hooks/useProduct';
 import { usePageTitle } from '../../hooks/usePageTitle';
 import { useScrollReset } from '../../hooks/useScrollReset';
+import { useCart } from '../../hooks/useCart';
 import productService from '../../services/productService';
 import type { Product } from '../../types/product';
 
@@ -18,6 +18,7 @@ import type { Product } from '../../types/product';
 const ProductDetail: React.FC = () => {
   const navigate = useNavigate();
   const { productId } = useParams<{ productId: string }>();
+  const { addItem: addToCart, isLoading: isAddingToCart } = useCart();
   
   const [product, setProduct] = useState<Product | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -25,20 +26,6 @@ const ProductDetail: React.FC = () => {
 
   usePageTitle('Product Detail | Fitness Mart');
   useScrollReset([productId]);
-
-  // Fetch categories for header
-  const {
-    categories,
-    isLoading: isLoadingCategories,
-    pagination: categoryPagination,
-    setPage: setCategoryPage,
-  } = useCategories({ page: 1, limit: 6 });
-
-  // Get authentication status
-
-  // Mock state for header
-
-  const cartCount = 3;
 
   // Fetch product details
   useEffect(() => {
@@ -66,38 +53,28 @@ const ProductDetail: React.FC = () => {
     fetchProduct();
   }, [productId]);
 
-  const handleAddToCart = (id: string, quantity: number) => {
-    console.log(`Added ${quantity} of product ${id} to cart`);
-    // TODO: Implement add to cart logic
+  const handleAddToCart = async (id: string, quantity: number) => {
+    try {
+      await addToCart(id, quantity);
+      // Optional: Show success message
+    } catch (err) {
+      console.error('Failed to add to cart:', err);
+    }
   };
 
-  const handleBuyNow = (id: string, quantity: number) => {
-    console.log(`Buy now: ${quantity} of product ${id}`);
-    // TODO: Implement buy now logic
-  };
-
-  const handleCartClick = () => {
-    console.log('Cart clicked');
-  };
-
-
-
-  const handleCategoryPageChange = (page: number) => {
-    setCategoryPage(page);
+  const handleBuyNow = async (id: string, quantity: number) => {
+    try {
+      await addToCart(id, quantity);
+      // Navigate to checkout
+      navigate('/checkout');
+    } catch (err) {
+      console.error('Failed to proceed to checkout:', err);
+    }
   };
 
   if (error && !product) {
     return (
-      <Layout
-        categories={categories}
-        isLoadingCategories={isLoadingCategories}
-        cartCount={cartCount}
-        onCartClick={handleCartClick}
-        currentCategoryPage={categoryPagination.page}
-        itemsPerPage={categoryPagination.limit}
-        totalCategoryPages={categoryPagination.totalPages || 1}
-        onCategoryPageChange={handleCategoryPageChange}
-      >
+      <Layout>
         <section className="w-full bg-gradient-to-b from-gray-50 to-white py-4 md:py-8 lg:py-16">
           <div className="container mx-auto max-w-7xl px-3 sm:px-4 md:px-6">
             <button
@@ -117,16 +94,7 @@ const ProductDetail: React.FC = () => {
   }
 
   return (
-    <Layout
-      categories={categories}
-      isLoadingCategories={isLoadingCategories}
-      cartCount={cartCount}
-      onCartClick={handleCartClick}
-      currentCategoryPage={categoryPagination.page}
-      itemsPerPage={categoryPagination.limit}
-      totalCategoryPages={categoryPagination.totalPages || 1}
-      onCategoryPageChange={handleCategoryPageChange}
-    >
+    <Layout>
       <section className="w-full bg-gradient-to-b from-gray-50 to-white py-4 md:py-8 lg:py-16">
         <div className="container mx-auto max-w-7xl px-3 sm:px-4 md:px-6">
           {/* Back Button */}
@@ -152,7 +120,7 @@ const ProductDetail: React.FC = () => {
               transition={{ duration: 0.5 }}
             >
               {isLoading ? (
-                <div className="h-64 sm:h-80 md:h-96 lg:h-[500px] bg-gray-200 rounded-lg animate-pulse" />
+                <div className="h-48 sm:h-64 md:h-80 lg:h-96 bg-gray-200 rounded-lg animate-pulse" />
               ) : product?.images && product.images.length > 0 ? (
                 <motion.img
                   src={product.images[0]}
@@ -162,7 +130,7 @@ const ProductDetail: React.FC = () => {
                   animate={{ opacity: 1 }}
                 />
               ) : (
-                <div className="h-64 sm:h-80 md:h-96 lg:h-[500px] bg-gray-200 rounded-lg flex items-center justify-center">
+                <div className="h-48 sm:h-64 md:h-80 lg:h-96 bg-gray-200 rounded-lg flex items-center justify-center">
                   <span className="text-gray-500 text-sm sm:text-base">No image available</span>
                 </div>
               )}
@@ -193,6 +161,7 @@ const ProductDetail: React.FC = () => {
               ) : product ? (
                 <ProductInfo
                   product={product}
+                  isLoading={isAddingToCart}
                   onAddToCart={handleAddToCart}
                   onBuyNow={handleBuyNow}
                 />

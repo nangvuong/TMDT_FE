@@ -11,7 +11,6 @@ import ProfileSkeleton from '../../components/loading/ProfileSkeleton';
 import { useProfile } from '../../hooks/useProfile';
 import { useIsLoggedIn } from '../../hooks/useAuth';
 import { usePageTitle } from '../../hooks/usePageTitle';
-import { useCategories } from '../../hooks/useProduct';
 import { useScrollReset } from '../../hooks/useScrollReset';
 import type { PhysicalProfile, FitnessGoal } from '../../types/user';
 
@@ -25,18 +24,6 @@ const Profile: React.FC = () => {
 
   const { isLoggedIn } = useIsLoggedIn();
   const { profile, loading, error, fetchProfile, updateProfile } = useProfile();
-
-  // Categories for header
-  const { 
-    categories, 
-    isLoading: isLoadingCategories, 
-    pagination,
-    setPage: setCategoryPage 
-  } = useCategories({ page: 1, limit: 6 });
-
-  // Mock state for header
-
-  const cartCount = 3;
 
   // Form state
   const [formData, setFormData] = useState<Partial<PhysicalProfile>>({
@@ -140,15 +127,7 @@ const Profile: React.FC = () => {
   };
 
   return (
-    <Layout
-      categories={categories}
-      isLoadingCategories={isLoadingCategories}
-      cartCount={cartCount}
-      currentCategoryPage={pagination.page}
-      itemsPerPage={pagination.limit}
-      totalCategoryPages={pagination.totalPages}
-      onCategoryPageChange={(page) => setCategoryPage(page)}
-    >
+    <Layout>
       <div className="w-full bg-gradient-to-b from-gray-50 to-white min-h-screen">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-16">
           {/* Back Button */}

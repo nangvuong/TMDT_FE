@@ -6,9 +6,7 @@ import Layout from '../../components/layout/Layout';
 import Button from '../../components/common/Button/Button';
 import ProductList from '../../components/product/ProductList';
 import { useWishlist } from '../../hooks/useWishlist';
-import { useCart } from '../../hooks/useCart';
 import { useIsLoggedIn } from '../../hooks/useAuth';
-import { useCategories } from '../../hooks/useProduct';
 import { useScrollReset } from '../../hooks/useScrollReset';
 import { usePageTitle } from '../../hooks/usePageTitle';
 
@@ -16,19 +14,10 @@ const Wishlist: React.FC = () => {
   const navigate = useNavigate();
   const { isLoggedIn } = useIsLoggedIn();
   const { items, isLoading, error, pagination, setPage, refresh } = useWishlist();
-  const { addToCart } = useCart();
 
   // Reset scroll position and update page title
   useScrollReset();
   usePageTitle('Whislist | Fitness Mart');
-
-  // Fetch categories for header
-  const {
-    categories,
-    isLoading: isLoadingCategories,
-    pagination: categoryPagination,
-    setPage: setCategoryPage,
-  } = useCategories({ page: 1, limit: 6 });
 
   // Redirect to login if not authenticated
   useEffect(() => {
@@ -37,17 +26,6 @@ const Wishlist: React.FC = () => {
     }
   }, [isLoggedIn, navigate]);
 
-  const handleAddToCart = async (productId: string) => {
-    try {
-      await addToCart({
-        productId,
-        quantity: 1,
-      });
-    } catch (err) {
-      console.error('Failed to add to cart:', err);
-    }
-  };
-
   const handleProductClick = (productId: string) => {
     navigate(`/products/${productId}`);
   };
@@ -55,15 +33,7 @@ const Wishlist: React.FC = () => {
   // Loading state
   if (isLoading && items.length === 0) {
     return (
-      <Layout
-        categories={categories}
-        isLoadingCategories={isLoadingCategories}
-        cartCount={0}
-        currentCategoryPage={categoryPagination.page}
-        itemsPerPage={categoryPagination.limit}
-        totalCategoryPages={categoryPagination.totalPages || 1}
-        onCategoryPageChange={(page) => setCategoryPage(page)}
-      >
+      <Layout>
         <section className="w-full bg-gradient-to-b from-gray-50 to-white py-8 md:py-16">
           <div className="container mx-auto max-w-7xl px-4 md:px-6">
           {/* Back Button */}
@@ -178,15 +148,7 @@ const Wishlist: React.FC = () => {
   // Empty state
   if (!isLoading && items.length === 0) {
     return (
-      <Layout
-        categories={categories}
-        isLoadingCategories={isLoadingCategories}
-        cartCount={0}
-        currentCategoryPage={categoryPagination.page}
-        itemsPerPage={categoryPagination.limit}
-        totalCategoryPages={categoryPagination.totalPages || 1}
-        onCategoryPageChange={(page) => setCategoryPage(page)}
-      >
+      <Layout>
         <section className="w-full bg-gradient-to-b from-gray-50 to-white py-8 md:py-16">
           <div className="container mx-auto max-w-7xl px-4 md:px-6">
             <motion.button
@@ -266,15 +228,7 @@ const Wishlist: React.FC = () => {
   // Error state
   if (error) {
     return (
-      <Layout
-        categories={categories}
-        isLoadingCategories={isLoadingCategories}
-        cartCount={0}
-        currentCategoryPage={categoryPagination.page}
-        itemsPerPage={categoryPagination.limit}
-        totalCategoryPages={categoryPagination.totalPages || 1}
-        onCategoryPageChange={(page) => setCategoryPage(page)}
-      >
+      <Layout>
         <section className="w-full bg-gradient-to-b from-gray-50 to-white py-8 md:py-16">
           <div className="container mx-auto max-w-7xl px-4 md:px-6">
             <motion.button
@@ -366,15 +320,7 @@ const Wishlist: React.FC = () => {
   }
 
   return (
-    <Layout
-      categories={categories}
-      isLoadingCategories={isLoadingCategories}
-      cartCount={0}
-      currentCategoryPage={categoryPagination.page}
-      itemsPerPage={categoryPagination.limit}
-      totalCategoryPages={categoryPagination.totalPages || 1}
-      onCategoryPageChange={(page) => setCategoryPage(page)}
-    >
+    <Layout>
       <section className="w-full bg-gradient-to-b from-gray-50 to-white py-4 md:py-8 lg:py-16">
         <div className="container mx-auto max-w-7xl px-3 sm:px-4 md:px-6">
           {/* Back Button */}
@@ -440,7 +386,6 @@ const Wishlist: React.FC = () => {
               isLoading={isLoading}
               isEmpty={items.length === 0}
               onProductClick={handleProductClick}
-              onAddToCart={handleAddToCart}
             />
           </div>
 

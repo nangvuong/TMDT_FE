@@ -3,6 +3,7 @@ import type { Cart } from '../types/product';
 import cartService, { type AddToCartPayload } from '../services/cartService';
 import { useIsLoggedIn } from './useAuth';
 import { useCountersContext } from '../contexts/CountersContext';
+import { cacheManager } from '../utils/cache';
 
 export const useCart = () => {
   const { isLoggedIn } = useIsLoggedIn();
@@ -25,10 +26,10 @@ export const useCart = () => {
   useEffect(() => {
     const count = getCartCount();
     setCartCount(count);
-  }, [cart, getCartCount, setCartCount]);
+  }, [cart, setCartCount]);
 
   /**
-   * Fetch user's cart (GET /cart)
+   * Fetch user's cart (GET /cart) with caching
    */
   const fetchCart = useCallback(async () => {
     if (!isLoggedIn) {
@@ -39,8 +40,19 @@ export const useCart = () => {
     setIsLoading(true);
     setError(null);
     try {
+      // Try to get from cache first
+      const cachedCart = cacheManager.get<Cart>('cart');
+      if (cachedCart) {
+        setCart(cachedCart);
+        setIsLoading(false);
+        return;
+      }
+
+      // If no cache, fetch from API
       const data = await cartService.getCart();
       setCart(data);
+      // Cache the result for 5 minutes
+      cacheManager.set('cart', data, 5 * 60 * 1000);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to fetch cart');
     } finally {
@@ -86,7 +98,11 @@ export const useCart = () => {
           }
           
           // Update cart totals (these should come from the backend)
-          setCart({ ...cart });
+          const updatedCart = { ...cart };
+          setCart(updatedCart);
+          // Invalidate and re-cache with new cart data
+          cacheManager.clear('cart');
+          cacheManager.set('cart', updatedCart, 5 * 60 * 1000);
         }
         
         return newItem;
@@ -125,10 +141,14 @@ export const useCart = () => {
         
         // Update local cart state
         if (cart && cart.items) {
-          setCart({
+          const updatedCart = {
             ...cart,
             items: cart.items.filter((item) => item.id !== itemId),
-          });
+          };
+          setCart(updatedCart);
+          // Invalidate and re-cache with new cart data
+          cacheManager.clear('cart');
+          cacheManager.set('cart', updatedCart, 5 * 60 * 1000);
         }
       } catch (err) {
         const errorMessage = err instanceof Error ? err.message : 'Failed to remove item from cart';

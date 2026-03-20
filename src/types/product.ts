@@ -84,9 +84,76 @@ export interface Order {
   userId: string; // FK to Users
   status: OrderStatus;
   totalAmount: number;
+  discountAmount?: number;
+  couponId?: string;
+  couponCode?: string;
   shippingAddress: string;
   items?: OrderItem[];
+  coupon?: Coupon;
   createdAt: string;
   updatedAt: string;
+}
+
+export type DiscountType = 'PERCENTAGE' | 'FIXED_AMOUNT';
+
+export const DISCOUNT_TYPE = {
+  PERCENTAGE: 'PERCENTAGE' as const,
+  FIXED_AMOUNT: 'FIXED_AMOUNT' as const,
+} as const;
+
+export interface Coupon {
+  id: string; // UUID
+  code: string;
+  discountType: DiscountType;
+  discountValue: number;
+  minOrderAmount: number;
+  maxDiscountAmount?: number;
+  usageLimit: number;
+  usedCount: number;
+  startDate: string;
+  endDate: string;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface ValidateCouponResponse {
+  id: string;
+  code: string;
+  discountType: DiscountType;
+  discountValue: number;
+  minOrderAmount: number;
+  maxDiscountAmount?: number;
+  usageLimit: number;
+  usedCount: number;
+  startDate: string;
+  endDate: string;
+  isActive: boolean;
+}
+
+// ============= ADDRESSES =============
+export interface Address {
+  id: string; // UUID
+  street: string;
+  state: string;
+  city: string;
+  isDefault: boolean;
+  userId: string; // FK to Users
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface CreateAddressDto {
+  street: string;
+  state: string;
+  city: string;
+  isDefault?: boolean;
+}
+
+export interface UpdateAddressDto {
+  street?: string;
+  state?: string;
+  city?: string;
+  isDefault?: boolean;
 }
 

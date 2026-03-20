@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import Layout from '../../components/layout/Layout';
 import { usePageTitle } from '../../hooks/usePageTitle';
-import { useCategories } from '../../hooks/useProduct';
 import Input from '../../components/common/Input/Input';
 import Button from '../../components/common/Button/Button';
 import { Mail, Phone, MapPin } from 'lucide-react';
@@ -11,32 +10,7 @@ import { useScrollReset } from '../../hooks/useScrollReset';
 const ContactPage: React.FC = () => {
   usePageTitle('Liên Hệ | Fitness Mart');
   useScrollReset();
-  
-  // Fetch categories for header
-  const {
-    categories,
-    isLoading: isLoadingCategories,
-    pagination: categoryPagination,
-    setPage: setCategoryPage,
-  } = useCategories({ page: 1, limit: 6 });
 
-  // Auth check
-  // Support page content
-
-  // Mock state for header
-
-  const cartCount = 3;
-  
-
-  const handleCartClick = () => {
-    console.log('Cart clicked');
-  };
-
-
-
-  const handleCategoryPageChange = (page: number) => {
-    setCategoryPage(page);
-  };
 
   const [formData, setFormData] = useState({
     name: '',
@@ -78,16 +52,7 @@ const ContactPage: React.FC = () => {
   ];
 
   return (
-    <Layout
-      categories={categories}
-      isLoadingCategories={isLoadingCategories}
-      cartCount={cartCount}
-      onCartClick={handleCartClick}
-      currentCategoryPage={categoryPagination.page}
-      itemsPerPage={categoryPagination.limit}
-      totalCategoryPages={categoryPagination.totalPages || 1}
-      onCategoryPageChange={handleCategoryPageChange}
-    >
+    <Layout>
       <section className="w-full bg-white py-12 md:py-16">
         <div className="container mx-auto max-w-7xl px-4 md:px-6">
           <motion.div

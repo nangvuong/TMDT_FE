@@ -4,6 +4,8 @@ import { ORDERS_ENDPOINTS, QUERY_PARAMS, DEFAULT_PAGINATION } from '../constants
 
 export interface CheckoutPayload {
   shippingAddress: string;
+  couponCode?: string;
+  notes?: string;
 }
 
 export interface GetOrdersParams {

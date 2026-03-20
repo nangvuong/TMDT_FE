@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ShoppingCart, Heart, Star } from 'lucide-react';
-import Button from '../common/Button/Button';
+import { ShoppingCart, Heart, Star, Check } from 'lucide-react';
 import { useWishlist } from '../../hooks/useWishlist';
 import { useIsLoggedIn } from '../../hooks/useAuth';
+import { useCart } from '../../hooks/useCart';
 import { formatVND } from '../../utils/formatPrice';
 
 interface ProductCardProps {
@@ -18,7 +18,6 @@ interface ProductCardProps {
   averageRating?: number | string;
   reviewCount?: number;
   onClick?: () => void;
-  onAddToCart?: () => void;
 }
 
 const ProductCard: React.FC<ProductCardProps> = ({
@@ -32,13 +31,15 @@ const ProductCard: React.FC<ProductCardProps> = ({
   averageRating,
   reviewCount = 0,
   onClick,
-  onAddToCart,
 }) => {
   const navigate = useNavigate();
   const { isLoggedIn } = useIsLoggedIn();
   const { items: wishlistItems, toggleWishlist, isLoading: isTogglingWishlist } = useWishlist();
+  const { addItem } = useCart();
   const [isInWishlist, setIsInWishlist] = useState(false);
   const [isAddingToWishlist, setIsAddingToWishlist] = useState(false);
+  const [isAddingToCart, setIsAddingToCart] = useState(false);
+  const [addedSuccess, setAddedSuccess] = useState(false);
 
   const isInStock = stock > 0;
   const rating = typeof averageRating === 'string' ? parseFloat(averageRating) : (averageRating || 0);
@@ -70,6 +71,27 @@ const ProductCard: React.FC<ProductCardProps> = ({
       console.error('Failed to toggle wishlist:', err);
     } finally {
       setIsAddingToWishlist(false);
+    }
+  };
+
+  const handleAddToCart = async () => {
+    // Check if user is logged in
+    if (!isLoggedIn) {
+      navigate('/login', { state: { returnTo: window.location.pathname } });
+      return;
+    }
+
+    try {
+      setIsAddingToCart(true);
+      await addItem(id, 1);
+      
+      // Show success feedback
+      setAddedSuccess(true);
+      setTimeout(() => setAddedSuccess(false), 2000);
+    } catch (err) {
+      console.error('Failed to add to cart:', err);
+    } finally {
+      setIsAddingToCart(false);
     }
   };
   const tagColors: Record<string, string> = {
@@ -167,7 +189,10 @@ const ProductCard: React.FC<ProductCardProps> = ({
           disabled={isAddingToWishlist || isTogglingWishlist}
           title={isLoggedIn ? (isInWishlist ? 'Xóa khỏi yêu thích' : 'Thêm vào yêu thích') : 'Đăng nhập để thêm vào yêu thích'}
         >
-          <Heart size={18} className="text-red-500" />
+          <Heart 
+            size={18} 
+            className={isInWishlist ? 'fill-red-500 text-red-500' : 'text-red-500'}
+          />
         </motion.button>
       </motion.div>
 
@@ -227,18 +252,35 @@ const ProductCard: React.FC<ProductCardProps> = ({
         </p>
 
         {/* Buttons */}
-        <Button
-          onClick={onAddToCart}
-          variant="primary"
-          size="md"
-          disabled={!isInStock}
-          fullWidth
-          className="text-xs sm:text-sm mt-2 sm:mt-3 md:mt-4"
+        <motion.button
+          onClick={handleAddToCart}
+          disabled={!isInStock || isAddingToCart}
+          className={`w-full py-2 sm:py-2.5 px-3 sm:px-4 rounded-lg font-medium text-xs sm:text-sm flex items-center justify-center gap-2 transition-all duration-200 mt-2 sm:mt-3 md:mt-4 ${
+            addedSuccess
+              ? 'bg-emerald-600 text-white'
+              : isInStock
+              ? 'bg-gray-900 text-white hover:bg-black'
+              : 'bg-gray-300 text-gray-600 cursor-not-allowed'
+          }`}
+          whileHover={isInStock && !isAddingToCart ? { scale: 1.02 } : {}}
+          whileTap={isInStock && !isAddingToCart ? { scale: 0.98 } : {}}
+          animate={isAddingToCart ? { opacity: 0.7 } : { opacity: 1 }}
         >
-          <ShoppingCart size={14} className="sm:hidden" />
-          <ShoppingCart size={16} className="hidden sm:block" />
-          <span className="text-xs sm:text-sm font-medium">Thêm vào giỏ</span>
-        </Button>
+          <motion.div
+            animate={isAddingToCart ? { rotate: 360 } : { rotate: 0 }}
+            transition={isAddingToCart ? { duration: 1, repeat: Infinity, ease: 'linear' } : { duration: 0.2 }}
+          >
+            {addedSuccess ? (
+              <Check size={16} className="sm:w-5 sm:h-5" />
+            ) : (
+              <ShoppingCart size={14} className="sm:hidden" />
+            )}
+            {!addedSuccess && <ShoppingCart size={16} className="hidden sm:block" />}
+          </motion.div>
+          <span className="font-medium">
+            {isAddingToCart ? 'Đang thêm...' : addedSuccess ? 'Đã thêm!' : 'Thêm vào giỏ'}
+          </span>
+        </motion.button>
       </div>
     </motion.div>
   );

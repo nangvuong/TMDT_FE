@@ -16,57 +16,30 @@ import Input from '../../common/Input/Input';
 import logoSvg from '../../../assets/logo.svg';
 import { useLogout, useIsLoggedIn } from '../../../hooks/useAuth';
 import { useProductSearch } from '../../../hooks/useProduct';
+import { useCategories } from '../../../hooks/useProduct';
 import { useWishlistCount } from '../../../hooks/useWishlist';
-import { useCart } from '../../../hooks/useCart';
-import type { Category } from '../../../types/product';
+import { useCountersContext } from '../../../contexts/CountersContext';
 
 interface HeaderProps {
   logo?: string;
-  categories?: Category[];
-  isLoadingCategories?: boolean;
-  userMenuItems?: UserMenuItem[];
-  cartCount?: number;
-  onCartClick?: () => void;
-  onUserMenuClick?: () => void;
-  onProfileMenuClick?: () => void;
-  currentCategoryPage?: number;
-  itemsPerPage?: number;
-  totalCategoryPages?: number;
-  onCategoryPageChange?: (page: number, limit?: number) => void;
-}
-
-interface UserMenuItem {
-  label: string;
-  icon?: React.ReactNode;
-  onClick: () => void;
+  hideFAB?: boolean;
 }
 
 /**
  * Header Component - E-commerce header with search, categories, user menu, cart, and wishlist
  */
-const Header: React.FC<HeaderProps> = ({
-  logo = 'TMDT Logo',
-  categories = [],
-  isLoadingCategories = false,
-  userMenuItems = [],
-  cartCount = 0,
-  onCartClick,
-  onUserMenuClick,
-  currentCategoryPage = 1,
-  itemsPerPage = 6,
-  totalCategoryPages = 1,
-  onCategoryPageChange,
-}) => {
+const Header: React.FC<HeaderProps> = ({ logo = 'TMDT Logo', hideFAB = false }) => {
   const navigate = useNavigate();
   const { logout: logoutUser } = useLogout();
   const { isLoggedIn } = useIsLoggedIn();
   const { results: searchResults, search: performSearch } = useProductSearch();
+  const { categories, isLoading: isLoadingCategories, pagination: categoryPagination, setPage: setCategoryPage } = useCategories({ page: 1, limit: 6 });
   const wishlistCount = useWishlistCount();
-  const { cartCount: fetchedCartCount } = useCart();
+  const { cartCount } = useCountersContext();
   
   // Use cached counts for better performance
   const computedWishlistCount = wishlistCount;
-  const computedCartCount = fetchedCartCount || cartCount;
+  const computedCartCount = isLoggedIn ? cartCount : 0;
   
   const [searchQuery, setSearchQuery] = useState('');
   const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -88,7 +61,6 @@ const Header: React.FC<HeaderProps> = ({
 
   const handleCartClick = () => {
     navigate('/cart');
-    onCartClick?.();
   };
 
   // Handle outside click for menus
@@ -190,7 +162,7 @@ const Header: React.FC<HeaderProps> = ({
           {/* Logo */}
           <motion.a
             href="/"
-            className="flex-shrink-0 flex items-center gap-3 no-underline"
+            className="flex-shrink-0 flex items-center gap-2.5 no-underline"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.98 }}
             transition={{ type: 'spring', stiffness: 400, damping: 20 }}
@@ -198,20 +170,20 @@ const Header: React.FC<HeaderProps> = ({
             <img
               src={logoSvg}
               alt={logo}
-              className="h-12 w-auto"
+              className="h-10 w-auto"
             />
             <div className="flex flex-col">
-              <span className="text-lg md:text-xl font-bold text-black leading-tight tracking-wide">
+              <span className="text-base md:text-lg font-bold text-black leading-tight tracking-wide">
                 Fitness
               </span>
-              <span className="text-lg md:text-xl font-bold text-gray-700 leading-tight tracking-wide">
+              <span className="text-base md:text-lg font-bold text-gray-700 leading-tight tracking-wide">
                 Mart
               </span>
             </div>
           </motion.a>
 
           {/* Search Bar with Suggestions */}
-          <div className="flex-1 max-w-md relative" ref={searchRef}>
+          <div className="flex-1 max-w-2xl relative" ref={searchRef}>
             <Input
               type="text"
               placeholder="Tìm kiếm sản phẩm..."
@@ -424,7 +396,7 @@ const Header: React.FC<HeaderProps> = ({
                       )}
                     </div>
                     {/* Pagination Controls */}
-                    {!isLoadingCategories && totalCategoryPages > 1 && (
+                    {!isLoadingCategories && (categoryPagination.totalPages || 0) > 1 && (
                       <div 
                         className="flex items-center justify-center gap-4 mt-6 pt-6 border-t border-gray-200"
                         onMouseEnter={() => setIsCategoryMenuOpen(true)}
@@ -434,10 +406,10 @@ const Header: React.FC<HeaderProps> = ({
                           onClick={(e) => {
                             e.preventDefault();
                             e.stopPropagation();
-                            onCategoryPageChange?.(Math.max(1, currentCategoryPage - 1), itemsPerPage);
+                            setCategoryPage(Math.max(1, (categoryPagination.page || 1) - 1));
                             setIsCategoryMenuOpen(true)
                           }}
-                          disabled={currentCategoryPage === 1}
+                          disabled={(categoryPagination.page || 1) === 1}
                           className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
                           whileHover={{ scale: 1.05 }}
                           whileTap={{ scale: 0.98 }}
@@ -445,7 +417,7 @@ const Header: React.FC<HeaderProps> = ({
                           ← Trước
                         </motion.button>
                         <div className="flex items-center gap-2">
-                          {Array.from({ length: totalCategoryPages }).map((_, index) => {
+                          {Array.from({ length: categoryPagination.totalPages || 1 }).map((_, index) => {
                             const page = index + 1;
                             return (
                               <motion.button
@@ -453,11 +425,11 @@ const Header: React.FC<HeaderProps> = ({
                                 onClick={(e) => {
                                   e.preventDefault();
                                   e.stopPropagation();
-                                  onCategoryPageChange?.(page, itemsPerPage);
+                                  setCategoryPage(page);
                                   setIsCategoryMenuOpen(true)
                                 }}
                                 className={`w-8 h-8 rounded-lg font-medium text-sm transition-colors ${
-                                  currentCategoryPage === page
+                                  (categoryPagination.page || 1) === page
                                     ? 'bg-black text-white'
                                     : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                                 }`}
@@ -473,10 +445,10 @@ const Header: React.FC<HeaderProps> = ({
                           onClick={(e) => {
                             e.preventDefault();
                             e.stopPropagation();
-                            onCategoryPageChange?.(Math.min(totalCategoryPages, currentCategoryPage + 1), itemsPerPage);
+                            setCategoryPage(Math.min(categoryPagination.totalPages || 1, (categoryPagination.page || 1) + 1));
                             setIsCategoryMenuOpen(true)
                           }}
-                          disabled={currentCategoryPage === totalCategoryPages}
+                          disabled={(categoryPagination.page || 1) === (categoryPagination.totalPages || 1)}
                           className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
                           whileHover={{ scale: 1.05 }}
                           whileTap={{ scale: 0.98 }}
@@ -543,10 +515,7 @@ const Header: React.FC<HeaderProps> = ({
                 className="p-2 hover:bg-gray-100 rounded-lg flex items-center gap-2"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.98 }}
-                onClick={() => {
-                  setIsUserMenuOpen(!isUserMenuOpen);
-                  onUserMenuClick?.();
-                }}
+                onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
               >
                 <User size={20} className="text-gray-700" />
                 <span className="text-xs text-gray-700">
@@ -630,23 +599,6 @@ const Header: React.FC<HeaderProps> = ({
                         </motion.button>
                       </>
                     )}
-
-                    {userMenuItems.length > 0 && (
-                      <>
-                        <div className="border-t border-gray-200 my-2" />
-                        {userMenuItems.map((item, i) => (
-                          <motion.button
-                            key={i}
-                            className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2"
-                            whileHover={{ paddingLeft: '24px', backgroundColor: '#f9fafb' }}
-                            onClick={item.onClick}
-                          >
-                            {item.icon && <span>{item.icon}</span>}
-                            {item.label}
-                          </motion.button>
-                        ))}
-                      </>
-                    )}
                   </motion.div>
                 )}
               </AnimatePresence>
@@ -697,7 +649,7 @@ const Header: React.FC<HeaderProps> = ({
                   }
                 }}
                 startIcon={<Search size={16} />}
-                inputSize="sm"
+                inputSize="md"
                 variant="filled"
                 fullWidth
               />
@@ -788,6 +740,7 @@ const Header: React.FC<HeaderProps> = ({
       </div>
 
       {/* Mobile Navigation Bottom */}
+      {!hideFAB && (
       <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-lg">
         {/* Bottom Row: Navigation Icons */}
         <div className="px-2 py-2 flex items-center justify-between">
@@ -877,7 +830,7 @@ const Header: React.FC<HeaderProps> = ({
                     ))
                   )}
                   {/* Mobile Pagination */}
-                  {!isLoadingCategories && totalCategoryPages > 1 && (
+                  {!isLoadingCategories && (categoryPagination.totalPages || 0) > 1 && (
                     <div 
                       className="border-t border-gray-200 mt-2 pt-2 px-4 py-2 flex items-center justify-between"
                       onMouseEnter={() => setIsCategoryMenuOpen(true)}
@@ -887,10 +840,10 @@ const Header: React.FC<HeaderProps> = ({
                         onClick={(e) => {
                           e.preventDefault();
                           e.stopPropagation();
-                          onCategoryPageChange?.(Math.max(1, currentCategoryPage - 1), itemsPerPage);
+                          setCategoryPage(Math.max(1, (categoryPagination.page || 1) - 1));
                           setIsCategoryMenuOpen(true)
                         }}
-                        disabled={currentCategoryPage === 1}
+                        disabled={(categoryPagination.page || 1) === 1}
                         className="px-3 py-1 text-xs font-medium text-gray-700 bg-gray-100 rounded disabled:opacity-50 disabled:cursor-not-allowed"
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.98 }}
@@ -898,16 +851,16 @@ const Header: React.FC<HeaderProps> = ({
                         ←
                       </motion.button>
                       <span className="text-xs text-gray-600">
-                        {currentCategoryPage} / {totalCategoryPages}
+                        {categoryPagination.page || 1} / {categoryPagination.totalPages || 1}
                       </span>
                       <motion.button
                         onClick={(e) => {
                           e.preventDefault();
                           e.stopPropagation();
-                          onCategoryPageChange?.(Math.min(totalCategoryPages, currentCategoryPage + 1), itemsPerPage);
+                          setCategoryPage(Math.min(categoryPagination.totalPages || 1, (categoryPagination.page || 1) + 1));
                           setIsCategoryMenuOpen(true)
                         }}
-                        disabled={currentCategoryPage === totalCategoryPages}
+                        disabled={(categoryPagination.page || 1) === (categoryPagination.totalPages || 1)}
                         className="px-3 py-1 text-xs font-medium text-gray-700 bg-gray-100 rounded disabled:opacity-50 disabled:cursor-not-allowed"
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.98 }}
@@ -971,7 +924,6 @@ const Header: React.FC<HeaderProps> = ({
               whileTap={{ scale: 0.98 }}
               onClick={() => {
                 setIsUserMenuOpen(!isUserMenuOpen);
-                onUserMenuClick?.();
               }}
             >
               <User size={20} className="text-gray-700" />
@@ -1050,6 +1002,7 @@ const Header: React.FC<HeaderProps> = ({
           </div>
         </div>
       </div>
+      )}
     </header>
   );
 };

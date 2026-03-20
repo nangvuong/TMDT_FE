@@ -6,6 +6,8 @@ export { default as orderService } from './orderService';
 export { default as userService } from './userService';
 export { default as uploadService } from './uploadService';
 export { default as wishlistService } from './wishlistService';
+export { default as couponService } from './couponService';
+export { addressService } from './addressService';
 export { default as axiosClient } from './axiosClient';
 
 // ========== Types ==========
