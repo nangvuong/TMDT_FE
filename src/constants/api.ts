@@ -27,17 +27,17 @@ export const REVIEWS_ENDPOINTS = {
 
 // ============= CART Module (Require JWT 🔒) =============
 export const CART_ENDPOINTS = {
-  GET_CART: '/cart',                // GET - 200 (Authenticated) - Returns: { id, userId, items }
-  ADD_ITEM: '/cart/items',          // POST - 201 (Authenticated) - Body: { productId, quantity } - Returns: { success: true }
-  REMOVE_ITEM: '/cart/items/:itemId', // DELETE - 200 (Authenticated) - Returns: { success: true }
-  CLEAR_CART: '/cart',              // DELETE - 200 (Authenticated) - Returns: { success: true }
+  GET_CART: '/cart',                // GET - 200 (Authenticated) - Returns: Cart { id, userId, items[], ... }
+  ADD_ITEM: '/cart/items',          // POST - 201 (Authenticated) - Body: { productId, quantity } - Returns: Cart (full cart with all items)
+  REMOVE_ITEM: '/cart/items/:itemId', // DELETE - 200 (Authenticated) - Returns: Cart (updated cart with remaining items)
+  CLEAR_CART: '/cart',              // DELETE - 200 (Authenticated) - Clears cart
 } as const;
 
 // ============= ORDERS Module (Require JWT 🔒) =============
 export const ORDERS_ENDPOINTS = {
-  CHECKOUT: '/orders/checkout',     // POST - 201 (Authenticated)
-  GET_MY_ORDERS: '/orders/my',      // GET - 200 (Authenticated)
-  GET_BY_ID: '/orders/:id',         // GET - 200 (Authenticated)
+  CHECKOUT: '/orders/checkout',     // POST - 201 (Authenticated) - Body: { shippingAddress, couponCode?, notes? } - Returns: Order
+  GET_MY_ORDERS: '/orders/my',      // GET - 200 (Authenticated) - Returns: { data: Order[], meta: { page, limit, totalItems, totalPages } }
+  GET_BY_ID: '/orders/:id',         // GET - 200 (Authenticated) - Returns: Order
 } as const;
 
 // ============= PROFILE Module (Require JWT 🔒) =============
@@ -72,6 +72,15 @@ export const ADDRESSES_ENDPOINTS = {
   CREATE: '/addresses',             // POST - 201 (Authenticated) - Body: CreateAddressDto
   UPDATE: '/addresses/:id',         // PUT - 200 (Authenticated) - Body: UpdateAddressDto
   DELETE: '/addresses/:id',         // DELETE - 200 (Authenticated)
+} as const;
+
+// ============= PAYMENT Module (Require JWT 🔒) =============
+export const PAYMENT_ENDPOINTS = {
+  CREATE_TRANSACTION: '/payment/create', // POST - 201 (Authenticated) - Body: { orderId, paymentMethod? } - Returns: Transaction with QR code
+  CHECK_PAYMENT: '/payment/check',   // POST - 200 (Authenticated) - Body: { transactionCode } - Returns: { status, message, transaction }
+  CHECK_PAYMENT_GET: '/payment/check/:transactionCode', // GET - 200 (Authenticated) - Returns: { status, message, transaction }
+  GET_TRANSACTIONS: '/payment/transactions', // GET - 200 (Authenticated) - Returns: Transaction[]
+  GET_TRANSACTION: '/payment/transactions/:id', // GET - 200 (Authenticated) - Returns: Transaction
 } as const;
 
 // ============= HTTP Status Codes =============
@@ -155,4 +164,6 @@ export const API_ENDPOINTS = {
   ...UPLOAD_ENDPOINTS,
   ...WISHLIST_ENDPOINTS,
   ...COUPONS_ENDPOINTS,
+  ...ADDRESSES_ENDPOINTS,
+  ...PAYMENT_ENDPOINTS,
 } as const;

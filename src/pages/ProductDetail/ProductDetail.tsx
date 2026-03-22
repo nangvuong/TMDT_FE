@@ -9,6 +9,7 @@ import ProductSkeleton from '../../components/loading/ProductSkeleton';
 import { usePageTitle } from '../../hooks/usePageTitle';
 import { useScrollReset } from '../../hooks/useScrollReset';
 import { useCart } from '../../hooks/useCart';
+import { useAlert } from '../../contexts/AlertContext';
 import productService from '../../services/productService';
 import type { Product } from '../../types/product';
 
@@ -18,7 +19,8 @@ import type { Product } from '../../types/product';
 const ProductDetail: React.FC = () => {
   const navigate = useNavigate();
   const { productId } = useParams<{ productId: string }>();
-  const { addItem: addToCart, isLoading: isAddingToCart } = useCart();
+  const alert = useAlert();
+  const { addItem: addToCart, isLoading: isAddingToCart, cartItems, removeItem } = useCart();
   
   const [product, setProduct] = useState<Product | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -63,13 +65,28 @@ const ProductDetail: React.FC = () => {
   };
 
   const handleBuyNow = async (id: string, quantity: number) => {
-    try {
-      await addToCart(id, quantity);
-      // Navigate to checkout
-      navigate('/checkout');
-    } catch (err) {
-      console.error('Failed to proceed to checkout:', err);
-    }
+    alert.showWarning(
+      'Xóa sản phẩm khác',
+      'Sản phẩm khác trong giỏ hàng sẽ bị xóa. Chỉ giữ lại sản phẩm này. Tiếp tục?',
+      async () => {
+        try {
+          // Remove other items from cart
+          for (const item of cartItems) {
+            if (item.product?.id !== id) {
+              await removeItem(item.id);
+            }
+          }
+          // Add this product
+          await addToCart(id, quantity);
+          // Navigate to checkout
+          navigate('/checkout');
+        } catch (err) {
+          console.error('Failed to proceed to checkout:', err);
+          alert.showError('Lỗi', 'Không thể xử lý. Vui lòng thử lại!');
+        }
+      },
+      { confirmText: 'Mua ngay', cancelText: 'Hủy' }
+    );
   };
 
   if (error && !product) {
@@ -120,17 +137,17 @@ const ProductDetail: React.FC = () => {
               transition={{ duration: 0.5 }}
             >
               {isLoading ? (
-                <div className="h-48 sm:h-64 md:h-80 lg:h-96 bg-gray-200 rounded-lg animate-pulse" />
+                <div className="aspect-square bg-gray-200 rounded-lg animate-pulse" />
               ) : product?.images && product.images.length > 0 ? (
                 <motion.img
                   src={product.images[0]}
                   alt={product.name}
-                  className="w-full h-auto rounded-lg object-cover bg-gray-100"
+                  className="w-full aspect-square rounded-lg object-cover bg-gray-100"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                 />
               ) : (
-                <div className="h-48 sm:h-64 md:h-80 lg:h-96 bg-gray-200 rounded-lg flex items-center justify-center">
+                <div className="aspect-square bg-gray-200 rounded-lg flex items-center justify-center">
                   <span className="text-gray-500 text-sm sm:text-base">No image available</span>
                 </div>
               )}

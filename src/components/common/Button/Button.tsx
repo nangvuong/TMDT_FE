@@ -42,12 +42,12 @@ const Button: React.FC<ButtonProps> = ({
   // Variant styles
   const variantStyles = {
     primary: 'bg-black text-white hover:bg-gray-900 focus:ring-gray-800 active:bg-gray-800 disabled:bg-gray-400 disabled:cursor-not-allowed',
-    secondary: 'bg-gray-700 text-white hover:bg-gray-800 focus:ring-gray-700 active:bg-gray-900 disabled:bg-gray-400 disabled:cursor-not-allowed',
-    danger: 'bg-gray-600 text-white hover:bg-gray-700 focus:ring-gray-600 active:bg-gray-800 disabled:bg-gray-400 disabled:cursor-not-allowed',
+    secondary: 'bg-gray-300 text-black hover:bg-gray-400 focus:ring-gray-300 active:bg-gray-500 disabled:bg-gray-200 disabled:cursor-not-allowed disabled:text-gray-400',
+    danger: 'bg-gray-500 text-white hover:bg-gray-600 focus:ring-gray-500 active:bg-gray-700 disabled:bg-gray-300 disabled:cursor-not-allowed',
     success: 'bg-gray-700 text-white hover:bg-gray-800 focus:ring-gray-700 active:bg-gray-900 disabled:bg-gray-400 disabled:cursor-not-allowed',
     warning: 'bg-gray-600 text-white hover:bg-gray-700 focus:ring-gray-600 active:bg-gray-800 disabled:bg-gray-400 disabled:cursor-not-allowed',
-    outline: 'border-2 border-black text-black hover:bg-gray-100 focus:ring-gray-800 active:bg-gray-200 disabled:border-gray-400 disabled:text-gray-400 disabled:cursor-not-allowed',
-    ghost: 'text-black hover:bg-gray-100 focus:ring-gray-800 active:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed',
+    outline: 'border-2 border-gray-400 text-black hover:bg-gray-100 focus:ring-gray-400 active:bg-gray-200 disabled:border-gray-300 disabled:text-gray-400 disabled:cursor-not-allowed',
+    ghost: 'text-black hover:bg-gray-200 focus:ring-gray-400 active:bg-gray-300 disabled:text-gray-400 disabled:cursor-not-allowed',
   };
 
   return (

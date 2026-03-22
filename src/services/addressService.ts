@@ -1,6 +1,8 @@
 import axiosClient from './axiosClient';
 import { ADDRESSES_ENDPOINTS } from '../constants/api';
 import type { Address, CreateAddressDto, UpdateAddressDto } from '../types';
+import { cacheManager } from '../utils/cache';
+import { clearAllAddressesCache, clearAddressCache } from '../utils/cacheHelpers';
 
 /**
  * Address Service - Handles all address-related API calls
@@ -12,9 +14,20 @@ export const addressService = {
    */
   getAddresses: async (): Promise<Address[]> => {
     try {
+      // Check cache first
+      const cachedAddresses = cacheManager.get<Address[]>('addresses_all');
+      if (cachedAddresses) {
+        console.log('Serving addresses from cache');
+        return cachedAddresses;
+      }
+
       const result = await axiosClient.get<Address[] | { data: Address[] }>(ADDRESSES_ENDPOINTS.GET_ALL);
       // Handle wrapped response { data: [...] } or direct array [...]
-      return Array.isArray(result) ? result : (result as any).data || result;
+      const addresses = Array.isArray(result) ? result : (result as any).data || result;
+      
+      // Cache the result for 5 minutes (300000 ms)
+      cacheManager.set('addresses_all', addresses, 300000);
+      return addresses;
     } catch (error) {
       console.error('Error fetching addresses:', error);
       throw error;
@@ -26,10 +39,22 @@ export const addressService = {
    */
   getAddressById: async (id: string): Promise<Address> => {
     try {
+      // Check cache first
+      const cacheKey = `address_${id}`;
+      const cachedAddress = cacheManager.get<Address>(cacheKey);
+      if (cachedAddress) {
+        console.log(`Serving address ${id} from cache`);
+        return cachedAddress;
+      }
+
       const endpoint = ADDRESSES_ENDPOINTS.GET_BY_ID.replace(':id', id);
       const result = await axiosClient.get<Address | { data: Address }>(endpoint);
       // Handle wrapped response { data: {...} } or direct object {...}
-      return Array.isArray(result) ? result[0] : (result as any).data || result;
+      const address = Array.isArray(result) ? result[0] : (result as any).data || result;
+      
+      // Cache the result for 5 minutes (300000 ms)
+      cacheManager.set(cacheKey, address, 300000);
+      return address;
     } catch (error) {
       console.error(`Error fetching address ${id}:`, error);
       throw error;
@@ -44,7 +69,11 @@ export const addressService = {
     try {
       const result = await axiosClient.post<Address | { data: Address }>(ADDRESSES_ENDPOINTS.CREATE, data);
       // Handle wrapped response { data: {...} } or direct object {...}
-      return Array.isArray(result) ? result[0] : (result as any).data || result;
+      const address = Array.isArray(result) ? result[0] : (result as any).data || result;
+      
+      // Clear addresses cache to refresh list on next fetch
+      clearAllAddressesCache();
+      return address;
     } catch (error) {
       console.error('Error creating address:', error);
       throw error;
@@ -60,7 +89,12 @@ export const addressService = {
       const endpoint = ADDRESSES_ENDPOINTS.UPDATE.replace(':id', id);
       const result = await axiosClient.put<Address | { data: Address }>(endpoint, data);
       // Handle wrapped response { data: {...} } or direct object {...}
-      return Array.isArray(result) ? result[0] : (result as any).data || result;
+      const address = Array.isArray(result) ? result[0] : (result as any).data || result;
+      
+      // Clear addresses cache to refresh
+      clearAllAddressesCache();
+      clearAddressCache(id);
+      return address;
     } catch (error) {
       console.error(`Error updating address ${id}:`, error);
       throw error;
@@ -75,7 +109,12 @@ export const addressService = {
       const endpoint = ADDRESSES_ENDPOINTS.DELETE.replace(':id', id);
       const result = await axiosClient.delete<{ success: boolean } | { data: { success: boolean } }>(endpoint);
       // Handle wrapped response or direct object
-      return (result as any).data || result;
+      const response = (result as any).data || result;
+      
+      // Clear addresses cache to refresh
+      clearAllAddressesCache();
+      clearAddressCache(id);
+      return response;
     } catch (error) {
       console.error(`Error deleting address ${id}:`, error);
       throw error;
@@ -88,7 +127,9 @@ export const addressService = {
    */
   setDefaultAddress: async (id: string): Promise<Address> => {
     try {
-      return await addressService.updateAddress(id, { isDefault: true });
+      const address = await addressService.updateAddress(id, { isDefault: true });
+      // Cache is already cleared in updateAddress
+      return address;
     } catch (error) {
       console.error(`Error setting default address ${id}:`, error);
       throw error;

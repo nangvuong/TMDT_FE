@@ -13,12 +13,14 @@ const cartService = {
     axiosClient.get<any, Cart>(CART_ENDPOINTS.GET_CART),
 
   // Add item to cart (Authenticated 🔒)
+  // Returns the complete updated cart with all items
   addToCart: (data: AddToCartPayload) =>
-    axiosClient.post<any, CartItem>(CART_ENDPOINTS.ADD_ITEM, data),
+    axiosClient.post<any, Cart>(CART_ENDPOINTS.ADD_ITEM, data),
 
   // Remove item from cart (Authenticated 🔒)
+  // Returns the complete updated cart with remaining items
   removeFromCart: (itemId: string) =>
-    axiosClient.delete(CART_ENDPOINTS.REMOVE_ITEM.replace(':itemId', itemId)),
+    axiosClient.delete<any, Cart>(CART_ENDPOINTS.REMOVE_ITEM.replace(':itemId', itemId)),
 
   // Clear entire cart (Authenticated 🔒)
   clearCart: () =>

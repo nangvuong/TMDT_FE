@@ -12,6 +12,7 @@ import { usePageTitle } from '../../hooks/usePageTitle';
 import { useScrollReset } from '../../hooks/useScrollReset';
 import { useWishlist } from '../../hooks/useWishlist';
 import { useIsLoggedIn } from '../../hooks/useAuth';
+import { useAlert } from '../../contexts/AlertContext';
 import { formatPrice } from '../../utils/formatPrice';
 
 /**
@@ -22,6 +23,7 @@ const Cart: React.FC = () => {
   const { isLoggedIn } = useIsLoggedIn();
   usePageTitle('Shopping Cart | Fitness Mart');
   useScrollReset([]);
+  const alert = useAlert();
 
   const {
     cartItems,
@@ -144,23 +146,26 @@ const Cart: React.FC = () => {
 
   const handleDeleteSelected = async () => {
     if (selectedItems.size === 0) {
-      alert('Vui lòng chọn sản phẩm để xóa');
+      alert.showWarning('Thông báo', 'Vui lòng chọn sản phẩm để xóa');
       return;
     }
     
-    if (!window.confirm(`Bạn có chắc chắn muốn xóa ${selectedItems.size} sản phẩm?`)) {
-      return;
-    }
-    
-    for (const itemId of selectedItems) {
-      await removeItem(itemId);
-    }
-    setSelectedItems(new Set());
+    alert.showWarning(
+      'Xóa sản phẩm',
+      `Bạn có chắc chắn muốn xóa ${selectedItems.size} sản phẩm khỏi giỏ hàng?`,
+      async () => {
+        for (const itemId of selectedItems) {
+          await removeItem(itemId);
+        }
+        setSelectedItems(new Set());
+      },
+      { confirmText: 'Xóa', cancelText: 'Hủy' }
+    );
   };
 
   const handleSaveToWishlist = async () => {
     if (selectedItems.size === 0) {
-      alert('Vui lòng chọn sản phẩm để lưu');
+      alert.showWarning('Thông báo', 'Vui lòng chọn sản phẩm để lưu');
       return;
     }
 
@@ -168,17 +173,57 @@ const Cart: React.FC = () => {
       for (const itemId of selectedItems) {
         await addToWishlist(itemId);
       }
-      alert(`Đã lưu ${selectedItems.size} sản phẩm vào danh sách yêu thích`);
+      alert.showSuccess('Thành công', `Đã lưu ${selectedItems.size} sản phẩm vào danh sách yêu thích`);
       setSelectedItems(new Set());
     } catch (error) {
       console.error('Failed to save to wishlist:', error);
-      alert('Lưu thất bại. Vui lòng thử lại!');
+      alert.showError('Lỗi', 'Lưu thất bại. Vui lòng thử lại!');
     }
   };
 
-  const handleProceedCheckout = () => {
-    // Pass coupon code to checkout page if applied
-    const checkoutParams = isCouponApplied ? { couponCode: coupon?.code } : {};
+  const handleProceedCheckout = async () => {
+    // Auto-select all items if none are selected
+    let itemsToCheckout = selectedItems;
+    if (selectedItems.size === 0) {
+      itemsToCheckout = new Set(cartItems.map((item) => item.id));
+      setSelectedItems(itemsToCheckout);
+    }
+
+    // Check if there are unselected items
+    const unselectedItems = cartItems.filter(item => !itemsToCheckout.has(item.id));
+    if (unselectedItems.length > 0) {
+      alert.showWarning(
+        'Xóa sản phẩm không chọn',
+        `Sẽ xóa ${unselectedItems.length} sản phẩm không chọn khỏi giỏ hàng. Tiếp tục?`,
+        async () => {
+          // Remove unselected items
+          for (const item of unselectedItems) {
+            await removeItem(item.id);
+          }
+
+          // Pass coupon and discount info to checkout page
+          const checkoutParams = {
+            ...(isCouponApplied && coupon && {
+              couponCode: coupon.code,
+              discount: discount,
+            }),
+          };
+          
+          navigate('/checkout', { state: checkoutParams });
+        },
+        { confirmText: 'Tiếp tục', cancelText: 'Hủy' }
+      );
+      return;
+    }
+
+    // If all items are selected (or auto-selected), go directly to checkout
+    const checkoutParams = {
+      ...(isCouponApplied && coupon && {
+        couponCode: coupon.code,
+        discount: discount,
+      }),
+    };
+    
     navigate('/checkout', { state: checkoutParams });
   };
 
@@ -693,9 +738,10 @@ const Cart: React.FC = () => {
 
                       <Button
                         onClick={handleProceedCheckout}
-                        className="bg-gray-900 text-white hover:bg-black px-4 sm:px-5 text-xs py-2 font-medium whitespace-nowrap"
+                        disabled={selectedItems.size === 0}
+                        className="bg-gray-900 text-white hover:bg-black px-4 sm:px-5 text-xs py-2 font-medium whitespace-nowrap disabled:opacity-50 disabled:cursor-not-allowed"
                       >
-                        Mua hàng
+                        Mua hàng ({selectedItems.size})
                       </Button>
                     </div>
                   </div>

@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
 import type { Order } from '../types/product';
-import orderService from '../services/orderService';
+import orderService, { type CheckoutPayload } from '../services/orderService';
 
 export const useOrders = () => {
   const [orders, setOrders] = useState<Order[]>([]);
@@ -38,11 +38,11 @@ export const useOrders = () => {
     }
   }, []);
 
-  const checkout = useCallback(async (shippingAddress: string) => {
+  const checkout = useCallback(async (payload: CheckoutPayload) => {
     setLoading(true);
     setError(null);
     try {
-      const order = await orderService.checkout({ shippingAddress });
+      const order = await orderService.checkout(payload);
       return order;
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to checkout');

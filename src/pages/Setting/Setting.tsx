@@ -306,8 +306,8 @@ const Setting: React.FC = () => {
             <motion.div
               className={`mb-8 p-4 rounded-xl border-l-4 flex items-start gap-3 ${
                 saveMessage.type === 'success'
-                  ? 'bg-green-50 border-l-green-500 text-green-900'
-                  : 'bg-red-50 border-l-red-500 text-red-900'
+                  ? 'bg-gray-100 border-l-gray-600 text-gray-800'
+                  : 'bg-gray-50 border-l-gray-600 text-gray-800'
               }`}
               initial={{ opacity: 0, y: -10, x: -20 }}
               animate={{ opacity: 1, y: 0, x: 0 }}
@@ -329,8 +329,8 @@ const Setting: React.FC = () => {
               transition={{ delay: 0.1 }}
             >
               <div className="flex items-center gap-4 mb-8">
-                <div className="p-3 bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl">
-                  <User size={28} className="text-blue-600" />
+                <div className="p-3 bg-gradient-to-br from-gray-100 to-gray-200 rounded-xl">
+                  <User size={28} className="text-gray-700" />
                 </div>
                 <div>
                   <h2 className="text-2xl font-bold text-gray-900">Thông tin cá nhân</h2>
@@ -377,7 +377,7 @@ const Setting: React.FC = () => {
                   <Button
                     onClick={handleSaveProfile}
                     disabled={isSaving}
-                    className="w-full bg-gradient-to-r from-gray-900 to-gray-800 text-white hover:from-black hover:to-gray-900 font-semibold py-3 rounded-xl"
+                    fullWidth
                   >
                     {isSaving ? 'Đang lưu...' : 'Lưu thông tin'}
                   </Button>
@@ -393,8 +393,8 @@ const Setting: React.FC = () => {
               transition={{ delay: 0.15 }}
             >
               <div className="flex items-center gap-4 mb-8">
-                <div className="p-3 bg-gradient-to-br from-red-50 to-red-100 rounded-xl">
-                  <Lock size={28} className="text-red-600" />
+                <div className="p-3 bg-gradient-to-br from-gray-100 to-gray-200 rounded-xl">
+                  <Lock size={28} className="text-gray-700" />
                 </div>
                 <div>
                   <h2 className="text-2xl font-bold text-gray-900">Bảo mật</h2>
@@ -443,7 +443,7 @@ const Setting: React.FC = () => {
                   <Button
                     onClick={handleChangePassword}
                     disabled={isSaving}
-                    className="w-full bg-gradient-to-r from-gray-900 to-gray-800 text-white hover:from-black hover:to-gray-900 font-semibold py-3 rounded-xl"
+                    fullWidth
                   >
                     {isSaving ? 'Đang xử lý...' : 'Đổi mật khẩu'}
                   </Button>
@@ -462,8 +462,8 @@ const Setting: React.FC = () => {
               transition={{ delay: 0.2 }}
             >
               <div className="flex items-center gap-4 mb-8">
-                <div className="p-3 bg-gradient-to-br from-yellow-50 to-yellow-100 rounded-xl">
-                  <Bell size={28} className="text-yellow-600" />
+                <div className="p-3 bg-gradient-to-br from-gray-100 to-gray-200 rounded-xl">
+                  <Bell size={28} className="text-gray-700" />
                 </div>
                 <div>
                   <h2 className="text-2xl font-bold text-gray-900">Thông báo</h2>
@@ -501,7 +501,7 @@ const Setting: React.FC = () => {
                 <Button
                   onClick={handleSaveNotifications}
                   disabled={isSaving}
-                  className="w-full bg-gradient-to-r from-gray-900 to-gray-800 text-white hover:from-black hover:to-gray-900 font-semibold py-3 rounded-xl"
+                  fullWidth
                 >
                   {isSaving ? 'Đang lưu...' : 'Lưu cài đặt'}
                 </Button>
@@ -516,8 +516,8 @@ const Setting: React.FC = () => {
               transition={{ delay: 0.25 }}
             >
               <div className="flex items-center gap-4 mb-8">
-                <div className="p-3 bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl">
-                  <Globe size={28} className="text-purple-600" />
+                <div className="p-3 bg-gradient-to-br from-gray-100 to-gray-200 rounded-xl">
+                  <Globe size={28} className="text-gray-700" />
                 </div>
                 <div>
                   <h2 className="text-2xl font-bold text-gray-900">Ngôn ngữ & Giao diện</h2>
@@ -548,8 +548,8 @@ const Setting: React.FC = () => {
                   fullWidth
                 />
 
-                <div className="bg-gradient-to-r from-purple-50 to-purple-100 rounded-xl p-4 mt-6">
-                  <p className="text-sm text-purple-900 font-medium">
+                <div className="bg-gradient-to-r from-gray-100 to-gray-200 rounded-xl p-4 mt-6">
+                  <p className="text-sm text-gray-800 font-medium">
                     💡 Chủ đề sẽ được áp dụng ngay lập tức
                   </p>
                 </div>
@@ -566,8 +566,8 @@ const Setting: React.FC = () => {
           >
             {/* Section Header */}
             <div className="flex items-center gap-2 md:gap-4 mb-6 md:mb-8">
-              <div className="p-2 md:p-3 bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl">
-                <MapPin size={24} className="md:w-7 md:h-7 text-blue-600" />
+              <div className="p-2 md:p-3 bg-gradient-to-br from-gray-100 to-gray-200 rounded-xl">
+                <MapPin size={24} className="md:w-7 md:h-7 text-gray-700" />
               </div>
               <div className="min-w-0 flex-1">
                 <h2 className="text-2xl md:text-3xl font-bold text-gray-900 truncate">Địa chỉ giao hàng</h2>
@@ -584,15 +584,11 @@ const Setting: React.FC = () => {
             >
               {/* Add Address Button */}
               <div className="mb-6 md:mb-8">
-                <motion.button
+                <Button
                   onClick={() => openAddressModal()}
-                  className="w-full md:w-auto inline-flex items-center justify-center md:justify-start gap-2 px-4 md:px-6 py-2.5 md:py-3 bg-blue-600 text-white rounded-lg md:rounded-xl hover:bg-blue-700 transition-all shadow-sm hover:shadow-md font-semibold text-sm md:text-base"
-                  whileHover={{ y: -2 }}
-                  whileTap={{ scale: 0.95 }}
                 >
-                  <Plus size={18} className="md:w-5 md:h-5" />
                   Thêm địa chỉ
-                </motion.button>
+                </Button>
               </div>
 
               {/* Address Message */}
@@ -601,8 +597,8 @@ const Setting: React.FC = () => {
                   <motion.div
                     className={`mb-6 p-4 rounded-xl border-l-4 flex items-start gap-3 ${
                       addressMessage.type === 'success'
-                        ? 'bg-green-50 border-l-green-500 text-green-900'
-                        : 'bg-red-50 border-l-red-500 text-red-900'
+                        ? 'bg-gray-100 border-l-gray-600 text-gray-800'
+                        : 'bg-gray-50 border-l-gray-600 text-gray-800'
                     }`}
                     initial={{ opacity: 0, y: -10, x: -20 }}
                     animate={{ opacity: 1, y: 0, x: 0 }}
@@ -623,29 +619,25 @@ const Setting: React.FC = () => {
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                 >
-                  <div className="inline-flex items-center justify-center w-12 h-12 bg-blue-50 rounded-full mb-4">
-                    <div className="w-6 h-6 border-2 border-blue-200 border-t-blue-600 rounded-full animate-spin" />
+                  <div className="inline-flex items-center justify-center w-12 h-12 bg-gray-200 rounded-full mb-4">
+                    <div className="w-6 h-6 border-2 border-gray-300 border-t-gray-600 rounded-full animate-spin" />
                   </div>
                   <p className="text-gray-600 font-medium">Đang tải địa chỉ...</p>
                 </motion.div>
               ) : addresses.length === 0 ? (
                 <motion.div
-                  className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-6 md:p-12 text-center border border-blue-200"
+                  className="bg-gradient-to-br from-gray-100 to-gray-200 rounded-xl p-6 md:p-12 text-center border border-gray-300"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                 >
-                  <MapPin size={40} className="md:w-12 md:h-12 text-blue-300 mx-auto mb-3 md:mb-4" />
+                  <MapPin size={40} className="md:w-12 md:h-12 text-gray-400 mx-auto mb-3 md:mb-4" />
                   <h3 className="text-base md:text-lg font-bold text-gray-900 mb-1 md:mb-2">Chưa có địa chỉ nào</h3>
                   <p className="text-xs md:text-sm text-gray-600 mb-4 md:mb-6">Thêm địa chỉ giao hàng đầu tiên của bạn</p>
-                  <motion.button
+                  <Button
                     onClick={() => openAddressModal()}
-                    className="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-all font-semibold"
-                    whileHover={{ y: -2 }}
-                    whileTap={{ scale: 0.95 }}
                   >
-                    <Plus size={18} />
                     Thêm địa chỉ đầu tiên
-                  </motion.button>
+                  </Button>
                 </motion.div>
               ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-6 mb-6 md:mb-8">
@@ -655,8 +647,8 @@ const Setting: React.FC = () => {
                         key={address.id}
                         className={`relative rounded-xl md:rounded-2xl shadow-sm border transition-all hover:shadow-md group ${
                           address.isDefault
-                            ? 'bg-gradient-to-br from-blue-50 to-white border-blue-200'
-                            : 'bg-white border-gray-100 hover:border-blue-200'
+                            ? 'bg-gradient-to-br from-gray-100 to-white border-gray-300'
+                            : 'bg-white border-gray-100 hover:border-gray-300'
                         }`}
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
@@ -667,7 +659,7 @@ const Setting: React.FC = () => {
                         <AnimatePresence>
                           {address.isDefault && (
                             <motion.div
-                              className="absolute top-2 right-2 md:top-4 md:right-4 inline-flex items-center gap-1 px-2 md:px-3 py-0.5 md:py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-bold"
+                              className="absolute top-2 right-2 md:top-4 md:right-4 inline-flex items-center gap-1 px-2 md:px-3 py-0.5 md:py-1 bg-gray-300 text-gray-800 rounded-full text-xs font-bold"
                               initial={{ opacity: 0, scale: 0.8 }}
                               animate={{ opacity: 1, scale: 1 }}
                             >
@@ -692,37 +684,31 @@ const Setting: React.FC = () => {
                           {/* Action Buttons */}
                           <div className="flex flex-col sm:flex-row gap-2">
                             {!address.isDefault && (
-                              <motion.button
+                              <Button
                                 onClick={() => handleSetDefault(address.id)}
-                                className="flex-1 px-2 md:px-3 py-2 md:py-2.5 text-xs md:text-sm font-semibold text-blue-600 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors border border-blue-200 hover:border-blue-300"
-                                whileHover={{ y: -1 }}
-                                whileTap={{ scale: 0.95 }}
-                                title="Đặt làm địa chỉ mặc định"
+                                variant="secondary"
+                                size="sm"
+                                className="flex-1"
                               >
-                                <Check size={13} className="md:w-3.5 md:h-3.5 inline mr-1" />
-                                <span className="hidden xs:inline">Mặc định</span>
-                              </motion.button>
+                                Mặc định
+                              </Button>
                             )}
-                            <motion.button
+                            <Button
                               onClick={() => openAddressModal(address)}
-                              className="flex-1 px-2 md:px-3 py-2 md:py-2.5 text-xs md:text-sm font-semibold text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors border border-gray-200 hover:border-gray-300"
-                              whileHover={{ y: -1 }}
-                              whileTap={{ scale: 0.95 }}
-                              title="Chỉnh sửa địa chỉ"
+                              variant="secondary"
+                              size="sm"
+                              className="flex-1"
                             >
-                              <Edit size={13} className="md:w-3.5 md:h-3.5 inline mr-1" />
-                              <span className="hidden xs:inline">Sửa</span>
-                            </motion.button>
-                            <motion.button
+                              Sửa
+                            </Button>
+                            <Button
                               onClick={() => setDeleteConfirmId(address.id)}
-                              className="flex-1 px-2 md:px-3 py-2 md:py-2.5 text-xs md:text-sm font-semibold text-red-600 bg-red-50 rounded-lg hover:bg-red-100 transition-colors border border-red-200 hover:border-red-300"
-                              whileHover={{ y: -1 }}
-                              whileTap={{ scale: 0.95 }}
-                              title="Xoá địa chỉ"
+                              variant="danger"
+                              size="sm"
+                              className="flex-1"
                             >
-                              <Trash2 size={13} className="md:w-3.5 md:h-3.5 inline mr-1" />
-                              <span className="hidden xs:inline">Xoá</span>
-                            </motion.button>
+                              Xoá
+                            </Button>
                           </div>
                         </div>
 
@@ -743,9 +729,6 @@ const Setting: React.FC = () => {
                                 exit={{ scale: 0.9, y: 20 }}
                                 onClick={(e) => e.stopPropagation()}
                               >
-                                <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                                  <Trash2 size={24} className="text-red-600" />
-                                </div>
                                 <h3 className="text-lg font-bold text-gray-900 mb-2">
                                   Xác nhận xoá
                                 </h3>
@@ -753,23 +736,21 @@ const Setting: React.FC = () => {
                                   Bạn có chắc chắn muốn xoá địa chỉ này? Hành động này không thể hoàn tác.
                                 </p>
                                 <div className="flex gap-3">
-                                  <motion.button
+                                  <Button
                                     onClick={() => setDeleteConfirmId(null)}
-                                    className="flex-1 px-4 py-2 text-gray-700 font-semibold bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
-                                    whileHover={{ y: -1 }}
-                                    whileTap={{ scale: 0.95 }}
+                                    variant="secondary"
+                                    className="flex-1"
                                   >
                                     Huỷ
-                                  </motion.button>
-                                  <motion.button
+                                  </Button>
+                                  <Button
                                     onClick={() => handleDeleteAddress(address.id)}
                                     disabled={addressSaving}
-                                    className="flex-1 px-4 py-2 bg-red-600 text-white font-semibold rounded-lg hover:bg-red-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                                    whileHover={{ y: -1 }}
-                                    whileTap={{ scale: 0.95 }}
+                                    variant="danger"
+                                    className="flex-1"
                                   >
                                     {addressSaving ? 'Đang xoá...' : 'Xoá'}
-                                  </motion.button>
+                                  </Button>
                                 </div>
                               </motion.div>
                             </motion.div>
@@ -799,23 +780,20 @@ const Setting: React.FC = () => {
                 }
                 footer={
                   <div className="flex flex-col-reverse md:flex-row gap-2 md:gap-3">
-                    <motion.button
+                    <Button
                       onClick={closeAddressModal}
-                      className="flex-1 px-3 md:px-4 py-2.5 md:py-2 text-sm md:text-base text-gray-700 font-semibold bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors border border-gray-200"
-                      whileHover={{ y: -1 }}
-                      whileTap={{ scale: 0.95 }}
+                      variant="secondary"
+                      className="flex-1"
                     >
                       Huỷ
-                    </motion.button>
-                    <motion.button
+                    </Button>
+                    <Button
                       onClick={handleSaveAddress}
                       disabled={addressSaving}
-                      className="flex-1 px-3 md:px-4 py-2.5 md:py-2 text-sm md:text-base bg-gradient-to-r from-blue-600 to-blue-500 text-white font-semibold rounded-lg hover:from-blue-700 hover:to-blue-600 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-                      whileHover={{ y: -1 }}
-                      whileTap={{ scale: 0.95 }}
+                      className="flex-1"
                     >
                       {addressSaving ? 'Đang lưu...' : editingAddressId ? 'Cập nhật' : 'Thêm địa chỉ'}
-                    </motion.button>
+                    </Button>
                   </div>
                 }
               >
@@ -825,8 +803,8 @@ const Setting: React.FC = () => {
                     <motion.div
                       className={`-mx-6 -mt-4 mb-6 px-6 py-3 md:py-4 rounded-t-2xl border-l-4 flex items-start gap-3 ${
                         addressMessage.type === 'success'
-                          ? 'bg-green-50 border-l-green-500 text-green-900'
-                          : 'bg-red-50 border-l-red-500 text-red-900'
+                          ? 'bg-gray-100 border-l-gray-600 text-gray-800'
+                          : 'bg-gray-50 border-l-gray-600 text-gray-800'
                       }`}
                       initial={{ opacity: 0, y: -10 }}
                       animate={{ opacity: 1, y: 0 }}
@@ -923,29 +901,30 @@ const Setting: React.FC = () => {
 
           {/* Logout Section */}
           <motion.div
-            className="mt-12 bg-gradient-to-br from-red-50 to-red-100 rounded-2xl shadow-sm border border-red-200 p-8"
+            className="mt-12 bg-gradient-to-br from-gray-100 to-gray-200 rounded-2xl shadow-sm border border-gray-300 p-8"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
           >
             <div className="flex items-center gap-4 mb-6">
               <div className="p-3 bg-white rounded-xl shadow-sm">
-                <LogOut size={28} className="text-red-600" />
+                <LogOut size={28} className="text-gray-700" />
               </div>
               <div>
-                <h2 className="text-2xl font-bold text-red-900">Đăng xuất</h2>
-                <p className="text-sm text-red-700 mt-1">Kết thúc phiên làm việc của bạn</p>
+                <h2 className="text-2xl font-bold text-gray-900">Đăng xuất</h2>
+                <p className="text-sm text-gray-600 mt-1">Kết thúc phiên làm việc của bạn</p>
               </div>
             </div>
 
-            <p className="text-red-800 font-medium mb-6">
+            <p className="text-gray-700 font-medium mb-6">
               Bạn sẽ cần đăng nhập lại để tiếp tục sử dụng tài khoản của mình.
             </p>
 
             <motion.div whileHover={{ y: -2 }} whileTap={{ scale: 0.95 }}>
               <Button
                 onClick={handleLogout}
-                className="w-full bg-gradient-to-r from-red-600 to-red-500 text-white hover:from-red-700 hover:to-red-600 font-semibold py-3 rounded-xl flex items-center justify-center gap-2 transition-all"
+                variant="danger"
+                fullWidth
               >
                 <LogOut size={20} />
                 Đăng xuất ngay

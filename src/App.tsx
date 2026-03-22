@@ -1,7 +1,12 @@
 import Router from './router/Router'
+import { AlertProvider } from './contexts/AlertContext'
 
 function App() {
-  return <Router />
+  return (
+    <AlertProvider>
+      <Router />
+    </AlertProvider>
+  )
 }
 
 export default App

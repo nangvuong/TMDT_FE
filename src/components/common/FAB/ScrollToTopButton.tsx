@@ -31,7 +31,7 @@ const ScrollToTopButton: React.FC = () => {
       {isVisible && (
         <button
           onClick={scrollToTop}
-          className="fixed bottom-40 md:bottom-24 right-4 md:right-6 z-30 flex items-center justify-center w-14 h-14 rounded-full bg-black hover:bg-gray-900 text-white shadow-lg transition-all duration-200 hover:scale-110 animate-in fade-in zoom-in active:scale-95"
+          className="fixed bottom-24 md:bottom-6 left-4 md:left-6 z-30 flex items-center justify-center w-14 h-14 rounded-full bg-black hover:bg-gray-900 text-white shadow-lg transition-all duration-200 hover:scale-110 animate-in fade-in zoom-in active:scale-95"
           title="Lên đầu trang"
           aria-label="Scroll to top"
         >

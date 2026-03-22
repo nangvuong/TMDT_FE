@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ArrowLeft, Clock, CheckCircle, Truck, Package, X, MapPin, Tag, ShoppingBag } from 'lucide-react';
+import { ArrowLeft, Clock, CheckCircle, Truck, Package, X, MapPin } from 'lucide-react';
 import Layout from '../../components/layout/Layout';
 import { Button } from '../../components/common/Button';
 import { useOrders } from '../../hooks/useOrders';
@@ -9,7 +9,7 @@ import { usePageTitle } from '../../hooks/usePageTitle';
 import { useScrollReset } from '../../hooks/useScrollReset';
 import { formatPrice } from '../../utils/formatPrice';
 import { ORDER_STATUS } from '../../constants/api';
-import type { Order } from '../../types/product';
+import type { Order, OrderStatus } from '../../types/product';
 
 const statusConfig: Record<string, { label: string; color: string; bgColor: string; icon: React.ReactNode; step: number }> = {
   [ORDER_STATUS.PENDING]: { label: 'Chờ xử lý', color: 'text-amber-600', bgColor: 'bg-amber-50', icon: <Clock className="w-5 h-5" />, step: 1 },
@@ -90,8 +90,38 @@ const Detail: React.FC = () => {
 
   const orderStatus = statusConfig[order.status] || statusConfig[ORDER_STATUS.PENDING];
   const createdDate = new Date(order.createdAt).toLocaleDateString('vi-VN');
-  const createdTime = new Date(order.createdAt).toLocaleTimeString('vi-VN');
   const isCancelled = order.status === ORDER_STATUS.CANCELLED;
+
+  // Action button logic
+  const isPending = order.status === ORDER_STATUS.PENDING;
+  const canCancel = [ORDER_STATUS.PENDING as OrderStatus, ORDER_STATUS.CONFIRMED as OrderStatus, ORDER_STATUS.PROCESSING as OrderStatus].includes(order.status);
+  const canUpdate = [ORDER_STATUS.PENDING as OrderStatus, ORDER_STATUS.CONFIRMED as OrderStatus].includes(order.status);
+  const canRepurchase = [ORDER_STATUS.DELIVERED as OrderStatus, ORDER_STATUS.CANCELLED as OrderStatus].includes(order.status);
+
+  const handlePayment = () => {
+    navigate('/payment', {
+      state: {
+        orderId: order.id,
+        amount: order.totalAmount,
+        paymentMethod: 'bank_transfer'
+      }
+    });
+  };
+
+  const handleCancel = () => {
+    // TODO: Implement cancel order logic
+    console.log('Cancel order:', order.id);
+  };
+
+  const handleUpdate = () => {
+    // TODO: Implement update order logic
+    console.log('Update order:', order.id);
+  };
+
+  const handleRepurchase = () => {
+    // TODO: Implement repurchase logic
+    console.log('Repurchase order:', order.id);
+  };
 
   return (
     <Layout>
@@ -203,7 +233,7 @@ const Detail: React.FC = () => {
 
                 {/* Timeline steps */}
                 <div className="relative flex justify-between items-start">
-                  {timelineSteps.map((timelineStep, index) => {
+                  {timelineSteps.map((timelineStep) => {
                     const isCompleted = orderStatus.step >= timelineStep.step;
                     const IconComponent = timelineStep.icon;
 
@@ -391,27 +421,53 @@ const Detail: React.FC = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.55 }}
           >
-            <Button
-              variant="outline"
-              size="lg"
-              className="w-full sm:w-auto sm:flex-1"
-            >
-              Hủy đơn hàng
-            </Button>
-            <Button
-              variant="outline"
-              size="lg"
-              className="w-full sm:w-auto sm:flex-1"
-            >
-              Cập nhật đơn hàng
-            </Button>
-            <Button
-              variant="primary"
-              size="lg"
-              className="w-full sm:w-auto sm:flex-1"
-            >
-              Mua lại
-            </Button>
+            {/* Payment Button - Show for pending orders */}
+            {isPending && (
+              <Button
+                onClick={handlePayment}
+                variant="primary"
+                size="lg"
+                className="w-full sm:w-auto sm:flex-1"
+              >
+                Thanh toán
+              </Button>
+            )}
+
+            {/* Cancel Button - Show if order can be cancelled */}
+            {canCancel && (
+              <Button
+                onClick={handleCancel}
+                variant="outline"
+                size="lg"
+                className="w-full sm:w-auto sm:flex-1"
+              >
+                Hủy đơn hàng
+              </Button>
+            )}
+
+            {/* Update Button - Show if order can be updated */}
+            {canUpdate && (
+              <Button
+                onClick={handleUpdate}
+                variant="outline"
+                size="lg"
+                className="w-full sm:w-auto sm:flex-1"
+              >
+                Cập nhật đơn hàng
+              </Button>
+            )}
+
+            {/* Repurchase Button - Show for delivered or cancelled orders */}
+            {canRepurchase && (
+              <Button
+                onClick={handleRepurchase}
+                variant="primary"
+                size="lg"
+                className="w-full sm:w-auto sm:flex-1"
+              >
+                Mua lại
+              </Button>
+            )}
           </motion.div>
         </div>
       </section>

@@ -10,7 +10,8 @@ import {
   LogOut,
   Settings,
   Grid3x3,
-  Home
+  Home,
+  Package
 } from 'lucide-react';
 import Input from '../../common/Input/Input';
 import logoSvg from '../../../assets/logo.svg';
@@ -577,7 +578,7 @@ const Header: React.FC<HeaderProps> = ({ logo = 'TMDT Logo', hideFAB = false }) 
                           className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2"
                           whileHover={{ paddingLeft: '24px', backgroundColor: '#f9fafb' }}
                         >
-                          <ShoppingCart size={16} />
+                          <Package size={16} />
                           Đơn hàng của tôi
                         </motion.button>
                         <motion.button
@@ -977,7 +978,7 @@ const Header: React.FC<HeaderProps> = ({ logo = 'TMDT Logo', hideFAB = false }) 
                           navigate('/orders');
                           setIsUserMenuOpen(false);
                         }}
-                        className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                        className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2"
                         whileHover={{ paddingLeft: '24px', backgroundColor: '#f9fafb' }}
                       >
                         Đơn hàng của tôi

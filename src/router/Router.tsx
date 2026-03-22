@@ -38,6 +38,10 @@ import WishlistPage from '../pages/Wishlist/Wishlist';
 import HistoryPage from '../pages/History/History';
 import HistoryDetailPage from '../pages/History/Detail';
 
+// Checkout Pages
+import CheckoutPage from '../pages/Checkout/Checkout';
+import PaymentPage from '../pages/Checkout/Payment';
+
 /**
  * Router Configuration - Main routing setup for the application
  */
@@ -52,7 +56,6 @@ const Router: React.FC = () => {
         <Route path="/products/:productId" element={<ProductDetail />} />
         <Route path="/products" element={<ProductPage />} />
         <Route path="/categories/:categoryId" element={<CategoryPage />} />
-        <Route path="/cart" element={<Cart />} />
         
         {/* Shop Routes */}
         <Route path="/shop/equipment" element={<EquipmentPage />} />
@@ -77,6 +80,33 @@ const Router: React.FC = () => {
           element={
             <ProtectedRoute>
               <Profile />
+            </ProtectedRoute>
+          } 
+        />
+
+        <Route 
+          path="/cart" 
+          element={
+            <ProtectedRoute>
+              <Cart />
+            </ProtectedRoute>
+          } 
+        />
+
+        <Route 
+          path="/checkout" 
+          element={
+            <ProtectedRoute>
+              <CheckoutPage />
+            </ProtectedRoute>
+          } 
+        />
+
+        <Route 
+          path="/payment" 
+          element={
+            <ProtectedRoute>
+              <PaymentPage />
             </ProtectedRoute>
           } 
         />

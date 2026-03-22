@@ -71,6 +71,7 @@ export const useCart = () => {
 
   /**
    * Add product to cart (POST /cart/items)
+   * API returns the complete updated cart with all items
    */
   const addToCart = useCallback(
     async (payload: AddToCartPayload) => {
@@ -81,38 +82,22 @@ export const useCart = () => {
 
       setError(null);
       try {
-        const newItem = await cartService.addToCart(payload);
+        // API returns the entire updated cart, not just the new item
+        const updatedCart = await cartService.addToCart(payload);
         
-        // Update cart state with new item
-        if (cart && cart.items) {
-          const existingItemIndex = cart.items.findIndex(
-            (i) => i.productId === payload.productId
-          );
-          
-          if (existingItemIndex !== -1) {
-            // Update quantity if item already exists
-            cart.items[existingItemIndex].quantity += payload.quantity;
-          } else {
-            // Add new item
-            cart.items.push(newItem);
-          }
-          
-          // Update cart totals (these should come from the backend)
-          const updatedCart = { ...cart };
-          setCart(updatedCart);
-          // Invalidate and re-cache with new cart data
-          cacheManager.clear('cart');
-          cacheManager.set('cart', updatedCart, 5 * 60 * 1000);
-        }
+        // Update state and cache with the complete cart from API response
+        setCart(updatedCart);
+        cacheManager.set('cart', updatedCart, 5 * 60 * 1000);
         
-        return newItem;
+        // Return the updated cart
+        return updatedCart;
       } catch (err) {
         const errorMessage = err instanceof Error ? err.message : 'Failed to add item to cart';
         setError(errorMessage);
         throw err;
       }
     },
-    [isLoggedIn, cart]
+    [isLoggedIn]
   );
 
   /**
@@ -127,6 +112,7 @@ export const useCart = () => {
 
   /**
    * Remove item from cart (DELETE /cart/items/:itemId)
+   * API returns the complete updated cart with remaining items
    */
   const removeFromCart = useCallback(
     async (itemId: string) => {
@@ -137,26 +123,19 @@ export const useCart = () => {
 
       setError(null);
       try {
-        await cartService.removeFromCart(itemId);
+        // API returns the entire updated cart after removal
+        const updatedCart = await cartService.removeFromCart(itemId);
         
-        // Update local cart state
-        if (cart && cart.items) {
-          const updatedCart = {
-            ...cart,
-            items: cart.items.filter((item) => item.id !== itemId),
-          };
-          setCart(updatedCart);
-          // Invalidate and re-cache with new cart data
-          cacheManager.clear('cart');
-          cacheManager.set('cart', updatedCart, 5 * 60 * 1000);
-        }
+        // Update state and cache with the complete cart from API response
+        setCart(updatedCart);
+        cacheManager.set('cart', updatedCart, 5 * 60 * 1000);
       } catch (err) {
         const errorMessage = err instanceof Error ? err.message : 'Failed to remove item from cart';
         setError(errorMessage);
         throw err;
       }
     },
-    [isLoggedIn, cart]
+    [isLoggedIn]
   );
 
   /**
@@ -201,6 +180,13 @@ export const useCart = () => {
   }, [cart]);
 
   /**
+   * Check if cart is empty
+   */
+  const checkEmpty = useCallback((): boolean => {
+    return !cart || !cart.items || cart.items.length === 0;
+  }, [cart]);
+
+  /**
    * Clear cart error
    */
   const clearError = useCallback(() => {
@@ -228,6 +214,7 @@ export const useCart = () => {
     isEmpty: !cart || !cart.items || cart.items.length === 0,
 
     // Utilities
+    checkEmpty,
     clearError,
   };
 };

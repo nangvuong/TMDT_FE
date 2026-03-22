@@ -20,6 +20,32 @@ export const getCategoriesCacheStatus = (page: number = 1, limit: number = 6) =>
 };
 
 /**
+ * Get addresses cache status
+ */
+export const getAddressesCacheStatus = () => {
+  const itemsCached = cacheManager.has('addresses_all');
+  
+  return {
+    itemsCached,
+    timestamp: itemsCached ? new Date().toISOString() : null,
+  };
+};
+
+/**
+ * Get single address cache status
+ */
+export const getAddressCacheStatus = (id: string) => {
+  const cacheKey = `address_${id}`;
+  const isCached = cacheManager.has(cacheKey);
+  
+  return {
+    isCached,
+    key: cacheKey,
+    timestamp: isCached ? new Date().toISOString() : null,
+  };
+};
+
+/**
  * Get wishlist cache status
  */
 export const getWishlistCacheStatus = () => {
@@ -51,6 +77,33 @@ export const clearCategoriesCache = (page: number = 1, limit: number = 6) => {
 };
 
 /**
+ * Clear all addresses cache
+ */
+export const clearAddressesCache = () => {
+  cacheManager.clear('addresses_all');
+  console.log('All addresses cache cleared');
+};
+
+/**
+ * Clear specific address cache by ID
+ */
+export const clearAddressCache = (id: string) => {
+  const cacheKey = `address_${id}`;
+  cacheManager.clear(cacheKey);
+  console.log(`Address cache cleared for ID: ${id}`);
+};
+
+/**
+ * Clear all address-related cache (all addresses + all individual addresses)
+ */
+export const clearAllAddressesCache = () => {
+  cacheManager.clear('addresses_all');
+  // Also clear any individual address cache entries
+  // This is handled by the service layer
+  console.log('All address-related cache cleared');
+};
+
+/**
  * Clear wishlist cache
  */
 export const clearWishlistCache = () => {
@@ -68,9 +121,10 @@ export const logCacheDiagnostics = () => {
     cacheStatus: {
       categoriesP1L6: getCategoriesCacheStatus(1, 6),
       categoriesP1L12: getCategoriesCacheStatus(1, 12),
+      addresses: getAddressesCacheStatus(),
       wishlist: getWishlistCacheStatus(),
     },
-    note: 'Cache is automatically persisted to localStorage for 5 minutes (categories) or 30 minutes (wishlist)',
+    note: 'Cache is automatically persisted to localStorage for 5 minutes (categories/addresses) or 30 minutes (wishlist)',
   };
   
   console.log('Cache Diagnostics:', diagnostics);
