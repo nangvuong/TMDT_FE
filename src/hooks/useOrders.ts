@@ -1,6 +1,7 @@
 import { useState, useCallback } from 'react';
 import type { Order } from '../types/product';
 import orderService, { type CheckoutPayload } from '../services/orderService';
+import { cacheManager } from '../utils/cache';
 
 export const useOrders = () => {
   const [orders, setOrders] = useState<Order[]>([]);
@@ -10,6 +11,17 @@ export const useOrders = () => {
   const [error, setError] = useState<string | null>(null);
 
   const fetchMyOrders = useCallback(async (page = 1, limit = 10) => {
+    const cacheKey = `orders_list_${page}_${limit}`;
+    
+    // Check cache first
+    const cachedData = cacheManager.get<any>(cacheKey);
+    if (cachedData) {
+      setOrders(cachedData.data);
+      setTotal(cachedData.meta.totalItems);
+      setCurrentPage(cachedData.meta.page);
+      return;
+    }
+
     setLoading(true);
     setError(null);
     try {
@@ -17,6 +29,9 @@ export const useOrders = () => {
       setOrders(response.data);
       setTotal(response.meta.totalItems);
       setCurrentPage(response.meta.page);
+      
+      // Cache the result (15 minutes TTL for orders list)
+      cacheManager.set(cacheKey, response, 15 * 60 * 1000);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to fetch orders');
     } finally {
@@ -25,10 +40,21 @@ export const useOrders = () => {
   }, []);
 
   const getOrderById = useCallback(async (id: string) => {
+    const cacheKey = `order_${id}`;
+    
+    // Check cache first
+    const cachedOrder = cacheManager.get<Order>(cacheKey);
+    if (cachedOrder) {
+      return cachedOrder;
+    }
+
     setLoading(true);
     setError(null);
     try {
       const order = await orderService.getById(id);
+      
+      // Cache the order (15 minutes TTL)
+      cacheManager.set(cacheKey, order, 15 * 60 * 1000);
       return order;
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to fetch order');
@@ -43,6 +69,11 @@ export const useOrders = () => {
     setError(null);
     try {
       const order = await orderService.checkout(payload);
+      
+      // Clear orders cache after successful checkout so latest order shows up
+      cacheManager.clear('orders_list_1_10');
+      cacheManager.clear('orders_list_1_20');
+      
       return order;
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to checkout');
@@ -50,6 +81,15 @@ export const useOrders = () => {
     } finally {
       setLoading(false);
     }
+  }, []);
+
+  const clearOrdersCache = useCallback(() => {
+    // Clear all order-related cache entries
+    cacheManager.clearAll();
+  }, []);
+
+  const clearOrderCache = useCallback((id: string) => {
+    cacheManager.clear(`order_${id}`);
   }, []);
 
   return {
@@ -61,5 +101,7 @@ export const useOrders = () => {
     fetchMyOrders,
     getOrderById,
     checkout,
+    clearOrdersCache,
+    clearOrderCache,
   };
 };

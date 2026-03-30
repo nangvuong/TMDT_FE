@@ -30,6 +30,7 @@ const Cart: React.FC = () => {
     isLoading,
     isEmpty,
     removeItem,
+    addItem,
   } = useCart();
 
   const { addToWishlist } = useWishlist();
@@ -94,12 +95,34 @@ const Cart: React.FC = () => {
 
 
 
-  const handleQuantityChange = (itemId: string, newQuantity: number) => {
+  const handleQuantityInputChange = (itemId: string, newQuantity: number) => {
     if (newQuantity > 0) {
       setQuantities((prev) => ({
         ...prev,
         [itemId]: newQuantity,
       }));
+    }
+  };
+
+  const handleQuantityChange = async (itemId: string, newQuantity: number) => {
+    const currentQuantity = quantities[itemId] || 1;
+    const item = cartItems.find(i => i.id === itemId);
+    
+    if (!item) return;
+    
+    try {
+      if (newQuantity > currentQuantity) {
+        // Increase quantity: add the difference
+        await addItem(item.productId, newQuantity - currentQuantity);
+      } else if (newQuantity > 0 && newQuantity < currentQuantity) {
+        // Decrease quantity: remove and re-add with new quantity
+        await removeItem(itemId);
+        if (newQuantity > 0) {
+          await addItem(item.productId, newQuantity);
+        }
+      }
+    } catch (error) {
+      console.error('Failed to update quantity:', error);
     }
   };
 
@@ -428,18 +451,21 @@ const Cart: React.FC = () => {
                               onChange={(e) => {
                                 const value = e.target.value;
                                 if (value === '') {
-                                  handleQuantityChange(item.id, 0);
+                                  handleQuantityInputChange(item.id, 0);
                                   return;
                                 }
                                 const numValue = parseInt(value);
                                 if (!isNaN(numValue)) {
                                   const validValue = Math.max(numValue, 1);
-                                  handleQuantityChange(item.id, validValue);
+                                  handleQuantityInputChange(item.id, validValue);
                                 }
                               }}
                               onBlur={() => {
-                                if ((quantities[item.id] || 1) === 0) {
-                                  handleQuantityChange(item.id, 1);
+                                const currentQty = quantities[item.id] || 1;
+                                if (currentQty === 0) {
+                                  handleQuantityInputChange(item.id, 1);
+                                } else if (currentQty !== item.quantity) {
+                                  handleQuantityChange(item.id, currentQty);
                                 }
                               }}
                               className="w-6 text-center font-semibold text-gray-900 border-0 outline-none text-xs border-l border-r border-gray-300"
@@ -548,18 +574,21 @@ const Cart: React.FC = () => {
                               onChange={(e) => {
                                 const value = e.target.value;
                                 if (value === '') {
-                                  handleQuantityChange(item.id, 0);
+                                  handleQuantityInputChange(item.id, 0);
                                   return;
                                 }
                                 const numValue = parseInt(value);
                                 if (!isNaN(numValue)) {
                                   const validValue = Math.max(numValue, 1);
-                                  handleQuantityChange(item.id, validValue);
+                                  handleQuantityInputChange(item.id, validValue);
                                 }
                               }}
                               onBlur={() => {
-                                if ((quantities[item.id] || 1) === 0) {
-                                  handleQuantityChange(item.id, 1);
+                                const currentQty = quantities[item.id] || 1;
+                                if (currentQty === 0) {
+                                  handleQuantityInputChange(item.id, 1);
+                                } else if (currentQty !== item.quantity) {
+                                  handleQuantityChange(item.id, currentQty);
                                 }
                               }}
                               className="w-8 text-center font-semibold text-gray-900 border-0 outline-none text-sm"
