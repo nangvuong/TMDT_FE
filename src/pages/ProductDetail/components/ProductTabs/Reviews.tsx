@@ -106,11 +106,11 @@ const Reviews: React.FC<ReviewsTabProps> = ({ product, isUserLoggedIn = false })
       transition={{ duration: 0.3 }}
     >
       {/* Rating Summary */}
-      <div className="bg-gray-50 rounded-lg p-6">
-        <h3 className="text-lg font-bold text-gray-900 mb-4">Đánh giá sản phẩm</h3>
+      <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-6">
+        <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100 mb-4">Đánh giá sản phẩm</h3>
         <div className="flex items-center gap-6">
           <div className="text-center">
-            <div className="text-5xl font-bold text-gray-900">
+            <div className="text-5xl font-bold text-gray-900 dark:text-gray-100">
               {averageRating.toFixed(1)}
             </div>
             <div className="flex items-center justify-center gap-1 mt-2">
@@ -121,12 +121,12 @@ const Reviews: React.FC<ReviewsTabProps> = ({ product, isUserLoggedIn = false })
                   className={`${
                     i < Math.floor(averageRating)
                       ? 'fill-yellow-400 text-yellow-400'
-                      : 'text-gray-300'
+                      : 'text-gray-300 dark:text-gray-600'
                   }`}
                 />
               ))}
             </div>
-            <p className="text-sm text-gray-600 mt-2">
+            <p className="text-sm text-gray-600 dark:text-gray-400 mt-2">
               {product.reviewCount} đánh giá
             </p>
           </div>
@@ -135,34 +135,34 @@ const Reviews: React.FC<ReviewsTabProps> = ({ product, isUserLoggedIn = false })
 
       {/* Write Review Form */}
       {isUserLoggedIn ? (
-        <div className="border border-gray-200 rounded-lg p-6">
-          <h3 className="text-lg font-bold text-gray-900 mb-4">Viết đánh giá</h3>
+        <div className="border border-gray-200 dark:border-gray-700 rounded-lg p-6 bg-white dark:bg-gray-900">
+          <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100 mb-4">Viết đánh giá</h3>
 
           {submitSuccess && (
             <motion.div
-              className="mb-4 p-4 bg-green-50 border border-green-200 rounded-lg"
+              className="mb-4 p-4 bg-green-50 dark:bg-green-900/30 border border-green-200 dark:border-green-800 rounded-lg"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
             >
-              <p className="text-green-800 font-medium">✓ Đánh giá của bạn đã được tạo thành công!</p>
+              <p className="text-green-800 dark:text-green-400 font-medium">✓ Đánh giá của bạn đã được tạo thành công!</p>
             </motion.div>
           )}
 
           {submitError && (
             <motion.div
-              className="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg flex items-center gap-2"
+              className="mb-4 p-4 bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 rounded-lg flex items-center gap-2"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
             >
-              <AlertCircle size={18} className="text-red-600" />
-              <p className="text-red-800 font-medium">{submitError}</p>
+              <AlertCircle size={18} className="text-red-600 dark:text-red-400" />
+              <p className="text-red-800 dark:text-red-400 font-medium">{submitError}</p>
             </motion.div>
           )}
 
           <form onSubmit={handleSubmitReview} className="space-y-4">
             {/* Rating Selector */}
             <div>
-              <label className="block text-sm font-medium text-gray-900 mb-2">
+              <label className="block text-sm font-medium text-gray-900 dark:text-gray-100 mb-2">
                 Đánh giá
               </label>
               <div className="flex items-center gap-2">
@@ -179,7 +179,7 @@ const Reviews: React.FC<ReviewsTabProps> = ({ product, isUserLoggedIn = false })
                       className={`cursor-pointer transition-colors ${
                         star <= rating
                           ? 'fill-yellow-400 text-yellow-400'
-                          : 'text-gray-300 hover:text-yellow-300'
+                          : 'text-gray-300 dark:text-gray-600 hover:text-yellow-300 dark:hover:text-yellow-400'
                       }`}
                     />
                   </motion.button>
@@ -189,7 +189,7 @@ const Reviews: React.FC<ReviewsTabProps> = ({ product, isUserLoggedIn = false })
 
             {/* Comment */}
             <div>
-              <label className="block text-sm font-medium text-gray-900 mb-2">
+              <label className="block text-sm font-medium text-gray-900 dark:text-gray-100 mb-2">
                 Nhận xét ({comment.length}/1000)
               </label>
               <Textarea
@@ -201,7 +201,7 @@ const Reviews: React.FC<ReviewsTabProps> = ({ product, isUserLoggedIn = false })
                 className="w-full"
               />
               {comment.length < 10 && comment.length > 0 && (
-                <p className="text-sm text-red-600 mt-1">
+                <p className="text-sm text-red-600 dark:text-red-400 mt-1">
                   Nhận xét phải có ít nhất 10 ký tự
                 </p>
               )}
@@ -219,9 +219,9 @@ const Reviews: React.FC<ReviewsTabProps> = ({ product, isUserLoggedIn = false })
           </form>
         </div>
       ) : (
-        <div className="border border-gray-200 rounded-lg p-6 text-center">
-          <AlertCircle size={32} className="text-gray-400 mx-auto mb-3" />
-          <p className="text-gray-600 mb-4">Vui lòng đăng nhập để viết đánh giá</p>
+        <div className="border border-gray-200 dark:border-gray-700 rounded-lg p-6 text-center bg-white dark:bg-gray-900">
+          <AlertCircle size={32} className="text-gray-400 dark:text-gray-500 mx-auto mb-3" />
+          <p className="text-gray-600 dark:text-gray-400 mb-4">Vui lòng đăng nhập để viết đánh giá</p>
           <Button onClick={() => window.location.href = '/login'}>
             Đăng nhập
           </Button>
@@ -230,14 +230,14 @@ const Reviews: React.FC<ReviewsTabProps> = ({ product, isUserLoggedIn = false })
 
       {/* Reviews List */}
       <div>
-        <h3 className="text-lg font-bold text-gray-900 mb-4">
+        <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100 mb-4">
           Đánh giá từ khách hàng ({product.reviewCount || 0})
         </h3>
 
         {isLoadingReviews ? (
           <div className="space-y-4">
             {[...Array(3)].map((_, i) => (
-              <div key={i} className="h-32 bg-gray-200 rounded-lg animate-pulse" />
+              <div key={i} className="h-32 bg-gray-200 dark:bg-gray-700 rounded-lg animate-pulse" />
             ))}
           </div>
         ) : reviews.length > 0 ? (
@@ -245,17 +245,17 @@ const Reviews: React.FC<ReviewsTabProps> = ({ product, isUserLoggedIn = false })
             {reviews.map((review) => (
               <motion.div
                 key={review.id}
-                className="border border-gray-200 rounded-lg p-4"
+                className="border border-gray-200 dark:border-gray-700 rounded-lg p-4 bg-white dark:bg-gray-900"
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
               >
                 {/* Reviewer Info */}
                 <div className="flex items-center justify-between mb-3">
                   <div>
-                    <p className="font-semibold text-gray-900">
+                    <p className="font-semibold text-gray-900 dark:text-gray-100">
                       {review.user.firstName} {review.user.lastName}
                     </p>
-                    <p className="text-sm text-gray-600">
+                    <p className="text-sm text-gray-600 dark:text-gray-400">
                       {new Date(review.createdAt).toLocaleDateString('vi-VN')}
                     </p>
                   </div>
@@ -267,7 +267,7 @@ const Reviews: React.FC<ReviewsTabProps> = ({ product, isUserLoggedIn = false })
                         className={`${
                           i < review.rating
                             ? 'fill-yellow-400 text-yellow-400'
-                            : 'text-gray-300'
+                            : 'text-gray-300 dark:text-gray-600'
                         }`}
                       />
                     ))}
@@ -275,7 +275,7 @@ const Reviews: React.FC<ReviewsTabProps> = ({ product, isUserLoggedIn = false })
                 </div>
 
                 {/* Review Comment */}
-                <p className="text-gray-700 leading-relaxed">{review.comment}</p>
+                <p className="text-gray-700 dark:text-gray-300 leading-relaxed">{review.comment}</p>
               </motion.div>
             ))}
 
@@ -285,17 +285,17 @@ const Reviews: React.FC<ReviewsTabProps> = ({ product, isUserLoggedIn = false })
                 <button
                   onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
                   disabled={currentPage === 1}
-                  className="px-4 py-2 text-gray-600 hover:text-gray-900 disabled:opacity-50"
+                  className="px-4 py-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 disabled:opacity-50"
                 >
                   ← Trước
                 </button>
-                <span className="text-gray-600">
+                <span className="text-gray-600 dark:text-gray-400">
                   Trang {currentPage} / {totalPages}
                 </span>
                 <button
                   onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
                   disabled={currentPage === totalPages}
-                  className="px-4 py-2 text-gray-600 hover:text-gray-900 disabled:opacity-50"
+                  className="px-4 py-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 disabled:opacity-50"
                 >
                   Sau →
                 </button>
@@ -304,7 +304,7 @@ const Reviews: React.FC<ReviewsTabProps> = ({ product, isUserLoggedIn = false })
           </div>
         ) : (
           <div className="text-center py-8">
-            <p className="text-gray-500">Chưa có đánh giá nào. Hãy là người đầu tiên!</p>
+            <p className="text-gray-500 dark:text-gray-400">Chưa có đánh giá nào. Hãy là người đầu tiên!</p>
           </div>
         )}
       </div>

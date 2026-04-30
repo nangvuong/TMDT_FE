@@ -37,7 +37,7 @@ const Input: React.FC<InputProps> = ({
   className,
   ...props
 }) => {
-  const baseInputStyles = 'w-full rounded-lg focus:outline-none focus:ring-2 focus:ring-offset-2 transition-colors disabled:bg-gray-100 disabled:cursor-not-allowed disabled:text-gray-400';
+  const baseInputStyles = 'w-full rounded-lg focus:outline-none focus:ring-2 focus:ring-offset-2 dark:focus:ring-offset-gray-900 transition-colors disabled:bg-gray-100 dark:disabled:bg-gray-700 disabled:cursor-not-allowed disabled:text-gray-400 dark:disabled:text-gray-500';
 
   const sizeStyles = {
     sm: 'px-3 py-1.5 text-base',
@@ -46,14 +46,14 @@ const Input: React.FC<InputProps> = ({
   };
 
   const variantStyles = {
-    default: 'bg-white border-2 border-gray-300 text-gray-900 placeholder:text-gray-500 focus:border-black focus:ring-black hover:border-gray-400',
-    outline: 'bg-transparent border-2 border-gray-800 text-gray-900 placeholder:text-gray-600 focus:border-black focus:ring-black',
-    filled: 'bg-gray-100 border-b-2 border-gray-400 text-gray-900 placeholder:text-gray-600 focus:bg-gray-50 focus:border-black focus:ring-0',
+    default: 'bg-white dark:bg-gray-900 border-2 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100 placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-black dark:focus:border-white focus:ring-black dark:focus:ring-white hover:border-gray-400 dark:hover:border-gray-500',
+    outline: 'bg-transparent border-2 border-gray-800 dark:border-gray-400 text-gray-900 dark:text-gray-100 placeholder:text-gray-600 dark:placeholder:text-gray-400 focus:border-black dark:focus:border-white focus:ring-black dark:focus:ring-white',
+    filled: 'bg-gray-100 dark:bg-gray-700 border-b-2 border-gray-400 dark:border-gray-500 text-gray-900 dark:text-gray-100 placeholder:text-gray-600 dark:placeholder:text-gray-400 focus:bg-gray-50 dark:focus:bg-gray-800 focus:border-black dark:focus:border-white focus:ring-0',
   };
 
-  const labelStyles = 'block text-sm font-medium text-gray-900 mb-2';
-  const errorStyles = 'text-sm font-medium text-gray-600 mt-1';
-  const helperStyles = 'text-sm text-gray-600 mt-1';
+  const labelStyles = 'block text-sm font-medium text-gray-900 dark:text-gray-100 mb-2';
+  const errorStyles = 'text-sm font-medium text-gray-600 dark:text-gray-400 mt-1';
+  const helperStyles = 'text-sm text-gray-600 dark:text-gray-400 mt-1';
 
   return (
     <motion.div
@@ -65,13 +65,13 @@ const Input: React.FC<InputProps> = ({
       {label && (
         <label className={labelStyles}>
           {label}
-          {props.required && <span className="text-gray-600 ml-1">*</span>}
+          {props.required && <span className="text-gray-600 dark:text-gray-400 ml-1">*</span>}
         </label>
       )}
 
       <div className="relative flex items-center w-full">
         {startIcon && (
-          <span className="absolute left-3 text-gray-500 flex items-center pointer-events-none h-full flex items-center">
+          <span className="absolute left-3 text-gray-500 dark:text-gray-400 flex items-center pointer-events-none h-full flex items-center">
             {startIcon}
           </span>
         )}
@@ -96,7 +96,7 @@ const Input: React.FC<InputProps> = ({
         />
 
         {endIcon && (
-          <span className="absolute right-3 text-gray-500 flex items-center pointer-events-none h-full flex items-center">
+          <span className="absolute right-3 text-gray-500 dark:text-gray-400 flex items-center pointer-events-none h-full flex items-center">
             {endIcon}
           </span>
         )}

@@ -8,6 +8,7 @@ export { default as userService } from './userService';
 export { default as uploadService } from './uploadService';
 export { default as wishlistService } from './wishlistService';
 export { default as couponService } from './couponService';
+export { default as recommendationService } from './recommendationService';
 export { addressService } from './addressService';
 export { default as axiosClient } from './axiosClient';
 
@@ -17,3 +18,10 @@ export type { CheckoutPayload } from './orderService';
 export type { CreateTransactionPayload, CheckPaymentResponse, Transaction } from './paymentService';
 export type { UploadResponse, UploadMultipleResponse } from './uploadService';
 export type { WishlistItem, GetWishlistResponse, GetWishlistParams } from './wishlistService';
+export type {
+  SimilarProductsResponse,
+  HealthCheckResponse,
+  RecommendationResponse,
+  RecommendationParams,
+  SimilarParams,
+} from './recommendationService';

@@ -42,7 +42,7 @@ const FloatingActionButton: React.FC<FloatingActionButtonProps> = ({
               transition={{ delay: 0.05, type: 'spring', stiffness: 400, damping: 20 }}
             >
               <motion.span
-                className="hidden md:block bg-gray-800 text-white px-3 py-2 md:px-4 md:py-2 rounded-lg text-xs md:text-sm font-medium whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity"
+                className="hidden md:block bg-gray-800 dark:bg-gray-700 text-white px-3 py-2 md:px-4 md:py-2 rounded-lg text-xs md:text-sm font-medium whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity"
                 initial={{ opacity: 0, x: 10 }}
                 whileHover={{ opacity: 1, x: 0 }}
               >
@@ -50,7 +50,7 @@ const FloatingActionButton: React.FC<FloatingActionButtonProps> = ({
               </motion.span>
               <motion.button
                 onClick={handleZaloClick}
-                className="flex items-center justify-center w-12 h-12 md:w-14 md:h-14 rounded-full bg-gray-700 hover:bg-gray-800 text-white shadow-lg transition-all duration-200 hover:scale-110 flex-shrink-0 active:scale-95"
+                className="flex items-center justify-center w-12 h-12 md:w-14 md:h-14 rounded-full bg-gray-700 hover:bg-gray-800 dark:bg-gray-600 dark:hover:bg-gray-500 text-white shadow-lg dark:shadow-gray-900/30 transition-all duration-200 hover:scale-110 flex-shrink-0 active:scale-95"
                 title="Liên hệ qua Zalo"
                 aria-label="Contact via Zalo"
                 whileHover={{ scale: 1.1 }}
@@ -68,7 +68,7 @@ const FloatingActionButton: React.FC<FloatingActionButtonProps> = ({
               transition={{ delay: 0.1, type: 'spring', stiffness: 400, damping: 20 }}
             >
               <motion.span
-                className="hidden md:block bg-gray-800 text-white px-3 py-2 md:px-4 md:py-2 rounded-lg text-xs md:text-sm font-medium whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity"
+                className="hidden md:block bg-gray-800 dark:bg-gray-700 text-white px-3 py-2 md:px-4 md:py-2 rounded-lg text-xs md:text-sm font-medium whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity"
                 initial={{ opacity: 0, x: 10 }}
                 whileHover={{ opacity: 1, x: 0 }}
               >
@@ -76,7 +76,7 @@ const FloatingActionButton: React.FC<FloatingActionButtonProps> = ({
               </motion.span>
               <motion.button
                 onClick={handleChatbotClick}
-                className="flex items-center justify-center w-12 h-12 md:w-14 md:h-14 rounded-full bg-gray-600 hover:bg-gray-700 text-white shadow-lg transition-all duration-200 hover:scale-110 flex-shrink-0 active:scale-95"
+                className="flex items-center justify-center w-12 h-12 md:w-14 md:h-14 rounded-full bg-gray-600 hover:bg-gray-700 dark:bg-gray-500 dark:hover:bg-gray-400 text-white shadow-lg dark:shadow-gray-900/30 transition-all duration-200 hover:scale-110 flex-shrink-0 active:scale-95"
                 title="Mở Chatbot"
                 aria-label="Open Chatbot"
                 whileHover={{ scale: 1.1 }}
@@ -92,9 +92,9 @@ const FloatingActionButton: React.FC<FloatingActionButtonProps> = ({
       {/* Main FAB Button */}
       <motion.button
         onClick={() => setIsOpen(!isOpen)}
-        className={`flex items-center justify-center w-14 h-14 md:w-16 md:h-16 rounded-full shadow-2xl transition-all duration-300 text-white font-semibold active:scale-95 ${
+        className={`flex items-center justify-center w-14 h-14 md:w-16 md:h-16 rounded-full shadow-2xl dark:shadow-gray-900/30 transition-all duration-300 text-white font-semibold active:scale-95 ${
           isOpen
-            ? 'bg-gray-400 hover:bg-gray-500'
+            ? 'bg-gray-400 hover:bg-gray-500 dark:bg-gray-500 dark:hover:bg-gray-400'
             : 'bg-black hover:bg-gray-900'
         }`}
         title={isOpen ? 'Đóng menu' : 'Liên hệ với chúng tôi'}

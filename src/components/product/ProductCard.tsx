@@ -7,7 +7,7 @@ import { useIsLoggedIn } from '../../hooks/useAuth';
 import { useCart } from '../../hooks/useCart';
 import { formatVND } from '../../utils/formatPrice';
 
-interface ProductCardProps {
+export interface ProductCardProps {
   id: string;
   name: string;
   price: number | string;
@@ -104,13 +104,13 @@ const ProductCard: React.FC<ProductCardProps> = ({
 
   return (
     <motion.div
-      className="flex flex-col bg-white rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-300 h-full"
+      className="flex flex-col bg-white dark:bg-gray-800 rounded-lg overflow-hidden shadow-md hover:shadow-xl dark:shadow-gray-900/30 transition-shadow duration-300 h-full"
       whileHover={{ y: -5 }}
       transition={{ type: 'spring', stiffness: 400, damping: 20 }}
     >
       {/* Image Container */}
       <motion.div
-        className="relative w-full h-36 sm:h-40 md:h-48 lg:h-56 overflow-hidden bg-gray-200 cursor-pointer group"
+        className="relative w-full h-36 sm:h-40 md:h-48 lg:h-56 overflow-hidden bg-gray-200 dark:bg-gray-700 cursor-pointer group"
         onClick={handleProductClick}
         whileHover="hover"
         initial="initial"
@@ -127,8 +127,8 @@ const ProductCard: React.FC<ProductCardProps> = ({
             transition={{ duration: 0.3 }}
           />
         ) : (
-          <div className="w-full h-full bg-gradient-to-br from-gray-300 to-gray-400 flex items-center justify-center">
-            <span className="text-gray-600">No Image</span>
+          <div className="w-full h-full bg-gradient-to-br from-gray-300 to-gray-400 dark:from-gray-600 dark:to-gray-700 flex items-center justify-center">
+            <span className="text-gray-600 dark:text-gray-400">No Image</span>
           </div>
         )}
 
@@ -164,7 +164,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
             transition={{ duration: 0.2 }}
           >
             <motion.button
-              className="px-4 py-2 bg-white text-black font-semibold rounded-lg hover:bg-gray-100 transition-colors text-sm sm:text-base"
+              className="px-4 py-2 bg-white dark:bg-gray-900 text-black dark:text-white font-semibold rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-sm sm:text-base"
               onClick={(e) => {
                 e.stopPropagation();
                 handleProductClick();
@@ -182,7 +182,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
 
         {/* Wishlist Button */}
         <motion.button
-          className="absolute top-3 right-3 p-2 bg-white rounded-full shadow-md hover:bg-gray-100 transition-colors z-10"
+          className="absolute top-3 right-3 p-2 bg-white dark:bg-gray-800 rounded-full shadow-md hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors z-10"
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.95 }}
           onClick={handleWishlistClick}
@@ -200,7 +200,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
       <div className="flex-1 p-2 sm:p-3 md:p-4 lg:p-5 flex flex-col">
         {/* Name */}
         <h3
-          className="font-semibold text-gray-800 text-xs sm:text-sm md:text-base line-clamp-2 cursor-pointer hover:text-black transition-colors"
+          className="font-semibold text-gray-800 dark:text-gray-200 text-xs sm:text-sm md:text-base line-clamp-2 cursor-pointer hover:text-black dark:hover:text-white transition-colors"
           onClick={handleProductClick}
         >
           {name}
@@ -208,7 +208,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
 
         {/* Description */}
         {description && (
-          <p className="text-gray-500 text-xs md:text-sm mt-1 line-clamp-2">
+          <p className="text-gray-500 dark:text-gray-400 text-xs md:text-sm mt-1 line-clamp-2">
             {description}
           </p>
         )}
@@ -229,25 +229,25 @@ const ProductCard: React.FC<ProductCardProps> = ({
                 >
                   <Star
                     size={14}
-                    className={i < Math.floor(rating) ? 'fill-amber-400 text-amber-400' : 'text-gray-300'}
+                    className={i < Math.floor(rating) ? 'fill-amber-400 text-amber-400' : 'text-gray-300 dark:text-gray-600'}
                   />
                 </motion.div>
               ))}
             </div>
-            <span className="text-xs text-gray-600 ml-1">
+            <span className="text-xs text-gray-600 dark:text-gray-400 ml-1">
               {rating.toFixed(1)}
-              {reviewCount > 0 && <span className="text-gray-500"> ({reviewCount})</span>}
+              {reviewCount > 0 && <span className="text-gray-500 dark:text-gray-500"> ({reviewCount})</span>}
             </span>
           </div>
         )}
 
         {/* Stock Info */}
-        <p className={`text-xs font-medium mt-2 sm:mt-3 ${isInStock ? 'text-emerald-600' : 'text-red-600'}`}>
+        <p className={`text-xs font-medium mt-2 sm:mt-3 ${isInStock ? 'text-emerald-600 dark:text-emerald-500' : 'text-red-600 dark:text-red-500'}`}>
           {isInStock ? `Còn ${stock} sản phẩm` : 'Hết hàng'}
         </p>
 
         {/* Price */}
-        <p className="text-base sm:text-lg md:text-xl font-bold text-gray-900 mt-2 sm:mt-3">
+        <p className="text-base sm:text-lg md:text-xl font-bold text-gray-900 dark:text-gray-100 mt-2 sm:mt-3">
           {formatVND(typeof price === 'string' ? parseFloat(price) : price)}
         </p>
 
@@ -259,8 +259,8 @@ const ProductCard: React.FC<ProductCardProps> = ({
             addedSuccess
               ? 'bg-emerald-600 text-white'
               : isInStock
-              ? 'bg-gray-900 text-white hover:bg-black'
-              : 'bg-gray-300 text-gray-600 cursor-not-allowed'
+              ? 'bg-gray-900 dark:bg-white text-white dark:text-black hover:bg-black dark:hover:bg-gray-100'
+              : 'bg-gray-300 dark:bg-gray-700 text-gray-600 dark:text-gray-400 cursor-not-allowed'
           }`}
           whileHover={isInStock && !isAddingToCart ? { scale: 1.02 } : {}}
           whileTap={isInStock && !isAddingToCart ? { scale: 0.98 } : {}}

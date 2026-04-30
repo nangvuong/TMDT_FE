@@ -116,7 +116,7 @@ const Modal: React.FC<ModalProps> = ({
           {/* Modal Content */}
           <motion.div
             className={cn(
-              'relative w-full bg-white rounded-2xl shadow-2xl overflow-hidden',
+              'relative w-full bg-white dark:bg-gray-900 rounded-2xl shadow-2xl dark:shadow-gray-900/30 overflow-hidden',
               sizeStyles[size],
               className
             )}
@@ -128,12 +128,12 @@ const Modal: React.FC<ModalProps> = ({
           >
             {/* Header */}
             {(title || header || closeButton) && (
-              <div className="flex items-start justify-between border-b border-gray-200 px-6 py-5">
+              <div className="flex items-start justify-between border-b border-gray-200 dark:border-gray-700 px-6 py-5">
                 <div className="flex-1 pr-4">
                   {header ? (
                     header
                   ) : title ? (
-                    <h2 className="text-xl font-semibold text-gray-900">
+                    <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">
                       {title}
                     </h2>
                   ) : null}
@@ -142,7 +142,7 @@ const Modal: React.FC<ModalProps> = ({
                 {closeButton && (
                   <motion.button
                     onClick={onClose}
-                    className="ml-2 p-1.5 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors flex-shrink-0"
+                    className="ml-2 p-1.5 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors flex-shrink-0"
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.95 }}
                     aria-label="Close modal"
@@ -160,7 +160,7 @@ const Modal: React.FC<ModalProps> = ({
 
             {/* Footer */}
             {footer && (
-              <div className="border-t border-gray-200 px-6 py-4 bg-gray-50 rounded-b-2xl">
+              <div className="border-t border-gray-200 dark:border-gray-700 px-6 py-4 bg-gray-50 dark:bg-gray-800 rounded-b-2xl">
                 {footer}
               </div>
             )}

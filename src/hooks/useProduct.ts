@@ -1,5 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
+import type { AxiosError } from 'axios';
 import productService from '../services/productService';
+import recommendationService from '../services/recommendationService';
 import type { Product, Category } from '../types/product';
 import type { GetProductsParams, GetCategoryParams } from '../services/productService';
 import { cacheManager, generateCategoriesCacheKey } from '../utils/cache';
@@ -543,6 +545,131 @@ export const useCategoriesWithCache = (
     search,
     clearCache,
     refetch: fetchCategories, // Force refresh bypassing cache
+  };
+};
+
+/**
+ * Hook for fetching similar products (IDs only)
+ * Use this when you want to fetch product details separately via getById
+ */
+export const useRecommendations = (productId?: string, limit: number = 10) => {
+  const [similarIds, setSimilarIds] = useState<string[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchSimilar = useCallback(async (id: string) => {
+    if (!id) {
+      setSimilarIds([]);
+      return;
+    }
+
+    try {
+      setIsLoading(true);
+      setError(null);
+
+      const response = await recommendationService.getSimilar(id, { limit });
+      setSimilarIds(response.data?.similar_ids || []);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to fetch similar products');
+      setSimilarIds([]);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [limit]);
+
+  useEffect(() => {
+    if (productId) {
+      fetchSimilar(productId);
+    }
+  }, [productId, fetchSimilar]);
+
+  const refresh = useCallback(() => {
+    if (productId) {
+      fetchSimilar(productId);
+    }
+  }, [productId, fetchSimilar]);
+
+  return {
+    similarIds,
+    isLoading,
+    error,
+    refresh,
+  };
+};
+
+/**
+ * Hook for fetching product details with similar products (all-in-one)
+ * This is the most efficient way to get recommendations as it combines
+ * the product details and similar products in a single request
+ */
+export const useProductRecommendation = (productId?: string, limit: number = 5) => {
+  const [product, setProduct] = useState<Product | null>(null);
+  const [similarProducts, setSimilarProducts] = useState<Product[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<AxiosError | null>(null);
+
+  const fetchRecommendation = useCallback(async (id: string) => {
+    if (!id) {
+      setProduct(null);
+      setSimilarProducts([]);
+      return;
+    }
+
+    try {
+      setIsLoading(true);
+      setError(null);
+
+      // Generate cache key based on product ID and limit
+      const cacheKey = `recommendation_${id}_${limit}`;
+
+      // Check if we have cached data
+      const cachedData = cacheManager.get<any>(cacheKey);
+      if (cachedData) {
+        setProduct(cachedData.product || null);
+        setSimilarProducts(cachedData.similar_products || []);
+        setIsLoading(false);
+        return;
+      }
+
+      // Fetch from API if not in cache
+      const response = await recommendationService.getRecommendation(id, { limit });
+      const responseData = {
+        product: response.data?.product || null,
+        similar_products: response.data?.similar_products || [],
+      };
+
+      // Cache the recommendation for 15 minutes
+      cacheManager.set(cacheKey, responseData, 15 * 60 * 1000);
+
+      setProduct(responseData.product);
+      setSimilarProducts(responseData.similar_products);
+    } catch (err) {
+      setError(err as AxiosError);
+      setProduct(null);
+      setSimilarProducts([]);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [limit]);
+
+  useEffect(() => {
+    if (productId) {
+      fetchRecommendation(productId);
+    }
+  }, [productId, fetchRecommendation]);
+
+  const refresh = useCallback(() => {
+    if (productId) {
+      fetchRecommendation(productId);
+    }
+  }, [productId, fetchRecommendation]);
+
+  return {
+    product,
+    similarProducts,
+    isLoading,
+    error,
+    refresh,
   };
 };
 

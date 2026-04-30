@@ -57,7 +57,7 @@ const Footer: React.FC = () => {
   };
 
   return (
-    <footer className="bg-white border-t border-gray-200">
+    <footer className="bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700">
       {/* Main Footer Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {/* Links Grid */}
@@ -69,7 +69,7 @@ const Footer: React.FC = () => {
             viewport={{ once: true }}
             transition={{ delay: 0 }}
           >
-            <h3 className="font-semibold text-gray-900 text-sm uppercase tracking-wide mb-4">
+            <h3 className="font-semibold text-gray-900 dark:text-gray-100 text-sm uppercase tracking-wide mb-4">
               Cửa hàng
             </h3>
             <ul className="space-y-3">
@@ -77,7 +77,7 @@ const Footer: React.FC = () => {
                 <motion.li key={link.href}>
                   <motion.a
                     href={link.href}
-                    className="text-gray-800 text-sm hover:text-black font-small transition-colors no-underline"
+                    className="text-gray-800 dark:text-gray-200 text-sm hover:text-black dark:hover:text-white font-small transition-colors no-underline"
                     variants={linkVariants}
                     initial="initial"
                     animate="visible"
@@ -97,7 +97,7 @@ const Footer: React.FC = () => {
             viewport={{ once: true }}
             transition={{ delay: 0.1 }}
           >
-            <h3 className="font-semibold text-gray-900 text-sm uppercase tracking-wide mb-4">
+            <h3 className="font-semibold text-gray-900 dark:text-gray-100 text-sm uppercase tracking-wide mb-4">
               Hỗ trợ
             </h3>
             <ul className="space-y-3">
@@ -105,7 +105,7 @@ const Footer: React.FC = () => {
                 <motion.li key={link.href}>
                   <motion.a
                     href={link.href}
-                    className="text-gray-800 text-sm hover:text-black font-small transition-colors no-underline"
+                    className="text-gray-800 dark:text-gray-200 text-sm hover:text-black dark:hover:text-white font-small transition-colors no-underline"
                     variants={linkVariants}
                     initial="initial"
                     animate="visible"
@@ -125,7 +125,7 @@ const Footer: React.FC = () => {
             viewport={{ once: true }}
             transition={{ delay: 0.2 }}
           >
-            <h3 className="font-semibold text-gray-900 text-sm uppercase tracking-wide mb-4">
+            <h3 className="font-semibold text-gray-900 dark:text-gray-100 text-sm uppercase tracking-wide mb-4">
               Công ty
             </h3>
             <ul className="space-y-3">
@@ -133,7 +133,7 @@ const Footer: React.FC = () => {
                 <motion.li key={link.href}>
                   <motion.a
                     href={link.href}
-                    className="text-gray-800 text-sm hover:text-black font-small transition-colors no-underline"
+                    className="text-gray-800 dark:text-gray-200 text-sm hover:text-black dark:hover:text-white font-small transition-colors no-underline"
                     variants={linkVariants}
                     initial="initial"
                     animate="visible"
@@ -153,7 +153,7 @@ const Footer: React.FC = () => {
             viewport={{ once: true }}
             transition={{ delay: 0.3 }}
           >
-            <h3 className="font-semibold text-gray-900 text-sm uppercase tracking-wide mb-4">
+            <h3 className="font-semibold text-gray-900 dark:text-gray-100 text-sm uppercase tracking-wide mb-4">
               Theo dõi chúng tôi
             </h3>
             <div className="flex gap-4">
@@ -163,7 +163,7 @@ const Footer: React.FC = () => {
                   href={social.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="p-2 rounded-lg border border-gray-200 text-gray-600 hover:text-black hover:border-gray-300 transition-all"
+                  className="p-2 rounded-lg border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white hover:border-gray-300 dark:hover:border-gray-600 transition-all"
                   variants={socialIconVariants}
                   initial="initial"
                   whileHover="whileHover"
@@ -179,14 +179,14 @@ const Footer: React.FC = () => {
       </div>
 
       {/* Bottom Footer */}
-      <div className="border-t border-gray-200 bg-gray-50">
+      <div className="border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
         <motion.div
           className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 text-center"
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
         >
-          <p className="text-gray-600 text-sm">
+          <p className="text-gray-600 dark:text-gray-400 text-sm">
             Bản quyền © 2026 Fitness Mart. Bảo lưu mọi quyền
           </p>
         </motion.div>

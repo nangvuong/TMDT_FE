@@ -119,12 +119,12 @@ const ProductInfo: React.FC<ProductInfoProps> = ({
   if (isLoading) {
     return (
       <div className="space-y-6 animate-pulse">
-        <div className="h-12 bg-gray-300 rounded-lg" />
-        <div className="h-6 bg-gray-300 rounded-lg w-1/3" />
-        <div className="h-8 bg-gray-300 rounded-lg w-1/4" />
+        <div className="h-12 bg-gray-300 dark:bg-gray-700 rounded-lg" />
+        <div className="h-6 bg-gray-300 dark:bg-gray-700 rounded-lg w-1/3" />
+        <div className="h-8 bg-gray-300 dark:bg-gray-700 rounded-lg w-1/4" />
         <div className="space-y-4">
-          <div className="h-10 bg-gray-300 rounded-lg" />
-          <div className="h-10 bg-gray-300 rounded-lg" />
+          <div className="h-10 bg-gray-300 dark:bg-gray-700 rounded-lg" />
+          <div className="h-10 bg-gray-300 dark:bg-gray-700 rounded-lg" />
         </div>
       </div>
     );
@@ -139,7 +139,7 @@ const ProductInfo: React.FC<ProductInfoProps> = ({
     >
       {/* Product Name */}
       <motion.h1
-        className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 leading-tight"
+        className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 dark:text-gray-100 leading-tight"
         variants={itemVariants}
       >
         {product.name}
@@ -155,15 +155,15 @@ const ProductInfo: React.FC<ProductInfoProps> = ({
               className={`sm:w-4 sm:h-4 ${
                 i < Math.floor(rating)
                   ? 'fill-yellow-400 text-yellow-400'
-                  : 'text-gray-300'
+                  : 'text-gray-300 dark:text-gray-600'
               }`}
             />
           ))}
         </div>
-        <span className="font-semibold text-gray-900">
+        <span className="font-semibold text-gray-900 dark:text-gray-100">
           {rating.toFixed(1)}
         </span>
-        <span className="text-gray-600">({reviewCount})</span>
+        <span className="text-gray-600 dark:text-gray-400">({reviewCount})</span>
       </motion.div>
 
       {/* Price and Wishlist */}
@@ -172,15 +172,15 @@ const ProductInfo: React.FC<ProductInfoProps> = ({
         variants={itemVariants}
       >
         <div>
-          <p className="text-xs text-gray-600 mb-0.5">Giá</p>
-          <p className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900">
+          <p className="text-xs text-gray-600 dark:text-gray-400 mb-0.5">Giá</p>
+          <p className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 dark:text-gray-100">
             {price.toLocaleString('vi-VN')}đ
           </p>
         </div>
         <motion.button
           onClick={handleWishlist}
           disabled={isTogglingWishlist}
-          className="p-2 sm:p-2.5 rounded-lg bg-gray-100 hover:bg-red-100 transition-colors disabled:opacity-50 flex-shrink-0"
+          className="p-2 sm:p-2.5 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-red-100 dark:hover:bg-red-900/30 transition-colors disabled:opacity-50 flex-shrink-0"
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.95 }}
           title={isLoggedIn ? (isInWishlist ? 'Xóa khỏi yêu thích' : 'Thêm vào yêu thích') : 'Đăng nhập để thêm vào yêu thích'}
@@ -190,7 +190,7 @@ const ProductInfo: React.FC<ProductInfoProps> = ({
             className={`sm:w-5 sm:h-5 ${
               isInWishlist
                 ? 'fill-red-500 text-red-500'
-                : 'text-gray-600'
+                : 'text-gray-600 dark:text-gray-400'
             }`}
           />
         </motion.button>
@@ -203,20 +203,20 @@ const ProductInfo: React.FC<ProductInfoProps> = ({
             inStock ? 'bg-green-500' : 'bg-red-500'
           }`}
         />
-        <span className={`font-medium ${inStock ? 'text-green-600' : 'text-red-600'}`}>
+        <span className={`font-medium ${inStock ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
           {inStock ? `Còn ${product.stock}` : 'Hết hàng'}
         </span>
       </motion.div>
 
       {/* Quantity Selector */}
       <motion.div className="space-y-1.5" variants={itemVariants}>
-        <p className="text-xs font-medium text-gray-900">Số lượng</p>
+        <p className="text-xs font-medium text-gray-900 dark:text-gray-100">Số lượng</p>
         <div className="flex items-center gap-2">
-          <div className="flex items-center border border-gray-300 rounded-lg">
+          <div className="flex items-center border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800">
             <motion.button
               onClick={handleDecrement}
               disabled={quantity <= 1}
-              className="px-2 sm:px-3 py-1.5 sm:py-2 text-gray-600 hover:text-gray-900 disabled:opacity-50 font-semibold text-sm sm:text-base"
+              className="px-2 sm:px-3 py-1.5 sm:py-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 disabled:opacity-50 font-semibold text-sm sm:text-base"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
@@ -245,12 +245,12 @@ const ProductInfo: React.FC<ProductInfoProps> = ({
                   setQuantity(1);
                 }
               }}
-              className="w-12 sm:w-14 text-center font-semibold text-gray-900 border-0 outline-none text-xs sm:text-sm"
+              className="w-12 sm:w-14 text-center font-semibold text-gray-900 dark:text-gray-100 bg-transparent border-0 outline-none text-xs sm:text-sm"
             />
             <motion.button
               onClick={handleIncrement}
               disabled={quantity >= product.stock}
-              className="px-2 sm:px-3 py-1.5 sm:py-2 text-gray-600 hover:text-gray-900 disabled:opacity-50 font-semibold text-sm sm:text-base"
+              className="px-2 sm:px-3 py-1.5 sm:py-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 disabled:opacity-50 font-semibold text-sm sm:text-base"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
@@ -265,7 +265,7 @@ const ProductInfo: React.FC<ProductInfoProps> = ({
         <Button
           onClick={handleBuyNow}
           disabled={!inStock}
-          className="flex-1 bg-gray-900 text-white hover:bg-black text-xs sm:text-sm py-2.5 sm:py-2"
+          className="flex-1 bg-gray-900 dark:bg-white text-white dark:text-gray-900 hover:bg-black dark:hover:bg-gray-100 text-xs sm:text-sm py-2.5 sm:py-2"
         >
           <Zap size={14} className="sm:w-4 sm:h-4 mr-1.5" />
           Mua ngay
@@ -277,8 +277,8 @@ const ProductInfo: React.FC<ProductInfoProps> = ({
             addedSuccess
               ? 'bg-emerald-600 text-white border-emerald-600'
               : inStock
-              ? 'bg-white text-gray-900 border-gray-300 hover:border-gray-900'
-              : 'bg-gray-300 text-gray-600 cursor-not-allowed border-gray-300'
+              ? 'bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 border-gray-300 dark:border-gray-600 hover:border-gray-900 dark:hover:border-gray-400'
+              : 'bg-gray-300 dark:bg-gray-700 text-gray-600 dark:text-gray-500 cursor-not-allowed border-gray-300 dark:border-gray-600'
           }`}
           whileHover={inStock && !isAddingToCart ? { scale: 1.02 } : {}}
           whileTap={inStock && !isAddingToCart ? { scale: 0.98 } : {}}
@@ -302,20 +302,20 @@ const ProductInfo: React.FC<ProductInfoProps> = ({
 
       {/* Features */}
       <motion.div
-        className="space-y-1.5 pt-3 sm:pt-4 border-t border-gray-200"
+        className="space-y-1.5 pt-3 sm:pt-4 border-t border-gray-200 dark:border-gray-700"
         variants={itemVariants}
       >
         <div className="flex items-start sm:items-center gap-2 sm:gap-2.5">
-          <CheckCircle2 size={16} className="sm:w-4 sm:h-4 text-green-600 flex-shrink-0 mt-0.5 sm:mt-0" />
-          <span className="text-gray-700 text-xs sm:text-sm">Giao hàng nhanh (1-2 ngày)</span>
+          <CheckCircle2 size={16} className="sm:w-4 sm:h-4 text-green-600 dark:text-green-400 flex-shrink-0 mt-0.5 sm:mt-0" />
+          <span className="text-gray-700 dark:text-gray-300 text-xs sm:text-sm">Giao hàng nhanh (1-2 ngày)</span>
         </div>
         <div className="flex items-start sm:items-center gap-2 sm:gap-2.5">
-          <CheckCircle2 size={16} className="sm:w-4 sm:h-4 text-green-600 flex-shrink-0 mt-0.5 sm:mt-0" />
-          <span className="text-gray-700 text-xs sm:text-sm">Đổi trả dễ dàng 30 ngày</span>
+          <CheckCircle2 size={16} className="sm:w-4 sm:h-4 text-green-600 dark:text-green-400 flex-shrink-0 mt-0.5 sm:mt-0" />
+          <span className="text-gray-700 dark:text-gray-300 text-xs sm:text-sm">Đổi trả dễ dàng 30 ngày</span>
         </div>
         <div className="flex items-start sm:items-center gap-2 sm:gap-2.5">
-          <CheckCircle2 size={16} className="sm:w-4 sm:h-4 text-green-600 flex-shrink-0 mt-0.5 sm:mt-0" />
-          <span className="text-gray-700 text-xs sm:text-sm">Bảo hành 100% hài lòng</span>
+          <CheckCircle2 size={16} className="sm:w-4 sm:h-4 text-green-600 dark:text-green-400 flex-shrink-0 mt-0.5 sm:mt-0" />
+          <span className="text-gray-700 dark:text-gray-300 text-xs sm:text-sm">Bảo hành 100% hài lòng</span>
         </div>
       </motion.div>
     </motion.div>

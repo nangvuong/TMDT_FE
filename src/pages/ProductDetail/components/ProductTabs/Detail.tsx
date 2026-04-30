@@ -28,16 +28,16 @@ const Detail: React.FC<DetailTabProps> = ({ product }) => {
     >
       {/* Product Specifications */}
       <div>
-        <h3 className="text-base sm:text-lg font-bold text-gray-900 mb-2.5 sm:mb-4 flex items-center gap-2">
+        <h3 className="text-base sm:text-lg font-bold text-gray-900 dark:text-gray-100 mb-2.5 sm:mb-4 flex items-center gap-2">
           <Package size={18} className="sm:w-5 sm:h-5" />
           Thông tin sản phẩm
         </h3>
-        <div className="bg-gray-50 rounded-lg p-3 sm:p-6">
+        <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-3 sm:p-6">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-6">
             {/* Product ID */}
             <div className="space-y-1 sm:space-y-2">
-              <p className="text-xs sm:text-sm font-medium text-gray-600">Mã sản phẩm</p>
-              <p className="text-gray-900 font-semibold break-all text-sm sm:text-base">
+              <p className="text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-400">Mã sản phẩm</p>
+              <p className="text-gray-900 dark:text-gray-100 font-semibold break-all text-sm sm:text-base">
                 {product.id}
               </p>
             </div>
@@ -45,8 +45,8 @@ const Detail: React.FC<DetailTabProps> = ({ product }) => {
             {/* Category */}
             {product.categoryId && (
               <div className="space-y-1 sm:space-y-2">
-                <p className="text-xs sm:text-sm font-medium text-gray-600">Danh mục</p>
-                <p className="text-gray-900 font-semibold text-sm sm:text-base">
+                <p className="text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-400">Danh mục</p>
+                <p className="text-gray-900 dark:text-gray-100 font-semibold text-sm sm:text-base">
                   {product.categoryId}
                 </p>
               </div>
@@ -54,14 +54,14 @@ const Detail: React.FC<DetailTabProps> = ({ product }) => {
 
             {/* Stock Status */}
             <div className="space-y-1 sm:space-y-2">
-              <p className="text-xs sm:text-sm font-medium text-gray-600">Tình trạng</p>
+              <p className="text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-400">Tình trạng</p>
               <div className="flex items-center gap-2">
                 <div
                   className={`w-2 h-2 sm:w-3 sm:h-3 rounded-full ${
                     product.isActive ? 'bg-green-500' : 'bg-red-500'
                   }`}
                 />
-                <p className="text-gray-900 font-semibold text-sm sm:text-base">
+                <p className="text-gray-900 dark:text-gray-100 font-semibold text-sm sm:text-base">
                   {product.isActive ? 'Đang bán' : 'Không còn bán'}
                 </p>
               </div>
@@ -69,30 +69,30 @@ const Detail: React.FC<DetailTabProps> = ({ product }) => {
 
             {/* Stock Quantity */}
             <div className="space-y-1 sm:space-y-2">
-              <p className="text-xs sm:text-sm font-medium text-gray-600">Số lượng kho</p>
-              <p className="text-gray-900 font-semibold text-sm sm:text-base">{product.stock}</p>
+              <p className="text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-400">Số lượng kho</p>
+              <p className="text-gray-900 dark:text-gray-100 font-semibold text-sm sm:text-base">{product.stock}</p>
             </div>
 
             {/* Created Date */}
             <div className="space-y-1 sm:space-y-2">
-              <p className="text-xs sm:text-sm font-medium text-gray-600">Ngày tạo</p>
-              <p className="text-gray-900 font-semibold text-sm sm:text-base">
+              <p className="text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-400">Ngày tạo</p>
+              <p className="text-gray-900 dark:text-gray-100 font-semibold text-sm sm:text-base">
                 {formatDate(product.createdAt)}
               </p>
             </div>
 
             {/* Updated Date */}
             <div className="space-y-1 sm:space-y-2">
-              <p className="text-xs sm:text-sm font-medium text-gray-600">Cập nhật</p>
-              <p className="text-gray-900 font-semibold text-sm sm:text-base">
+              <p className="text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-400">Cập nhật</p>
+              <p className="text-gray-900 dark:text-gray-100 font-semibold text-sm sm:text-base">
                 {formatDate(product.updatedAt)}
               </p>
             </div>
 
             {/* Rating */}
             <div className="space-y-1 sm:space-y-2">
-              <p className="text-xs sm:text-sm font-medium text-gray-600">Đánh giá</p>
-              <p className="text-gray-900 font-semibold text-sm sm:text-base">
+              <p className="text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-400">Đánh giá</p>
+              <p className="text-gray-900 dark:text-gray-100 font-semibold text-sm sm:text-base">
                 {product.averageRating
                   ? `${parseFloat(product.averageRating.toString()).toFixed(1)}/5`
                   : 'Chưa có'}
@@ -101,8 +101,8 @@ const Detail: React.FC<DetailTabProps> = ({ product }) => {
 
             {/* Review Count */}
             <div className="space-y-1 sm:space-y-2">
-              <p className="text-xs sm:text-sm font-medium text-gray-600">Số đánh giá</p>
-              <p className="text-gray-900 font-semibold text-sm sm:text-base">{product.reviewCount}</p>
+              <p className="text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-400">Số đánh giá</p>
+              <p className="text-gray-900 dark:text-gray-100 font-semibold text-sm sm:text-base">{product.reviewCount}</p>
             </div>
           </div>
         </div>
@@ -111,7 +111,7 @@ const Detail: React.FC<DetailTabProps> = ({ product }) => {
       {/* Tags Section */}
       {product.tags && product.tags.length > 0 && (
         <div>
-          <h3 className="text-base sm:text-lg font-bold text-gray-900 mb-2.5 sm:mb-4 flex items-center gap-2">
+          <h3 className="text-base sm:text-lg font-bold text-gray-900 dark:text-gray-100 mb-2.5 sm:mb-4 flex items-center gap-2">
             <Tag size={18} className="sm:w-5 sm:h-5" />
             Thẻ sản phẩm
           </h3>
@@ -119,7 +119,7 @@ const Detail: React.FC<DetailTabProps> = ({ product }) => {
             {product.tags.map((tag, index) => (
               <motion.span
                 key={index}
-                className="px-2.5 sm:px-4 py-1 sm:py-2 bg-gray-100 text-gray-700 rounded-full text-xs sm:text-sm font-medium hover:bg-gray-200 transition-colors cursor-pointer"
+                className="px-2.5 sm:px-4 py-1 sm:py-2 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-full text-xs sm:text-sm font-medium hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors cursor-pointer"
                 whileHover={{ scale: 1.05 }}
               >
                 #{tag}
@@ -130,12 +130,12 @@ const Detail: React.FC<DetailTabProps> = ({ product }) => {
       )}
 
       {/* Additional Information */}
-      <div className="border-t border-gray-200 pt-4 sm:pt-6">
-        <h3 className="text-xs sm:text-sm font-medium text-gray-600 mb-2.5 sm:mb-3 flex items-center gap-2">
+      <div className="border-t border-gray-200 dark:border-gray-700 pt-4 sm:pt-6">
+        <h3 className="text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-400 mb-2.5 sm:mb-3 flex items-center gap-2">
           <Calendar size={16} />
           Lịch sử
         </h3>
-        <div className="space-y-1.5 sm:space-y-2 text-xs sm:text-sm text-gray-600">
+        <div className="space-y-1.5 sm:space-y-2 text-xs sm:text-sm text-gray-600 dark:text-gray-400">
           <p>
             <span className="font-medium">Tạo:</span>{' '}
             {new Date(product.createdAt).toLocaleString('vi-VN')}

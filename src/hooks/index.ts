@@ -11,6 +11,8 @@ export {
   useProductSearch,
   useCategories,
   useCategory,
+  useRecommendations,
+  useProductRecommendation,
 } from './useProduct';
 export { useCoupon } from './useCoupon';
 export { useAddresses } from './useAddresses';

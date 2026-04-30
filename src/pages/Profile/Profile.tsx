@@ -128,12 +128,12 @@ const Profile: React.FC = () => {
 
   return (
     <Layout>
-      <div className="w-full bg-gradient-to-b from-gray-50 to-white min-h-screen">
+      <div className="w-full bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-gray-800 min-h-screen transition-colors">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-16">
           {/* Back Button */}
           <motion.button
             onClick={() => navigate(-1)}
-            className="inline-flex items-center gap-2 px-4 py-2 text-gray-700 hover:text-gray-900 rounded-lg hover:bg-gray-100 transition-all font-medium mb-8 group"
+            className="inline-flex items-center gap-2 px-4 py-2 text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-all font-medium mb-8 group"
             whileHover={{ x: -4 }}
             whileTap={{ scale: 0.95 }}
             initial={{ opacity: 0, x: -10 }}
@@ -150,8 +150,8 @@ const Profile: React.FC = () => {
           animate="visible"
           variants={itemVariants}
         >
-          <h1 className="text-4xl font-bold text-black mb-2">Hồ sơ thể chất</h1>
-          <p className="text-gray-600">Cập nhật thông tin thể chất của bạn để nhận được những gợi ý phù hợp</p>
+          <h1 className="text-4xl font-bold text-black dark:text-white mb-2">Hồ sơ thể chất</h1>
+          <p className="text-gray-600 dark:text-gray-400">Cập nhật thông tin thể chất của bạn để nhận được những gợi ý phù hợp</p>
         </motion.div>
 
         {/* Loading State */}
@@ -160,12 +160,12 @@ const Profile: React.FC = () => {
         {/* Error State - only show if it's not a 404 (no profile yet) */}
         {error && !loading && !error.includes('404') && (
           <motion.div
-            className="bg-red-50 border-2 border-red-200 rounded-lg p-4 mb-6 flex items-start gap-3"
+            className="bg-red-50 dark:bg-red-900/30 border-2 border-red-200 dark:border-red-800 rounded-lg p-4 mb-6 flex items-start gap-3"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
           >
-            <AlertTriangle size={20} className="text-red-600 flex-shrink-0 mt-0.5" />
-            <p className="text-red-600 text-sm font-medium">{error}</p>
+            <AlertTriangle size={20} className="text-red-600 dark:text-red-400 flex-shrink-0 mt-0.5" />
+            <p className="text-red-600 dark:text-red-400 text-sm font-medium">{error}</p>
           </motion.div>
         )}
 
@@ -173,7 +173,7 @@ const Profile: React.FC = () => {
         {!loading && (
           <motion.form
             onSubmit={handleSubmit}
-            className="bg-white border-2 border-gray-200 rounded-lg p-8 space-y-6"
+            className="bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 rounded-lg p-8 space-y-6"
             initial="hidden"
             animate="visible"
             variants={containerVariants}
@@ -181,11 +181,11 @@ const Profile: React.FC = () => {
             {/* Profile Status Message */}
             {(!profile || error?.includes('404')) && (
               <motion.div
-                className="bg-blue-50 border-2 border-blue-200 rounded-lg p-4 mb-6 flex items-start gap-3"
+                className="bg-blue-50 dark:bg-blue-900/30 border-2 border-blue-200 dark:border-blue-800 rounded-lg p-4 mb-6 flex items-start gap-3"
                 variants={itemVariants}
               >
-                <AlertCircle size={20} className="text-blue-600 flex-shrink-0 mt-0.5" />
-                <p className="text-blue-600 text-sm font-medium">
+                <AlertCircle size={20} className="text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5" />
+                <p className="text-blue-600 dark:text-blue-400 text-sm font-medium">
                   Bạn chưa cập nhật hồ sơ thể chất. Vui lòng điền thông tin bên dưới để tạo hồ sơ mới.
                 </p>
               </motion.div>
@@ -194,13 +194,13 @@ const Profile: React.FC = () => {
             {/* Submit Success Message */}
             {submitSuccess && (
               <motion.div
-                className="bg-green-50 border-2 border-green-200 rounded-lg p-4 flex items-start gap-3"
+                className="bg-green-50 dark:bg-green-900/30 border-2 border-green-200 dark:border-green-800 rounded-lg p-4 flex items-start gap-3"
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -10 }}
               >
-                <CheckCircle size={20} className="text-green-600 flex-shrink-0 mt-0.5" />
-                <p className="text-green-600 text-sm font-medium">
+                <CheckCircle size={20} className="text-green-600 dark:text-green-400 flex-shrink-0 mt-0.5" />
+                <p className="text-green-600 dark:text-green-400 text-sm font-medium">
                   Cập nhật hồ sơ thành công
                 </p>
               </motion.div>
@@ -209,18 +209,18 @@ const Profile: React.FC = () => {
             {/* Submit Error Message */}
             {submitError && (
               <motion.div
-                className="bg-red-50 border-2 border-red-200 rounded-lg p-4 flex items-start gap-3"
+                className="bg-red-50 dark:bg-red-900/30 border-2 border-red-200 dark:border-red-800 rounded-lg p-4 flex items-start gap-3"
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
               >
-                <AlertTriangle size={20} className="text-red-600 flex-shrink-0 mt-0.5" />
-                <p className="text-red-600 text-sm font-medium">{submitError}</p>
+                <AlertTriangle size={20} className="text-red-600 dark:text-red-400 flex-shrink-0 mt-0.5" />
+                <p className="text-red-600 dark:text-red-400 text-sm font-medium">{submitError}</p>
               </motion.div>
             )}
 
             {/* Physical Information Section */}
             <motion.div className="space-y-4" variants={itemVariants}>
-              <h2 className="text-xl font-semibold text-black">Thông tin thể chất</h2>
+              <h2 className="text-xl font-semibold text-black dark:text-white">Thông tin thể chất</h2>
               
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 {/* Height */}
@@ -263,7 +263,7 @@ const Profile: React.FC = () => {
 
             {/* Fitness Goal Section */}
             <motion.div className="space-y-4" variants={itemVariants}>
-              <h2 className="text-xl font-semibold text-black">Mục tiêu</h2>
+              <h2 className="text-xl font-semibold text-black dark:text-white">Mục tiêu</h2>
               <Select
                 name="fitnessGoal"
                 value={formData.fitnessGoal || 'muscle_gain'}
@@ -282,7 +282,7 @@ const Profile: React.FC = () => {
 
             {/* Dietary Preferences Section */}
             <motion.div className="space-y-4" variants={itemVariants}>
-              <h2 className="text-xl font-semibold text-black">Sở thích ăn uống</h2>
+              <h2 className="text-xl font-semibold text-black dark:text-white">Sở thích ăn uống</h2>
               
               <Textarea
                 name="dietaryPreferences"

@@ -269,12 +269,12 @@ const Checkout: React.FC = () => {
   // Checkout form
   return (
     <Layout hideFAB>
-      <section className="w-full bg-gradient-to-b from-gray-50 to-white py-4 md:py-8 lg:py-16">
+      <section className="w-full bg-gradient-to-b from-gray-50 to-white dark:from-gray-800 dark:to-gray-900 py-4 md:py-8 lg:py-16">
         <div className="container mx-auto max-w-6xl px-3 sm:px-4 md:px-6 pb-56 md:pb-30">
           {/* Back Button */}
           <motion.button
             onClick={() => navigate(-1)}
-            className="inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 text-sm sm:text-base text-gray-700 hover:text-gray-900 rounded-lg hover:bg-gray-100 transition-all font-medium mb-6 sm:mb-8 group"
+            className="inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 text-sm sm:text-base text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-all font-medium mb-6 sm:mb-8 group"
             whileHover={{ x: -4 }}
             whileTap={{ scale: 0.95 }}
             initial={{ opacity: 0, x: -10 }}
@@ -286,24 +286,24 @@ const Checkout: React.FC = () => {
 
           {/* Cart Items Section */}
           <motion.div
-            className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden mb-4 md:mb-6"
+            className="bg-white dark:bg-gray-900 rounded-lg shadow-sm dark:shadow-gray-900/30 border border-gray-200 dark:border-gray-700 overflow-hidden mb-4 md:mb-6"
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
           >
-            <div className="p-4 md:p-6 border-b border-gray-100 flex items-center gap-3">
-              <div className="p-2 bg-gray-100 rounded-lg">
-                <ShoppingCart className="w-5 h-5 text-gray-700" />
+            <div className="p-4 md:p-6 border-b border-gray-100 dark:border-gray-700 flex items-center gap-3">
+              <div className="p-2 bg-gray-100 dark:bg-gray-700 rounded-lg">
+                <ShoppingCart className="w-5 h-5 text-gray-700 dark:text-gray-300" />
               </div>
-              <h2 className="text-base md:text-lg font-bold text-gray-900">
+              <h2 className="text-base md:text-lg font-bold text-gray-900 dark:text-gray-100">
                 Sản phẩm trong giỏ hàng ({cartItems.length})
               </h2>
             </div>
-            <div className="divide-y divide-gray-100">
+            <div className="divide-y divide-gray-100 dark:divide-gray-700">
               {cartItems.length > 0 ? (
                 cartItems.map((item, index) => (
                   <motion.div
                     key={item.id}
-                    className="p-3 md:p-6 hover:bg-gray-50 transition-colors"
+                    className="p-3 md:p-6 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ delay: 0.1 + index * 0.05 }}
@@ -311,7 +311,7 @@ const Checkout: React.FC = () => {
                     {/* Mobile Layout */}
                     <div className="md:hidden flex gap-3">
                       {item.product?.images?.[0] && (
-                        <div className="flex-shrink-0 w-16 h-16 bg-gray-200 rounded-lg overflow-hidden">
+                        <div className="flex-shrink-0 w-16 h-16 bg-gray-200 dark:bg-gray-700 rounded-lg overflow-hidden">
                           <img
                             src={item.product.images[0]}
                             alt={item.product.name}
@@ -321,18 +321,18 @@ const Checkout: React.FC = () => {
                       )}
                       <div className="flex-1 min-w-0 flex flex-col justify-between">
                         <div>
-                          <p className="font-semibold text-xs md:text-sm text-gray-900 truncate">{item.product?.name}</p>
-                          <p className="text-xs text-gray-600 mt-0.5">
+                          <p className="font-semibold text-xs md:text-sm text-gray-900 dark:text-gray-100 truncate">{item.product?.name}</p>
+                          <p className="text-xs text-gray-600 dark:text-gray-400 mt-0.5">
                             {formatPrice(typeof item.product?.price === 'string' ? parseFloat(item.product.price) : item.product?.price || 0)} x {item.quantity || 1}
                           </p>
                         </div>
-                        <p className="text-xs font-semibold text-gray-900">
+                        <p className="text-xs font-semibold text-gray-900 dark:text-gray-100">
                           {formatPrice((typeof item.product?.price === 'string' ? parseFloat(item.product.price) : item.product?.price || 0) * (item.quantity || 1))}
                         </p>
                       </div>
                       <button
                         onClick={() => handleRemoveItem(item.id)}
-                        className="p-1.5 text-red-600 hover:bg-red-50 rounded transition-colors flex-shrink-0"
+                        className="p-1.5 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/30 rounded transition-colors flex-shrink-0"
                       >
                         <Trash2 className="w-4 h-4" />
                       </button>
@@ -341,7 +341,7 @@ const Checkout: React.FC = () => {
                     {/* Desktop Layout */}
                     <div className="hidden md:flex md:items-center md:justify-between md:gap-4">
                       {item.product?.images?.[0] && (
-                        <div className="flex-shrink-0 w-20 h-20 bg-gray-200 rounded-lg overflow-hidden">
+                        <div className="flex-shrink-0 w-20 h-20 bg-gray-200 dark:bg-gray-700 rounded-lg overflow-hidden">
                           <img
                             src={item.product.images[0]}
                             alt={item.product.name}
@@ -350,24 +350,24 @@ const Checkout: React.FC = () => {
                         </div>
                       )}
                       <div className="flex-1 min-w-0">
-                        <p className="font-semibold text-sm text-gray-900">{item.product?.name}</p>
-                        <p className="text-xs text-gray-600 mt-1">
+                        <p className="font-semibold text-sm text-gray-900 dark:text-gray-100">{item.product?.name}</p>
+                        <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">
                           {formatPrice(typeof item.product?.price === 'string' ? parseFloat(item.product.price) : item.product?.price || 0)}
                         </p>
                       </div>
                       <div className="flex-shrink-0 text-center min-w-[80px]">
-                        <p className="text-xs text-gray-600 mb-1">Số lượng</p>
-                        <p className="font-semibold text-gray-900">{item.quantity || 1}</p>
+                        <p className="text-xs text-gray-600 dark:text-gray-400 mb-1">Số lượng</p>
+                        <p className="font-semibold text-gray-900 dark:text-gray-100">{item.quantity || 1}</p>
                       </div>
                       <div className="flex-shrink-0 text-center min-w-[100px]">
-                        <p className="text-xs text-gray-600 mb-1">Thành tiền</p>
-                        <p className="font-bold text-gray-900">
+                        <p className="text-xs text-gray-600 dark:text-gray-400 mb-1">Thành tiền</p>
+                        <p className="font-bold text-gray-900 dark:text-gray-100">
                           {formatPrice((typeof item.product?.price === 'string' ? parseFloat(item.product.price) : item.product?.price || 0) * (item.quantity || 1))}
                         </p>
                       </div>
                       <button
                         onClick={() => handleRemoveItem(item.id)}
-                        className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors flex-shrink-0"
+                        className="p-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-lg transition-colors flex-shrink-0"
                       >
                         <Trash2 className="w-4 h-4" />
                       </button>
@@ -375,7 +375,7 @@ const Checkout: React.FC = () => {
                   </motion.div>
                 ))
               ) : (
-                <div className="p-6 text-center text-gray-500">
+                <div className="p-6 text-center text-gray-500 dark:text-gray-400">
                   Giỏ hàng trống
                 </div>
               )}
@@ -384,23 +384,23 @@ const Checkout: React.FC = () => {
 
           {/* Delivery Address Section */}
           <motion.div
-            className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden mb-4 md:mb-6"
+            className="bg-white dark:bg-gray-900 rounded-lg shadow-sm dark:shadow-gray-900/30 border border-gray-200 dark:border-gray-700 overflow-hidden mb-4 md:mb-6"
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
           >
-            <div className="p-4 md:p-6 border-b border-gray-100 flex items-center justify-between">
+            <div className="p-4 md:p-6 border-b border-gray-100 dark:border-gray-700 flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="p-2 bg-gray-100 rounded-lg">
-                  <MapPin className="w-5 h-5 text-gray-700" />
+                <div className="p-2 bg-gray-100 dark:bg-gray-700 rounded-lg">
+                  <MapPin className="w-5 h-5 text-gray-700 dark:text-gray-300" />
                 </div>
-                <h2 className="text-base md:text-lg font-bold text-gray-900">Địa chỉ giao hàng</h2>
+                <h2 className="text-base md:text-lg font-bold text-gray-900 dark:text-gray-100">Địa chỉ giao hàng</h2>
               </div>
               <Button
                 variant="outline"
                 size="sm"
                 onClick={openAddressModal}
-                className="flex items-center gap-2 border-gray-300 hover:bg-gray-50"
+                className="flex items-center gap-2 border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800"
               >
                 <Plus className="w-4 h-4" />
                 <span className="hidden sm:inline">Thêm mới</span>
@@ -410,9 +410,9 @@ const Checkout: React.FC = () => {
               {addressLoading ? (
                 <div className="flex items-center justify-center py-8">
                   <div className="animate-spin">
-                    <div className="w-8 h-8 border-3 border-gray-200 border-t-blue-600 rounded-full"></div>
+                    <div className="w-8 h-8 border-3 border-gray-200 dark:border-gray-700 border-t-blue-600 rounded-full"></div>
                   </div>
-                  <p className="ml-3 text-gray-500">Đang tải địa chỉ...</p>
+                  <p className="ml-3 text-gray-500 dark:text-gray-400">Đang tải địa chỉ...</p>
                 </div>
               ) : addresses.length > 0 ? (
                 <div className="space-y-2">
@@ -421,8 +421,8 @@ const Checkout: React.FC = () => {
                       key={addr.id}
                       className={`group relative flex items-start gap-3 p-4 md:p-5 rounded-xl border-2 cursor-pointer transition-all duration-200 ${
                         selectedAddressId === addr.id
-                          ? 'border-gray-900 bg-gray-100 shadow-md shadow-gray-200'
-                          : 'border-gray-200 bg-white hover:border-gray-300 hover:shadow-sm'
+                          ? 'border-gray-900 dark:border-gray-100 bg-gray-100 dark:bg-gray-800 shadow-md shadow-gray-200 dark:shadow-gray-900/30'
+                          : 'border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 hover:border-gray-300 dark:hover:border-gray-600 hover:shadow-sm'
                       }`}
                       initial={{ opacity: 0, y: 5 }}
                       animate={{ opacity: 1, y: 0 }}
@@ -434,25 +434,25 @@ const Checkout: React.FC = () => {
                       <div className="flex-shrink-0 mt-1">
                         {selectedAddressId === addr.id ? (
                           <motion.div
-                            className="w-5 h-5 rounded-full bg-gray-900 flex items-center justify-center"
+                            className="w-5 h-5 rounded-full bg-gray-900 dark:bg-gray-100 flex items-center justify-center"
                             initial={{ scale: 0 }}
                             animate={{ scale: 1 }}
                             transition={{ type: 'spring', stiffness: 200 }}
                           >
-                            <Check className="w-3 h-3 text-white" />
+                            <Check className="w-3 h-3 text-white dark:text-gray-900" />
                           </motion.div>
                         ) : (
-                          <div className="w-5 h-5 rounded-full border-2 border-gray-400 group-hover:border-gray-500 transition-colors" />
+                          <div className="w-5 h-5 rounded-full border-2 border-gray-400 dark:border-gray-500 group-hover:border-gray-500 dark:group-hover:border-gray-400 transition-colors" />
                         )}
                       </div>
 
                       {/* Address Info */}
                       <div className="flex-1 min-w-0">
                         <div className="flex items-start justify-between mb-1">
-                          <h3 className="font-semibold text-sm md:text-base text-gray-900">{addr.street}</h3>
+                          <h3 className="font-semibold text-sm md:text-base text-gray-900 dark:text-gray-100">{addr.street}</h3>
                           {addr.isDefault && (
                             <motion.span
-                              className="ml-2 px-2.5 py-1 bg-gray-200 text-gray-800 text-xs font-semibold rounded-full flex-shrink-0"
+                              className="ml-2 px-2.5 py-1 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 text-xs font-semibold rounded-full flex-shrink-0"
                               initial={{ scale: 0 }}
                               animate={{ scale: 1 }}
                               transition={{ type: 'spring', stiffness: 200 }}
@@ -461,7 +461,7 @@ const Checkout: React.FC = () => {
                             </motion.span>
                           )}
                         </div>
-                        <p className="text-xs md:text-sm text-gray-600">
+                        <p className="text-xs md:text-sm text-gray-600 dark:text-gray-400">
                           {addr.city} {addr.state && `• ${addr.state}`}
                         </p>
                       </div>
@@ -473,7 +473,7 @@ const Checkout: React.FC = () => {
                             e.stopPropagation();
                             handleEditAddress(addr);
                           }}
-                          className="p-2 text-gray-600 hover:text-gray-900 bg-gray-100 hover:bg-gray-200 rounded-lg transition-all"
+                          className="p-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-lg transition-all"
                           whileHover={{ scale: 1.1 }}
                           whileTap={{ scale: 0.95 }}
                           title="Chỉnh sửa"
@@ -485,7 +485,7 @@ const Checkout: React.FC = () => {
                             e.stopPropagation();
                             handleDeleteAddress(addr.id);
                           }}
-                          className="p-2 text-red-600 hover:text-red-700 bg-red-50 hover:bg-red-100 rounded-lg transition-all"
+                          className="p-2 text-red-600 hover:text-red-700 bg-red-50 dark:bg-red-900/30 hover:bg-red-100 dark:hover:bg-red-900/50 rounded-lg transition-all"
                           whileHover={{ scale: 1.1 }}
                           whileTap={{ scale: 0.95 }}
                           title="Xóa"
@@ -502,16 +502,16 @@ const Checkout: React.FC = () => {
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                 >
-                  <div className="w-16 h-16 rounded-full bg-gray-200 flex items-center justify-center mb-4">
-                    <MapPin className="w-8 h-8 text-gray-500" />
+                  <div className="w-16 h-16 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center mb-4">
+                    <MapPin className="w-8 h-8 text-gray-500 dark:text-gray-400" />
                   </div>
-                  <p className="text-gray-600 font-medium mb-2">Chưa có địa chỉ nào</p>
-                  <p className="text-xs md:text-sm text-gray-500 text-center max-w-xs mb-4">
+                  <p className="text-gray-600 dark:text-gray-400 font-medium mb-2">Chưa có địa chỉ nào</p>
+                  <p className="text-xs md:text-sm text-gray-500 dark:text-gray-400 text-center max-w-xs mb-4">
                     Hãy thêm địa chỉ giao hàng để tiếp tục thanh toán
                   </p>
                   <Button
                     onClick={openAddressModal}
-                    className="bg-gray-900 hover:bg-black text-white gap-2"
+                    className="bg-gray-900 dark:bg-gray-100 hover:bg-black dark:hover:bg-white text-white dark:text-gray-900 gap-2"
                   >
                     <Plus className="w-4 h-4" />
                     Thêm địa chỉ
@@ -523,16 +523,16 @@ const Checkout: React.FC = () => {
 
           {/* Notes Section */}
           <motion.div
-            className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden mb-4 md:mb-6"
+            className="bg-white dark:bg-gray-900 rounded-lg shadow-sm dark:shadow-gray-900/30 border border-gray-200 dark:border-gray-700 overflow-hidden mb-4 md:mb-6"
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
           >
-            <div className="p-4 md:p-6 border-b border-gray-100 flex items-center gap-3">
-              <div className="p-2 bg-gray-100 rounded-lg">
-                <MessageSquare className="w-5 h-5 text-gray-700" />
+            <div className="p-4 md:p-6 border-b border-gray-100 dark:border-gray-700 flex items-center gap-3">
+              <div className="p-2 bg-gray-100 dark:bg-gray-700 rounded-lg">
+                <MessageSquare className="w-5 h-5 text-gray-700 dark:text-gray-300" />
               </div>
-              <h2 className="text-base md:text-lg font-bold text-gray-900">Ghi chú</h2>
+              <h2 className="text-base md:text-lg font-bold text-gray-900 dark:text-gray-100">Ghi chú</h2>
             </div>
             <div className="p-4 md:p-6">
               <Textarea
@@ -546,16 +546,16 @@ const Checkout: React.FC = () => {
 
           {/* Payment Method Section */}
           <motion.div
-            className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden mb-4 md:mb-6"
+            className="bg-white dark:bg-gray-900 rounded-lg shadow-sm dark:shadow-gray-900/30 border border-gray-200 dark:border-gray-700 overflow-hidden mb-4 md:mb-6"
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
           >
-            <div className="p-4 md:p-6 border-b border-gray-100 flex items-center gap-3">
-              <div className="p-2 bg-gray-100 rounded-lg">
-                <Coins className="w-5 h-5 text-gray-700" />
+            <div className="p-4 md:p-6 border-b border-gray-100 dark:border-gray-700 flex items-center gap-3">
+              <div className="p-2 bg-gray-100 dark:bg-gray-700 rounded-lg">
+                <Coins className="w-5 h-5 text-gray-700 dark:text-gray-300" />
               </div>
-              <h2 className="text-base md:text-lg font-bold text-gray-900">Phương thức thanh toán</h2>
+              <h2 className="text-base md:text-lg font-bold text-gray-900 dark:text-gray-100">Phương thức thanh toán</h2>
             </div>
             <div className="p-4 md:p-6 space-y-3">
               {PAYMENT_METHODS.map((method, index) => (
@@ -563,8 +563,8 @@ const Checkout: React.FC = () => {
                   key={method.value}
                   className={`group flex items-center gap-3 p-4 md:p-5 rounded-xl border-2 cursor-pointer transition-all duration-200 ${
                     paymentMethod === method.value
-                      ? 'border-gray-900 bg-gray-100 shadow-md shadow-gray-200'
-                      : 'border-gray-200 bg-white hover:border-gray-300 hover:shadow-sm'
+                      ? 'border-gray-900 dark:border-gray-100 bg-gray-100 dark:bg-gray-800 shadow-md shadow-gray-200 dark:shadow-gray-900/30'
+                      : 'border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 hover:border-gray-300 dark:hover:border-gray-600 hover:shadow-sm'
                   }`}
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
@@ -575,22 +575,22 @@ const Checkout: React.FC = () => {
                 >
                   {paymentMethod === method.value ? (
                     <motion.div
-                      className="w-5 h-5 rounded-full bg-gray-900 flex items-center justify-center flex-shrink-0"
+                      className="w-5 h-5 rounded-full bg-gray-900 dark:bg-gray-100 flex items-center justify-center flex-shrink-0"
                       initial={{ scale: 0 }}
                       animate={{ scale: 1 }}
                       transition={{ type: 'spring', stiffness: 200 }}
                     >
-                      <Check className="w-3 h-3 text-white" />
+                      <Check className="w-3 h-3 text-white dark:text-gray-900" />
                     </motion.div>
                   ) : (
-                    <div className="w-5 h-5 rounded-full border-2 border-gray-400 group-hover:border-gray-500 flex-shrink-0 transition-colors" />
+                    <div className="w-5 h-5 rounded-full border-2 border-gray-400 dark:border-gray-500 group-hover:border-gray-500 dark:group-hover:border-gray-400 flex-shrink-0 transition-colors" />
                   )}
                   {method.value === 'bank_transfer' ? (
-                    <CreditCard className="w-5 h-5 text-gray-700 flex-shrink-0" />
+                    <CreditCard className="w-5 h-5 text-gray-700 dark:text-gray-300 flex-shrink-0" />
                   ) : (
-                    <Truck className="w-5 h-5 text-gray-700 flex-shrink-0" />
+                    <Truck className="w-5 h-5 text-gray-700 dark:text-gray-300 flex-shrink-0" />
                   )}
-                  <span className="text-sm md:text-base text-gray-900 font-medium flex-1">{method.label}</span>
+                  <span className="text-sm md:text-base text-gray-900 dark:text-gray-100 font-medium flex-1">{method.label}</span>
                 </motion.div>
               ))}
             </div>
@@ -600,14 +600,14 @@ const Checkout: React.FC = () => {
 
       {/* Checkout Summary Bar */}
       <motion.div
-        className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-lg"
+        className="fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700 shadow-lg dark:shadow-gray-900/30"
         initial={{ opacity: 0, y: 100 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3 }}
       >
         <div className="container mx-auto max-w-6xl px-3 sm:px-4 md:px-6 py-0">
           {/* Row 1: Coupon Code */}
-          <div className="space-y-2 py-2 sm:py-3 border-b border-gray-200">
+          <div className="space-y-2 py-2 sm:py-3 border-b border-gray-200 dark:border-gray-700">
             {!isCouponApplied ? (
               <div className="flex gap-2">
                 <Input
@@ -628,18 +628,18 @@ const Checkout: React.FC = () => {
                 </Button>
               </div>
             ) : (
-              <div className="flex items-center justify-between bg-green-50 p-2 rounded-lg border border-green-200">
+              <div className="flex items-center justify-between bg-green-50 dark:bg-green-900/30 p-2 rounded-lg border border-green-200 dark:border-green-800">
                 <div className="flex items-center gap-2 flex-1 min-w-0">
-                  <CheckCircle2 className="w-4 h-4 text-green-600 flex-shrink-0" />
+                  <CheckCircle2 className="w-4 h-4 text-green-600 dark:text-green-400 flex-shrink-0" />
                   <div className="min-w-0 flex-1">
-                    <p className="text-xs text-green-700 font-medium truncate">
+                    <p className="text-xs text-green-700 dark:text-green-300 font-medium truncate">
                       Mã: <span className="font-bold">{coupon?.code}</span>
                     </p>
                   </div>
                 </div>
                 <button
                   onClick={handleClearCoupon}
-                  className="text-xs text-green-600 hover:text-red-600 whitespace-nowrap ml-2 underline"
+                  className="text-xs text-green-600 dark:text-green-400 hover:text-red-600 dark:hover:text-red-400 whitespace-nowrap ml-2 underline"
                 >
                   Xóa
                 </button>
@@ -647,13 +647,13 @@ const Checkout: React.FC = () => {
             )}
             {couponError && (
               <motion.div
-                className="flex items-start gap-2 bg-red-50 p-2 rounded-lg border border-red-200"
+                className="flex items-start gap-2 bg-red-50 dark:bg-red-900/30 p-2 rounded-lg border border-red-200 dark:border-red-800"
                 initial={{ opacity: 0, y: -5 }}
                 animate={{ opacity: 1, y: 0 }}
               >
-                <AlertCircle className="w-4 h-4 text-red-600 flex-shrink-0 mt-0.5" />
+                <AlertCircle className="w-4 h-4 text-red-600 dark:text-red-400 flex-shrink-0 mt-0.5" />
                 <div className="flex-1 min-w-0">
-                  <p className="text-xs text-red-700 leading-tight">{couponError}</p>
+                  <p className="text-xs text-red-700 dark:text-red-300 leading-tight">{couponError}</p>
                 </div>
               </motion.div>
             )}
@@ -662,22 +662,22 @@ const Checkout: React.FC = () => {
           {/* Row 2: Items Count, Address Status & Price Summary & Checkout */}
           <div className="py-2 sm:py-3">
             {/* Row 2a: Items & Address (Mobile stacked, Desktop horizontal) */}
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-3 mb-2 sm:mb-0 sm:pb-2 sm:border-b sm:border-gray-200">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-3 mb-2 sm:mb-0 sm:pb-2 sm:border-b sm:border-gray-200 dark:sm:border-gray-700">
               <div className="flex items-center gap-3 flex-wrap">
                 <div className="text-xs sm:text-sm flex items-center gap-2">
-                  <span className="text-gray-600">Sản phẩm:</span>
-                  <span className="font-semibold text-gray-900">{cartItems.length}</span>
+                  <span className="text-gray-600 dark:text-gray-400">Sản phẩm:</span>
+                  <span className="font-semibold text-gray-900 dark:text-gray-100">{cartItems.length}</span>
                 </div>
 
-                <span className="text-gray-300 hidden sm:inline">|</span>
+                <span className="text-gray-300 dark:text-gray-600 hidden sm:inline">|</span>
 
                 <div className="text-xs sm:text-sm w-full sm:w-auto">
                   {selectedAddressId ? (
-                    <p className="text-gray-600">
-                      <span className="font-semibold text-green-600">✓</span> {addresses.find(a => a.id === selectedAddressId)?.city}
+                    <p className="text-gray-600 dark:text-gray-400">
+                      <span className="font-semibold text-green-600 dark:text-green-400">✓</span> {addresses.find(a => a.id === selectedAddressId)?.city}
                     </p>
                   ) : (
-                    <p className="text-red-600 font-medium">Chưa chọn địa chỉ</p>
+                    <p className="text-red-600 dark:text-red-400 font-medium">Chưa chọn địa chỉ</p>
                   )}
                 </div>
               </div>
@@ -688,18 +688,18 @@ const Checkout: React.FC = () => {
               {/* Price Summary */}
               <div className="text-xs sm:text-sm space-y-1 flex-1">
                 <div className="flex justify-between gap-4">
-                  <span className="text-gray-600">Tạm tính:</span>
-                  <span className="font-semibold text-gray-900">{formatPrice(totalPrice)}</span>
+                  <span className="text-gray-600 dark:text-gray-400">Tạm tính:</span>
+                  <span className="font-semibold text-gray-900 dark:text-gray-100">{formatPrice(totalPrice)}</span>
                 </div>
                 {isCouponApplied && discount > 0 && (
-                  <div className="flex justify-between gap-4 bg-green-50 px-2 py-1 rounded">
-                    <span className="text-green-700">Giảm giá:</span>
-                    <span className="font-semibold text-green-700">-{formatPrice(discount)}</span>
+                  <div className="flex justify-between gap-4 bg-green-50 dark:bg-green-900/30 px-2 py-1 rounded">
+                    <span className="text-green-700 dark:text-green-300">Giảm giá:</span>
+                    <span className="font-semibold text-green-700 dark:text-green-300">-{formatPrice(discount)}</span>
                   </div>
                 )}
-                <div className="flex justify-between gap-4 border-t border-gray-200 pt-1">
-                  <span className="font-bold text-gray-900">Tổng:</span>
-                  <span className="text-lg font-bold text-gray-900">{formatPrice(totalPrice - discount)}</span>
+                <div className="flex justify-between gap-4 border-t border-gray-200 dark:border-gray-700 pt-1">
+                  <span className="font-bold text-gray-900 dark:text-gray-100">Tổng:</span>
+                  <span className="text-lg font-bold text-gray-900 dark:text-gray-100">{formatPrice(totalPrice - discount)}</span>
                 </div>
               </div>
 
@@ -716,11 +716,11 @@ const Checkout: React.FC = () => {
 
           {orderError && (
             <motion.div
-              className="border-t border-red-200 bg-red-50 px-3 sm:px-4 md:px-6 py-2"
+              className="border-t border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-900/30 px-3 sm:px-4 md:px-6 py-2"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
             >
-              <p className="text-xs text-red-600 font-medium">{orderError}</p>
+              <p className="text-xs text-red-600 dark:text-red-400 font-medium">{orderError}</p>
             </motion.div>
           )}
         </div>
@@ -782,7 +782,7 @@ const Checkout: React.FC = () => {
               onChange={(e) => setAddressForm({ ...addressForm, isDefault: e.target.checked })}
               className="w-4 h-4 rounded"
             />
-            <span className="text-sm font-medium text-gray-700">Đặt làm địa chỉ mặc định</span>
+            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Đặt làm địa chỉ mặc định</span>
           </label>
         </div>
       </Modal>

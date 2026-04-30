@@ -87,7 +87,7 @@ const Products: React.FC = () => {
   };
 
   return (
-    <section className="w-full bg-white py-12 md:py-20">
+    <section className="w-full bg-white dark:bg-gray-900 py-12 md:py-20 transition-colors">
       <div className="container mx-auto max-w-7xl px-4 md:px-6">
         {/* Section Header */}
         <motion.div
@@ -97,13 +97,13 @@ const Products: React.FC = () => {
           viewport={{ once: false }}
           transition={{ type: 'spring', stiffness: 300 }}
         >
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">
+          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-gray-100 mb-2">
             Sản Phẩm Nổi Bật
           </h2>
-          <p className="text-gray-600 text-sm md:text-lg">
+          <p className="text-gray-600 dark:text-gray-400 text-sm md:text-lg">
             Các sản phẩm được yêu thích nhất và sắp ra mắt
           </p>
-          <div className="w-12 h-1 bg-black mx-auto mt-4 rounded-full" />
+          <div className="w-12 h-1 bg-black dark:bg-white mx-auto mt-4 rounded-full" />
         </motion.div>
 
         {/* Filter & Sort Controls */}
@@ -116,18 +116,18 @@ const Products: React.FC = () => {
         >
           {/* Filter Button (Mobile) */}
           <motion.button
-            className="md:hidden flex items-center gap-2 px-4 py-2 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+            className="md:hidden flex items-center gap-2 px-4 py-2 bg-gray-100 dark:bg-gray-800 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={() => setFilterOpen(!filterOpen)}
           >
-            <Filter size={18} />
-            <span className="text-sm font-medium">Lọc & Sắp xếp</span>
+            <Filter size={18} className="text-gray-700 dark:text-gray-300" />
+            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Lọc & Sắp xếp</span>
           </motion.button>
 
           {/* Desktop Sort Controls */}
           <div className="hidden md:flex items-center gap-2">
-            <span className="text-sm text-gray-700 font-medium">Sắp xếp:</span>
+            <span className="text-sm text-gray-700 dark:text-gray-300 font-medium">Sắp xếp:</span>
             <div className="flex gap-2">
               {[
                 { label: 'Nổi bật', value: 'featured' as const },
@@ -140,8 +140,8 @@ const Products: React.FC = () => {
                   onClick={() => handleSortChange(option.value)}
                   className={`px-3 py-2 text-xs md:text-sm rounded-lg font-medium transition-all ${
                     sortOrder === option.value
-                      ? 'bg-black text-white'
-                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                      ? 'bg-black dark:bg-white text-white dark:text-black'
+                      : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700'
                   }`}
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
@@ -158,11 +158,11 @@ const Products: React.FC = () => {
               <motion.button
                 onClick={handlePrevPage}
                 disabled={pagination.page === 1}
-                className="p-2 rounded-lg bg-gray-100 border border-gray-200 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                className="p-2 rounded-lg bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
-                <ChevronLeft size={16} className="text-gray-700" />
+                <ChevronLeft size={16} className="text-gray-700 dark:text-gray-300" />
               </motion.button>
 
               <div className="flex items-center gap-1">
@@ -180,8 +180,8 @@ const Products: React.FC = () => {
                       onClick={() => setPage(pageNum)}
                       className={`w-7 h-7 rounded-lg font-semibold text-xs transition-colors ${
                         pagination.page === pageNum
-                          ? 'bg-black text-white'
-                          : 'bg-gray-100 text-gray-700 border border-gray-200 hover:bg-gray-50'
+                          ? 'bg-black dark:bg-white text-white dark:text-black'
+                          : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700'
                       }`}
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
@@ -195,11 +195,11 @@ const Products: React.FC = () => {
               <motion.button
                 onClick={handleNextPage}
                 disabled={pagination.page >= Math.ceil(pagination.total / pagination.limit)}
-                className="p-2 rounded-lg bg-gray-100 border border-gray-200 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                className="p-2 rounded-lg bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
-                <ChevronRight size={16} className="text-gray-700" />
+                <ChevronRight size={16} className="text-gray-700 dark:text-gray-300" />
               </motion.button>
             </div>
           )}
@@ -226,8 +226,8 @@ const Products: React.FC = () => {
                 }}
                 className={`px-3 py-2 text-xs rounded-lg font-medium transition-all ${
                   sortOrder === option.value
-                    ? 'bg-black text-white'
-                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                    ? 'bg-black dark:bg-white text-white dark:text-black'
+                    : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700'
                 }`}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
@@ -250,11 +250,11 @@ const Products: React.FC = () => {
             <motion.button
               onClick={handlePrevPage}
               disabled={pagination.page === 1}
-              className="p-2 rounded-lg bg-gray-100 border border-gray-200 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              className="p-2 rounded-lg bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
-              <ChevronLeft size={16} className="text-gray-700" />
+              <ChevronLeft size={16} className="text-gray-700 dark:text-gray-300" />
             </motion.button>
 
             <div className="flex items-center gap-1">
@@ -272,8 +272,8 @@ const Products: React.FC = () => {
                     onClick={() => setPage(pageNum)}
                     className={`w-7 h-7 rounded-lg font-semibold text-xs transition-colors ${
                       pagination.page === pageNum
-                        ? 'bg-black text-white'
-                        : 'bg-gray-100 text-gray-700 border border-gray-200 hover:bg-gray-50'
+                        ? 'bg-black dark:bg-white text-white dark:text-black'
+                        : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700'
                     }`}
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
@@ -287,11 +287,11 @@ const Products: React.FC = () => {
             <motion.button
               onClick={handleNextPage}
               disabled={pagination.page >= Math.ceil(pagination.total / pagination.limit)}
-              className="p-2 rounded-lg bg-gray-100 border border-gray-200 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              className="p-2 rounded-lg bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
-              <ChevronRight size={16} className="text-gray-700" />
+              <ChevronRight size={16} className="text-gray-700 dark:text-gray-300" />
             </motion.button>
           </motion.div>
         )}

@@ -12,11 +12,11 @@ interface OrderCardProps {
 }
 
 const statusConfig: Record<string, { label: string; color: string; bgColor: string; icon: React.ReactNode }> = {
-  [ORDER_STATUS.PENDING]: { label: 'Chờ xử lý', color: 'text-amber-600', bgColor: 'bg-amber-50', icon: <Clock className="w-4 h-4" /> },
-  [ORDER_STATUS.CONFIRMED]: { label: 'Đã xác nhận', color: 'text-blue-600', bgColor: 'bg-blue-50', icon: <CheckCircle className="w-4 h-4" /> },
-  [ORDER_STATUS.PROCESSING]: { label: 'Đang xử lý', color: 'text-cyan-600', bgColor: 'bg-cyan-50', icon: <Package className="w-4 h-4" /> },
-  [ORDER_STATUS.DELIVERED]: { label: 'Đã giao', color: 'text-emerald-600', bgColor: 'bg-emerald-50', icon: <Truck className="w-4 h-4" /> },
-  [ORDER_STATUS.CANCELLED]: { label: 'Đã hủy', color: 'text-rose-600', bgColor: 'bg-rose-50', icon: <X className="w-4 h-4" /> },
+  [ORDER_STATUS.PENDING]: { label: 'Chờ xử lý', color: 'text-amber-600 dark:text-amber-400', bgColor: 'bg-amber-50 dark:bg-amber-900/30', icon: <Clock className="w-4 h-4" /> },
+  [ORDER_STATUS.CONFIRMED]: { label: 'Đã xác nhận', color: 'text-blue-600 dark:text-blue-400', bgColor: 'bg-blue-50 dark:bg-blue-900/30', icon: <CheckCircle className="w-4 h-4" /> },
+  [ORDER_STATUS.PROCESSING]: { label: 'Đang xử lý', color: 'text-cyan-600 dark:text-cyan-400', bgColor: 'bg-cyan-50 dark:bg-cyan-900/30', icon: <Package className="w-4 h-4" /> },
+  [ORDER_STATUS.DELIVERED]: { label: 'Đã giao', color: 'text-emerald-600 dark:text-emerald-400', bgColor: 'bg-emerald-50 dark:bg-emerald-900/30', icon: <Truck className="w-4 h-4" /> },
+  [ORDER_STATUS.CANCELLED]: { label: 'Đã hủy', color: 'text-rose-600 dark:text-rose-400', bgColor: 'bg-rose-50 dark:bg-rose-900/30', icon: <X className="w-4 h-4" /> },
 };
 
 const OrderCard: React.FC<OrderCardProps> = ({ order }) => {
@@ -28,13 +28,13 @@ const OrderCard: React.FC<OrderCardProps> = ({ order }) => {
 
   return (
     <motion.div 
-      className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow"
+      className="bg-white dark:bg-gray-800 rounded-lg shadow-sm dark:shadow-gray-900/20 border border-gray-200 dark:border-gray-700 overflow-hidden hover:shadow-md transition-shadow"
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
     >
       {/* Order Header */}
-      <div className="border-b border-gray-100">
+      <div className="border-b border-gray-100 dark:border-gray-700">
         {/* Mobile Layout */}
         <div className="md:hidden px-3 py-2">
           <div className="flex items-start justify-between gap-2">
@@ -42,14 +42,14 @@ const OrderCard: React.FC<OrderCardProps> = ({ order }) => {
             <div className="flex-1 space-y-1.5">
               {/* Row 1: Order ID */}
               <div className="flex items-center gap-1">
-                <p className="text-xs text-gray-500">Mã đơn hàng:</p>
-                <p className="font-semibold text-xs text-gray-900 truncate">{order.id.slice(0, 8).toUpperCase()}</p>
+                <p className="text-xs text-gray-500 dark:text-gray-400">Mã đơn hàng:</p>
+                <p className="font-semibold text-xs text-gray-900 dark:text-gray-100 truncate">{order.id.slice(0, 8).toUpperCase()}</p>
               </div>
 
               {/* Row 2: Date */}
               <div className="flex items-center gap-1">
-                <p className="text-xs text-gray-600">Ngày đặt:</p>
-                <p className="text-xs font-semibold text-gray-900 truncate">{createdDate}</p>
+                <p className="text-xs text-gray-600 dark:text-gray-400">Ngày đặt:</p>
+                <p className="text-xs font-semibold text-gray-900 dark:text-gray-100 truncate">{createdDate}</p>
               </div>
             </div>
 
@@ -62,7 +62,7 @@ const OrderCard: React.FC<OrderCardProps> = ({ order }) => {
 
               <motion.button
                 onClick={() => setIsExpanded(!isExpanded)}
-                className="p-1 hover:bg-gray-100 rounded-lg transition-colors text-gray-600 hover:text-gray-900"
+                className="p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100"
                 title="Xem chi tiết sản phẩm"
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.95 }}
@@ -82,8 +82,8 @@ const OrderCard: React.FC<OrderCardProps> = ({ order }) => {
         <div className="hidden md:flex md:items-center md:justify-between md:gap-4 p-6">
           {/* Order ID */}
           <div className="flex-1">
-            <p className="text-sm text-gray-600">Mã đơn hàng</p>
-            <p className="font-semibold text-base text-gray-900">{order.id.slice(0, 8).toUpperCase()}</p>
+            <p className="text-sm text-gray-600 dark:text-gray-400">Mã đơn hàng</p>
+            <p className="font-semibold text-base text-gray-900 dark:text-gray-100">{order.id.slice(0, 8).toUpperCase()}</p>
           </div>
           
           {/* Status Badge */}
@@ -97,13 +97,13 @@ const OrderCard: React.FC<OrderCardProps> = ({ order }) => {
           {/* Date & Expand Button */}
           <div className="flex items-center justify-end gap-4 flex-1">
             <div className="text-right">
-              <p className="text-sm text-gray-600">Ngày đặt</p>
-              <p className="font-semibold text-base text-gray-900">{createdDate}</p>
+              <p className="text-sm text-gray-600 dark:text-gray-400">Ngày đặt</p>
+              <p className="font-semibold text-base text-gray-900 dark:text-gray-100">{createdDate}</p>
             </div>
             
             <motion.button
               onClick={() => setIsExpanded(!isExpanded)}
-              className="p-2 hover:bg-gray-100 rounded-lg transition-colors text-gray-600 hover:text-gray-900 flex-shrink-0"
+              className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 flex-shrink-0"
               title="Xem chi tiết sản phẩm"
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.95 }}
@@ -123,13 +123,13 @@ const OrderCard: React.FC<OrderCardProps> = ({ order }) => {
       <AnimatePresence>
         {isExpanded && order.items && order.items.length > 0 && (
           <motion.div
-            className="px-3 md:px-6 py-2.5 md:py-4 bg-gray-50 border-b border-gray-100"
+            className="px-3 md:px-6 py-2.5 md:py-4 bg-gray-50 dark:bg-gray-900 border-b border-gray-100 dark:border-gray-700"
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
             transition={{ type: 'spring', stiffness: 400, damping: 20 }}
           >
-            <h4 className="text-xs md:text-sm font-semibold text-gray-900 mb-2 md:mb-3">Sản phẩm trong đơn hàng</h4>
+            <h4 className="text-xs md:text-sm font-semibold text-gray-900 dark:text-gray-100 mb-2 md:mb-3">Sản phẩm trong đơn hàng</h4>
             <motion.div 
               className="space-y-1.5 md:space-y-3"
               variants={{
@@ -147,7 +147,7 @@ const OrderCard: React.FC<OrderCardProps> = ({ order }) => {
                 return (
                   <motion.div 
                     key={index} 
-                    className="bg-white rounded-lg border border-gray-100 p-1.5 md:p-4 cursor-pointer hover:shadow-md transition-shadow"
+                    className="bg-white dark:bg-gray-800 rounded-lg border border-gray-100 dark:border-gray-700 p-1.5 md:p-4 cursor-pointer hover:shadow-md transition-shadow"
                     onClick={() => navigate(`/products/${item.productId}`)}
                     variants={{
                       hidden: { opacity: 0, y: 10 },
@@ -167,7 +167,7 @@ const OrderCard: React.FC<OrderCardProps> = ({ order }) => {
                       {/* Product Image & Name */}
                       <div className="flex gap-2">
                         {item.product?.images && item.product.images[0] && (
-                          <div className="flex-shrink-0 w-10 h-10 bg-gray-200 rounded-lg overflow-hidden">
+                          <div className="flex-shrink-0 w-10 h-10 bg-gray-200 dark:bg-gray-700 rounded-lg overflow-hidden">
                             <img 
                               src={item.product.images[0]} 
                               alt={item.product.name}
@@ -176,7 +176,7 @@ const OrderCard: React.FC<OrderCardProps> = ({ order }) => {
                           </div>
                         )}
                         <div className="flex-1 min-w-0">
-                          <p className="text-xs font-medium text-gray-900 line-clamp-2 hover:text-blue-600 transition-colors">
+                          <p className="text-xs font-medium text-gray-900 dark:text-gray-100 line-clamp-2 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
                             {item.product?.name || `Sản phẩm #${item.productId.slice(0, 8)}`}
                           </p>
                         </div>
@@ -185,16 +185,16 @@ const OrderCard: React.FC<OrderCardProps> = ({ order }) => {
                       {/* Quantity, Unit Price, Total Price */}
                       <div className="grid grid-cols-3 gap-1.5 text-xs">
                         <div className="text-center">
-                          <p className="text-gray-500 text-xs mb-0.5">Số lượng</p>
-                          <p className="font-semibold text-gray-900">{item.quantity}</p>
+                          <p className="text-gray-500 dark:text-gray-400 text-xs mb-0.5">Số lượng</p>
+                          <p className="font-semibold text-gray-900 dark:text-gray-100">{item.quantity}</p>
                         </div>
                         <div className="text-center">
-                          <p className="text-gray-500 text-xs mb-0.5">Đơn giá</p>
-                          <p className="text-xs font-semibold text-gray-900">{formatPrice(item.priceAtPurchase)}</p>
+                          <p className="text-gray-500 dark:text-gray-400 text-xs mb-0.5">Đơn giá</p>
+                          <p className="text-xs font-semibold text-gray-900 dark:text-gray-100">{formatPrice(item.priceAtPurchase)}</p>
                         </div>
                         <div className="text-center">
-                          <p className="text-gray-500 text-xs mb-0.5">Thành tiền</p>
-                          <p className="text-xs font-bold text-gray-900">{formatPrice(subtotal)}</p>
+                          <p className="text-gray-500 dark:text-gray-400 text-xs mb-0.5">Thành tiền</p>
+                          <p className="text-xs font-bold text-gray-900 dark:text-gray-100">{formatPrice(subtotal)}</p>
                         </div>
                       </div>
                     </div>
@@ -203,7 +203,7 @@ const OrderCard: React.FC<OrderCardProps> = ({ order }) => {
                     <div className="hidden md:flex md:items-center md:justify-between md:gap-4">
                       {/* Product Image */}
                       {item.product?.images && item.product.images[0] && (
-                        <div className="flex-shrink-0 w-20 h-20 bg-gray-200 rounded-lg overflow-hidden">
+                        <div className="flex-shrink-0 w-20 h-20 bg-gray-200 dark:bg-gray-700 rounded-lg overflow-hidden">
                           <img 
                             src={item.product.images[0]} 
                             alt={item.product.name}
@@ -214,27 +214,27 @@ const OrderCard: React.FC<OrderCardProps> = ({ order }) => {
 
                       {/* Product Name */}
                       <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium text-gray-900 hover:text-blue-600 transition-colors">
+                        <p className="text-sm font-medium text-gray-900 dark:text-gray-100 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
                           {item.product?.name || `Sản phẩm #${item.productId.slice(0, 8)}`}
                         </p>
                       </div>
 
                       {/* Quantity */}
                       <div className="flex-shrink-0 text-center">
-                        <p className="text-xs text-gray-500 mb-1">Số lượng</p>
-                        <p className="font-semibold text-gray-900">{item.quantity}</p>
+                        <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">Số lượng</p>
+                        <p className="font-semibold text-gray-900 dark:text-gray-100">{item.quantity}</p>
                       </div>
 
                       {/* Unit Price */}
                       <div className="flex-shrink-0 text-center min-w-[100px]">
-                        <p className="text-xs text-gray-500 mb-1">Đơn giá</p>
-                        <p className="font-semibold text-gray-900">{formatPrice(item.priceAtPurchase)}</p>
+                        <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">Đơn giá</p>
+                        <p className="font-semibold text-gray-900 dark:text-gray-100">{formatPrice(item.priceAtPurchase)}</p>
                       </div>
 
                       {/* Subtotal */}
                       <div className="flex-shrink-0 text-center min-w-[100px]">
-                        <p className="text-xs text-gray-500 mb-1">Thành tiền</p>
-                        <p className="font-bold text-gray-900">{formatPrice(subtotal)}</p>
+                        <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">Thành tiền</p>
+                        <p className="font-bold text-gray-900 dark:text-gray-100">{formatPrice(subtotal)}</p>
                       </div>
                     </div>
                   </motion.div>
@@ -246,19 +246,19 @@ const OrderCard: React.FC<OrderCardProps> = ({ order }) => {
       </AnimatePresence>
 
       {/* Order Items Summary */}
-      <div className="px-3 md:px-6 py-2.5 md:py-4 bg-gray-50">
+      <div className="px-3 md:px-6 py-2.5 md:py-4 bg-gray-50 dark:bg-gray-900">
         {/* Mobile Layout */}
         <div className="md:hidden flex flex-col gap-2">
           <div className="flex items-center justify-between gap-2">
-            <p className="text-xs text-gray-600">
+            <p className="text-xs text-gray-600 dark:text-gray-400">
               {itemCount} sản phẩm
             </p>
-            <p className="text-xs font-semibold text-gray-900">
+            <p className="text-xs font-semibold text-gray-900 dark:text-gray-100">
               {formatPrice(order.totalAmount)}
             </p>
           </div>
           {order.discountAmount && order.discountAmount > 0 && (
-            <p className="text-xs text-gray-600 text-right">
+            <p className="text-xs text-gray-600 dark:text-gray-400 text-right">
               -{formatPrice(order.discountAmount)} (Giảm giá)
             </p>
           )}
@@ -267,17 +267,17 @@ const OrderCard: React.FC<OrderCardProps> = ({ order }) => {
         {/* Desktop Layout */}
         <div className="hidden md:flex md:flex-col md:sm:flex-row md:sm:justify-between md:sm:items-center md:gap-3">
           <div>
-            <p className="text-sm text-gray-600">
+            <p className="text-sm text-gray-600 dark:text-gray-400">
               {itemCount} sản phẩm
             </p>
           </div>
           <div className="text-right">
-            <p className="text-sm text-gray-600">Tổng cộng</p>
-            <p className="text-lg font-bold text-gray-900">
+            <p className="text-sm text-gray-600 dark:text-gray-400">Tổng cộng</p>
+            <p className="text-lg font-bold text-gray-900 dark:text-gray-100">
               {formatPrice(order.totalAmount)}
             </p>
             {order.discountAmount && order.discountAmount > 0 && (
-              <p className="text-sm text-gray-600">
+              <p className="text-sm text-gray-600 dark:text-gray-400">
                 -{formatPrice(order.discountAmount)} (Giảm giá)
               </p>
             )}
@@ -288,8 +288,8 @@ const OrderCard: React.FC<OrderCardProps> = ({ order }) => {
       {/* Order Footer */}
       <div className="flex flex-col gap-3 p-3 md:flex-row md:items-center md:justify-between md:gap-4 md:p-6">
         {order.shippingAddress && (
-          <div className="text-xs md:text-sm text-gray-600 flex-1">
-            <p className="font-medium text-gray-900 mb-1">Địa chỉ giao hàng</p>
+          <div className="text-xs md:text-sm text-gray-600 dark:text-gray-400 flex-1">
+            <p className="font-medium text-gray-900 dark:text-gray-100 mb-1">Địa chỉ giao hàng</p>
             <p className="line-clamp-2">{order.shippingAddress}</p>
           </div>
         )}

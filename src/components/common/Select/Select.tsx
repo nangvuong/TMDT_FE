@@ -85,17 +85,17 @@ const Select: React.FC<SelectProps> = ({
   };
 
   const variantStyles = {
-    default: 'bg-white border-2 border-gray-300 text-gray-900 hover:border-gray-400',
-    outline: 'bg-transparent border-2 border-gray-800 text-gray-900',
-    filled: 'bg-gray-100 border-b-2 border-gray-400 text-gray-900',
+    default: 'bg-white dark:bg-gray-900 border-2 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100 hover:border-gray-400 dark:hover:border-gray-500',
+    outline: 'bg-transparent border-2 border-gray-800 dark:border-gray-400 text-gray-900 dark:text-gray-100',
+    filled: 'bg-gray-100 dark:bg-gray-700 border-b-2 border-gray-400 dark:border-gray-500 text-gray-900 dark:text-gray-100',
   };
 
   const baseStyles =
-    'w-full rounded-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black focus:border-black transition-colors disabled:bg-gray-100 disabled:cursor-not-allowed disabled:text-gray-400 flex items-center justify-between';
+    'w-full rounded-lg focus:outline-none focus:ring-2 focus:ring-offset-2 dark:focus:ring-offset-gray-900 focus:ring-black dark:focus:ring-white focus:border-black dark:focus:border-white transition-colors disabled:bg-gray-100 dark:disabled:bg-gray-700 disabled:cursor-not-allowed disabled:text-gray-400 dark:disabled:text-gray-500 flex items-center justify-between';
 
-  const labelStyles = 'block text-sm font-medium text-gray-900 mb-2';
-  const errorStyles = 'text-sm font-medium text-gray-600 mt-1';
-  const helperStyles = 'text-sm text-gray-600 mt-1';
+  const labelStyles = 'block text-sm font-medium text-gray-900 dark:text-gray-100 mb-2';
+  const errorStyles = 'text-sm font-medium text-gray-600 dark:text-gray-400 mt-1';
+  const helperStyles = 'text-sm text-gray-600 dark:text-gray-400 mt-1';
 
   return (
     <motion.div
@@ -107,7 +107,7 @@ const Select: React.FC<SelectProps> = ({
       {label && (
         <label className={labelStyles}>
           {label}
-          {props.required && <span className="text-gray-600 ml-1">*</span>}
+          {props.required && <span className="text-gray-600 dark:text-gray-400 ml-1">*</span>}
         </label>
       )}
 
@@ -143,7 +143,7 @@ const Select: React.FC<SelectProps> = ({
         <AnimatePresence>
           {isOpen && (
             <motion.div
-              className="absolute top-full left-0 right-0 mt-2 bg-white border-2 border-gray-300 rounded-lg shadow-lg z-50"
+              className="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-gray-900 border-2 border-gray-300 dark:border-gray-600 rounded-lg shadow-lg dark:shadow-gray-900/30 z-50"
               initial={{ opacity: 0, y: -10, height: 0 }}
               animate={{ opacity: 1, y: 0, height: 'auto' }}
               exit={{ opacity: 0, y: -10, height: 0 }}
@@ -151,11 +151,11 @@ const Select: React.FC<SelectProps> = ({
             >
               {/* Search Input */}
               {searchable && (
-                <div className="p-2 border-b border-gray-200">
+                <div className="p-2 border-b border-gray-200 dark:border-gray-700">
                   <input
                     type="text"
                     placeholder="Search..."
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black text-sm"
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white text-sm"
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     onClick={(e) => e.stopPropagation()}
@@ -174,7 +174,7 @@ const Select: React.FC<SelectProps> = ({
                         'w-full text-left px-4 py-2 transition-colors disabled:opacity-50 disabled:cursor-not-allowed',
                         selectedOption?.value === option.value
                           ? 'bg-black text-white font-medium'
-                          : 'hover:bg-gray-100 text-gray-900'
+                          : 'hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-900 dark:text-gray-100'
                       )}
                       onClick={() => {
                         if (!option.disabled) {
@@ -191,7 +191,7 @@ const Select: React.FC<SelectProps> = ({
                     </motion.button>
                   ))
                 ) : (
-                  <div className="px-4 py-8 text-center text-gray-500">
+                  <div className="px-4 py-8 text-center text-gray-500 dark:text-gray-400">
                     No options found
                   </div>
                 )}
@@ -199,10 +199,10 @@ const Select: React.FC<SelectProps> = ({
 
               {/* Clear Button */}
               {clearable && selectedOption && (
-                <div className="border-t border-gray-200 p-2">
+                <div className="border-t border-gray-200 dark:border-gray-700 p-2">
                   <button
                     type="button"
-                    className="w-full px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
+                    className="w-full px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
                     onClick={() => {
                       onChange?.('');
                       setIsOpen(false);

@@ -60,9 +60,9 @@ const Checkbox: React.FC<CheckboxProps> = ({
             'relative flex items-center justify-center rounded-md border-2 transition-colors',
             checked
               ? 'bg-black border-black'
-              : 'border-gray-300 bg-white hover:border-gray-400',
-            error && 'border-gray-600',
-            disabled && 'bg-gray-100 cursor-not-allowed'
+              : 'border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 hover:border-gray-400 dark:hover:border-gray-500',
+            error && 'border-gray-600 dark:border-gray-500',
+            disabled && 'bg-gray-100 dark:bg-gray-700 cursor-not-allowed'
           )}
           whileHover={!disabled ? { scale: 1.05 } : {}}
           whileTap={!disabled ? { scale: 0.95 } : {}}
@@ -93,7 +93,7 @@ const Checkbox: React.FC<CheckboxProps> = ({
 
         {/* Label */}
         {label && (
-          <span className={cn(sizes.label, 'text-gray-900 font-medium')}>
+          <span className={cn(sizes.label, 'text-gray-900 dark:text-gray-100 font-medium')}>
             {label}
           </span>
         )}
@@ -102,7 +102,7 @@ const Checkbox: React.FC<CheckboxProps> = ({
       {/* Error Text */}
       {error && (
         <motion.span
-          className="text-sm font-medium text-gray-600 ml-8"
+          className="text-sm font-medium text-gray-600 dark:text-gray-400 ml-8"
           initial={{ opacity: 0, y: -5 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.2 }}
@@ -114,7 +114,7 @@ const Checkbox: React.FC<CheckboxProps> = ({
       {/* Helper Text */}
       {helperText && !error && (
         <motion.span
-          className="text-sm text-gray-600 ml-8"
+          className="text-sm text-gray-600 dark:text-gray-400 ml-8"
           initial={{ opacity: 0, y: -5 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.2 }}

@@ -1,4 +1,5 @@
 export const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
+export const RECOMMENDATION_BASE_URL = import.meta.env.VITE_RECOMMENDATION_API_URL || 'http://localhost:8002';
 
 // ============= AUTH Module (Không yêu cầu JWT) =============
 export const AUTH_ENDPOINTS = {
@@ -81,6 +82,13 @@ export const PAYMENT_ENDPOINTS = {
   CHECK_PAYMENT_GET: '/payment/check/:transactionCode', // GET - 200 (Authenticated) - Returns: { status, message, transaction }
   GET_TRANSACTIONS: '/payment/transactions', // GET - 200 (Authenticated) - Returns: Transaction[]
   GET_TRANSACTION: '/payment/transactions/:id', // GET - 200 (Authenticated) - Returns: Transaction
+} as const;
+
+// ============= AI RECOMMENDATION Module (Public) =============
+export const RECOMMENDATION_ENDPOINTS = {
+  HEALTH: '/health',                           // GET - 200 (public) - Health check
+  SIMILAR: '/similar/:productId',              // GET - 200 (public) - Get similar product IDs
+  RECOMMEND: '/recommend/:productId',          // GET - 200 (public) - Get product with similar products (all-in-one)
 } as const;
 
 // ============= HTTP Status Codes =============

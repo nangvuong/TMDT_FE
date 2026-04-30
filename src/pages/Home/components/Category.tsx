@@ -58,7 +58,7 @@ const Category: React.FC = () => {
   };
 
   return (
-    <section className="w-full bg-gray-50 py-12 md:py-20">
+    <section className="w-full bg-gray-50 dark:bg-gray-800 py-12 md:py-20 transition-colors">
       <div className="container mx-auto max-w-7xl px-4 md:px-6">
         {/* Section Header */}
         <motion.div
@@ -68,13 +68,13 @@ const Category: React.FC = () => {
           viewport={{ once: false }}
           transition={{ type: 'spring', stiffness: 300 }}
         >
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">
+          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-gray-100 mb-2">
             Khám Phá Danh Mục
           </h2>
-          <p className="text-gray-600 text-sm md:text-lg">
+          <p className="text-gray-600 dark:text-gray-400 text-sm md:text-lg">
             Tìm kiếm các sản phẩm phù hợp với nhu cầu của bạn
           </p>
-          <div className="w-12 h-1 bg-black mx-auto mt-4 rounded-full" />
+          <div className="w-12 h-1 bg-black dark:bg-white mx-auto mt-4 rounded-full" />
         </motion.div>
 
         {/* Categories Grid */}
@@ -116,9 +116,9 @@ const Category: React.FC = () => {
                   transition={{ type: 'spring', stiffness: 400, damping: 20 }}
                 >
                   {/* Category Card */}
-                  <div className="relative overflow-hidden rounded-xl shadow-md hover:shadow-xl transition-shadow duration-300 h-full flex flex-col">
+                  <div className="relative overflow-hidden rounded-xl shadow-md hover:shadow-xl dark:shadow-gray-900/30 transition-shadow duration-300 h-full flex flex-col bg-white dark:bg-gray-900">
                     {/* Image */}
-                    <div className="w-full h-40 md:h-48 overflow-hidden bg-gray-200 relative flex-shrink-0">
+                    <div className="w-full h-40 md:h-48 overflow-hidden bg-gray-200 dark:bg-gray-700 relative flex-shrink-0">
                       {category.imageUrl ? (
                         <motion.img
                           src={category.imageUrl}
@@ -129,11 +129,11 @@ const Category: React.FC = () => {
                         />
                       ) : (
                         <motion.div
-                          className="w-full h-full bg-gradient-to-br from-gray-300 via-gray-200 to-gray-300 flex items-center justify-center"
+                          className="w-full h-full bg-gradient-to-br from-gray-300 via-gray-200 to-gray-300 dark:from-gray-600 dark:via-gray-700 dark:to-gray-600 flex items-center justify-center"
                           animate={{ opacity: [0.5, 1, 0.5] }}
                           transition={{ duration: 2, repeat: Infinity }}
                         >
-                          <span className="text-gray-600 text-sm">No Image</span>
+                          <span className="text-gray-600 dark:text-gray-400 text-sm">No Image</span>
                         </motion.div>
                       )}
 
@@ -144,7 +144,7 @@ const Category: React.FC = () => {
                         whileHover={{ opacity: 1 }}
                       >
                         <motion.button
-                          className="px-6 py-2 bg-white text-black font-semibold rounded-lg opacity-0 group-hover:opacity-100"
+                          className="px-6 py-2 bg-white dark:bg-gray-900 text-black dark:text-white font-semibold rounded-lg opacity-0 group-hover:opacity-100"
                           whileHover={{ scale: 1.05 }}
                           whileTap={{ scale: 0.95 }}
                         >
@@ -155,11 +155,11 @@ const Category: React.FC = () => {
 
                     {/* Content */}
                     <div className="p-4 flex-1 flex flex-col">
-                      <h3 className="font-semibold text-gray-900 text-sm md:text-base truncate">
+                      <h3 className="font-semibold text-gray-900 dark:text-gray-100 text-sm md:text-base truncate">
                         {category.name}
                       </h3>
                       {category.description && (
-                        <p className="text-gray-600 text-xs md:text-sm mt-1 line-clamp-2 flex-1">
+                        <p className="text-gray-600 dark:text-gray-400 text-xs md:text-sm mt-1 line-clamp-2 flex-1">
                           {category.description}
                         </p>
                       )}
@@ -168,12 +168,12 @@ const Category: React.FC = () => {
                     {/* Selection Indicator */}
                     {selectedCategoryId === category.id && (
                       <motion.div
-                        className="absolute top-2 right-2 w-4 h-4 bg-black rounded-full flex items-center justify-center"
+                        className="absolute top-2 right-2 w-4 h-4 bg-black dark:bg-white rounded-full flex items-center justify-center"
                         initial={{ scale: 0 }}
                         animate={{ scale: 1 }}
                         transition={{ type: 'spring', stiffness: 400, damping: 20 }}
                       >
-                        <svg className="w-2.5 h-2.5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                        <svg className="w-2.5 h-2.5 text-white dark:text-black" fill="currentColor" viewBox="0 0 20 20">
                           <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                         </svg>
                       </motion.div>
@@ -195,11 +195,11 @@ const Category: React.FC = () => {
                 <motion.button
                   onClick={handlePrevPage}
                   disabled={pagination.page === 1}
-                  className="p-2 md:p-3 rounded-lg bg-white border border-gray-200 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  className="p-2 md:p-3 rounded-lg bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                 >
-                  <ChevronLeft size={20} className="text-gray-700" />
+                  <ChevronLeft size={20} className="text-gray-700 dark:text-gray-300" />
                 </motion.button>
 
                 <div className="flex items-center gap-2">
@@ -216,8 +216,8 @@ const Category: React.FC = () => {
                         onClick={() => setPage(pageNum)}
                         className={`w-8 h-8 md:w-10 md:h-10 rounded-lg font-semibold text-sm transition-colors ${
                           pagination.page === pageNum
-                            ? 'bg-black text-white'
-                            : 'bg-white text-gray-700 border border-gray-200 hover:bg-gray-50'
+                            ? 'bg-black dark:bg-white text-white dark:text-black'
+                            : 'bg-white dark:bg-gray-900 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800'
                         }`}
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
@@ -231,11 +231,11 @@ const Category: React.FC = () => {
                 <motion.button
                   onClick={handleNextPage}
                   disabled={pagination.page === pagination.totalPages}
-                  className="p-2 md:p-3 rounded-lg bg-white border border-gray-200 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  className="p-2 md:p-3 rounded-lg bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                 >
-                  <ChevronRight size={20} className="text-gray-700" />
+                  <ChevronRight size={20} className="text-gray-700 dark:text-gray-300" />
                 </motion.button>
               </motion.div>
             )}

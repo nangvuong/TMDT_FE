@@ -143,12 +143,12 @@ const ProductPage: React.FC = () => {
 
   return (
     <Layout>
-      <section className="w-full bg-gradient-to-b from-gray-50 to-white py-4 md:py-8 lg:py-16">
+      <section className="w-full bg-gradient-to-b from-gray-50 to-white dark:from-gray-800 dark:to-gray-900 py-4 md:py-8 lg:py-16">
         <div className="container mx-auto max-w-7xl px-3 sm:px-4 md:px-6">
           {/* Back Button */}
           <motion.button
             onClick={() => navigate(-1)}
-            className="inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 text-sm sm:text-base text-gray-700 hover:text-gray-900 rounded-lg hover:bg-gray-100 transition-all font-medium mb-6 sm:mb-8 group"
+            className="inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 text-sm sm:text-base text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-all font-medium mb-6 sm:mb-8 group"
             whileHover={{ x: -4 }}
             whileTap={{ scale: 0.95 }}
             initial={{ opacity: 0, x: -10 }}
@@ -179,7 +179,7 @@ const ProductPage: React.FC = () => {
                   </motion.div>
                   <div className="flex-1">
                     <motion.h1
-                      className="text-lg sm:text-xl md:text-2xl font-bold text-gray-900 mb-1"
+                      className="text-lg sm:text-xl md:text-2xl font-bold text-gray-900 dark:text-gray-100 mb-1"
                       initial={{ opacity: 0, x: -20 }}
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: 0.1 }}
@@ -202,8 +202,8 @@ const ProductPage: React.FC = () => {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.2 }}
                   >
-                    <p className="text-gray-600 text-xs sm:text-sm font-medium mb-1">Từ khóa</p>
-                    <p className="text-gray-900 text-base sm:text-lg md:text-xl font-bold break-words">"{initialSearch}"</p>
+                    <p className="text-gray-600 dark:text-gray-400 text-xs sm:text-sm font-medium mb-1">Từ khóa</p>
+                    <p className="text-gray-900 dark:text-gray-100 text-base sm:text-lg md:text-xl font-bold break-words">"{initialSearch}"</p>
                   </motion.div>
 
                   {/* Clear Search Button */}
@@ -239,7 +239,7 @@ const ProductPage: React.FC = () => {
                   </motion.div>
                   <div className="flex-1">
                     <motion.h1
-                      className="text-lg sm:text-xl md:text-2xl font-bold text-gray-900 mb-1"
+                      className="text-lg sm:text-xl md:text-2xl font-bold text-gray-900 dark:text-gray-100 mb-1"
                       initial={{ opacity: 0, x: -20 }}
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: 0.1 }}
@@ -255,7 +255,7 @@ const ProductPage: React.FC = () => {
                   </div>
                 </div>
                 <motion.p
-                  className="text-gray-600 text-sm sm:text-base leading-relaxed max-w-3xl"
+                  className="text-gray-600 dark:text-gray-400 text-sm sm:text-base leading-relaxed max-w-3xl"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.2 }}
@@ -274,10 +274,10 @@ const ProductPage: React.FC = () => {
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
             >
-              <div className="bg-gray-50 p-4 md:p-6 rounded-lg space-y-6 sticky top-20">
+              <div className="bg-gray-50 dark:bg-gray-800 p-4 md:p-6 rounded-lg space-y-6 sticky top-20">
                 {/* Price Filter */}
                 <div className="space-y-3">
-                  <h3 className="font-semibold text-gray-900">Giá</h3>
+                  <h3 className="font-semibold text-gray-900 dark:text-gray-100">Giá</h3>
                   <div className="space-y-2">
                     <Input
                       type="number"
@@ -301,8 +301,8 @@ const ProductPage: React.FC = () => {
                 {/* Category Filter */}
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
-                    <h3 className="font-semibold text-gray-900">Danh Mục</h3>
-                    <span className="text-xs text-gray-500">({categoryPagination.totalItems})</span>
+                    <h3 className="font-semibold text-gray-900 dark:text-gray-100">Danh Mục</h3>
+                    <span className="text-xs text-gray-500 dark:text-gray-400">({categoryPagination.totalItems})</span>
                   </div>
                   <div className="space-y-2 max-h-48 overflow-y-auto">
                     {categories.map((cat) => (
@@ -316,21 +316,21 @@ const ProductPage: React.FC = () => {
                     ))}
                   </div>
                   {categoryPagination.totalItems && categoryPagination.totalItems > (categoryPagination.limit || 6) && (
-                    <div className="flex items-center justify-between gap-2 mt-3 pt-3 border-t border-gray-200">
+                    <div className="flex items-center justify-between gap-2 mt-3 pt-3 border-t border-gray-200 dark:border-gray-700">
                       <button
                         onClick={() => setCategoryPage(Math.max(1, (categoryPagination.page || 1) - 1))}
                         disabled={(categoryPagination.page || 1) === 1}
-                        className="px-2 py-1 text-xs font-medium text-gray-600 hover:text-gray-900 disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="px-2 py-1 text-xs font-medium text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
                       >
                         ← Trước
                       </button>
-                      <span className="text-xs text-gray-500">
+                      <span className="text-xs text-gray-500 dark:text-gray-400">
                         Trang {categoryPagination.page || 1} / {categoryPagination.totalPages || 1}
                       </span>
                       <button
                         onClick={() => setCategoryPage((categoryPagination.page || 1) + 1)}
                         disabled={(categoryPagination.page || 1) >= (categoryPagination.totalPages || 1)}
-                        className="px-2 py-1 text-xs font-medium text-gray-600 hover:text-gray-900 disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="px-2 py-1 text-xs font-medium text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
                       >
                         Sau →
                       </button>
@@ -340,7 +340,7 @@ const ProductPage: React.FC = () => {
 
                 {/* Rating Filter */}
                 <div className="space-y-3">
-                  <h3 className="font-semibold text-gray-900">Đánh Giá</h3>
+                  <h3 className="font-semibold text-gray-900 dark:text-gray-100">Đánh Giá</h3>
                   <Select
                     options={[
                       { value: 0, label: 'Tất cả' },
@@ -376,7 +376,7 @@ const ProductPage: React.FC = () => {
                       refreshProducts();
                       setCurrentPage(1);
                     }}
-                    className="flex-1 px-4 py-2 bg-gray-200 text-gray-900 rounded-lg hover:bg-gray-300 transition-colors text-sm font-medium"
+                    className="flex-1 px-4 py-2 bg-gray-200 dark:bg-gray-600 text-gray-900 dark:text-gray-100 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-500 transition-colors text-sm font-medium"
                   >
                     Xóa
                   </button>
@@ -397,7 +397,7 @@ const ProductPage: React.FC = () => {
               <div className="space-y-6">
                 {/* Price Filter */}
                 <div className="space-y-3">
-                  <h3 className="font-semibold text-gray-900">Giá</h3>
+                  <h3 className="font-semibold text-gray-900 dark:text-gray-100">Giá</h3>
                   <div className="space-y-2">
                     <Input
                       type="number"
@@ -421,8 +421,8 @@ const ProductPage: React.FC = () => {
                 {/* Category Filter */}
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
-                    <h3 className="font-semibold text-gray-900">Danh Mục</h3>
-                    <span className="text-xs text-gray-500">({categoryPagination.totalItems})</span>
+                    <h3 className="font-semibold text-gray-900 dark:text-gray-100">Danh Mục</h3>
+                    <span className="text-xs text-gray-500 dark:text-gray-400">({categoryPagination.totalItems})</span>
                   </div>
                   <div className="space-y-2 max-h-48 overflow-y-auto">
                     {categories.map((cat) => (
@@ -436,21 +436,21 @@ const ProductPage: React.FC = () => {
                     ))}
                   </div>
                   {categoryPagination.totalItems && categoryPagination.totalItems > (categoryPagination.limit || 6) && (
-                    <div className="flex items-center justify-between gap-2 mt-3 pt-3 border-t border-gray-200">
+                    <div className="flex items-center justify-between gap-2 mt-3 pt-3 border-t border-gray-200 dark:border-gray-700">
                       <button
                         onClick={() => setCategoryPage(Math.max(1, (categoryPagination.page || 1) - 1))}
                         disabled={(categoryPagination.page || 1) === 1}
-                        className="px-2 py-1 text-xs font-medium text-gray-600 hover:text-gray-900 disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="px-2 py-1 text-xs font-medium text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
                       >
                         ← Trước
                       </button>
-                      <span className="text-xs text-gray-500">
+                      <span className="text-xs text-gray-500 dark:text-gray-400">
                         Trang {categoryPagination.page || 1} / {categoryPagination.totalPages || 1}
                       </span>
                       <button
                         onClick={() => setCategoryPage((categoryPagination.page || 1) + 1)}
                         disabled={(categoryPagination.page || 1) >= (categoryPagination.totalPages || 1)}
-                        className="px-2 py-1 text-xs font-medium text-gray-600 hover:text-gray-900 disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="px-2 py-1 text-xs font-medium text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
                       >
                         Sau →
                       </button>
@@ -460,7 +460,7 @@ const ProductPage: React.FC = () => {
 
                 {/* Rating Filter */}
                 <div className="space-y-3">
-                  <h3 className="font-semibold text-gray-900">Đánh Giá</h3>
+                  <h3 className="font-semibold text-gray-900 dark:text-gray-100">Đánh Giá</h3>
                   <Select
                     options={[
                       { value: 0, label: 'Tất cả' },
@@ -496,7 +496,7 @@ const ProductPage: React.FC = () => {
                       refreshProducts();
                       setCurrentPage(1);
                     }}
-                    className="flex-1 px-4 py-3 bg-gray-200 text-gray-900 rounded-lg hover:bg-gray-300 transition-colors text-sm font-medium"
+                    className="flex-1 px-4 py-3 bg-gray-200 dark:bg-gray-600 text-gray-900 dark:text-gray-100 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-500 transition-colors text-sm font-medium"
                   >
                     Xóa
                   </button>
@@ -515,7 +515,7 @@ const ProductPage: React.FC = () => {
               >
                 {/* Mobile Filter Button */}
                 <motion.button
-                  className="lg:hidden flex items-center gap-2 px-4 py-2 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+                  className="lg:hidden flex items-center gap-2 px-4 py-2 bg-gray-100 dark:bg-gray-700 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={() => setFilterOpen(!filterOpen)}
@@ -537,8 +537,8 @@ const ProductPage: React.FC = () => {
                       onClick={() => handleSortChange(option.value)}
                       className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
                         sortOrder === option.value
-                          ? 'bg-gray-900 text-white'
-                          : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                          ? 'bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900'
+                          : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
                       }`}
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
@@ -558,7 +558,7 @@ const ProductPage: React.FC = () => {
                     <motion.button
                       onClick={handlePrevPage}
                       disabled={currentPage === 1}
-                      className="p-2 hover:bg-gray-100 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                      className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
                     >
@@ -572,8 +572,8 @@ const ProductPage: React.FC = () => {
                           onClick={() => setCurrentPage(page)}
                           className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
                             currentPage === page
-                              ? 'bg-gray-900 text-white'
-                              : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                              ? 'bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900'
+                              : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
                           }`}
                           whileHover={{ scale: 1.05 }}
                           whileTap={{ scale: 0.95 }}
@@ -586,7 +586,7 @@ const ProductPage: React.FC = () => {
                     <motion.button
                       onClick={handleNextPage}
                       disabled={currentPage >= totalPages}
-                      className="p-2 hover:bg-gray-100 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                      className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
                     >
@@ -623,14 +623,14 @@ const ProductPage: React.FC = () => {
                   <motion.button
                     onClick={handlePrevPage}
                     disabled={currentPage === 1}
-                    className="px-6 py-3 bg-gray-100 text-gray-900 rounded-lg hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium"
+                    className="px-6 py-3 bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium"
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                   >
                     ← Trang trước
                   </motion.button>
 
-                  <div className="text-sm text-gray-600 font-medium">
+                  <div className="text-sm text-gray-600 dark:text-gray-400 font-medium">
                     Trang {currentPage} / {totalPages}
                   </div>
 

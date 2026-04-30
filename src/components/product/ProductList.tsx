@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import ProductCard from './ProductCard';
 import type { Product } from '../../types/product';
 
-interface ProductListProps {
+export interface ProductListProps {
   products: Product[];
   isLoading?: boolean;
   isEmpty?: boolean;
@@ -47,15 +47,15 @@ const ProductList: React.FC<ProductListProps> = ({
         {Array.from({ length: 8 }).map((_, i) => (
           <motion.div
             key={`skeleton-${i}`}
-            className="bg-white rounded-lg overflow-hidden shadow-md h-96"
+            className="bg-white dark:bg-gray-800 rounded-lg overflow-hidden shadow-md h-96"
             animate={{ opacity: [0.5, 1, 0.5] }}
             transition={{ duration: 1.5, repeat: Infinity }}
           >
-            <div className="w-full h-48 bg-gray-300" />
+            <div className="w-full h-48 bg-gray-300 dark:bg-gray-700" />
             <div className="p-4 space-y-3">
-              <div className="h-4 bg-gray-300 rounded w-3/4" />
-              <div className="h-4 bg-gray-300 rounded w-1/2" />
-              <div className="h-6 bg-gray-300 rounded w-1/3 mt-4" />
+              <div className="h-4 bg-gray-300 dark:bg-gray-700 rounded w-3/4" />
+              <div className="h-4 bg-gray-300 dark:bg-gray-700 rounded w-1/2" />
+              <div className="h-6 bg-gray-300 dark:bg-gray-700 rounded w-1/3 mt-4" />
             </div>
           </motion.div>
         ))}
@@ -73,7 +73,7 @@ const ProductList: React.FC<ProductListProps> = ({
         transition={{ duration: 0.3 }}
       >
         <svg
-          className="w-16 h-16 md:w-20 md:h-20 text-gray-400 mb-4"
+          className="w-16 h-16 md:w-20 md:h-20 text-gray-400 dark:text-gray-500 mb-4"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -85,10 +85,10 @@ const ProductList: React.FC<ProductListProps> = ({
             d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"
           />
         </svg>
-        <h3 className="text-lg md:text-xl font-semibold text-gray-900 mb-2">
+        <h3 className="text-lg md:text-xl font-semibold text-gray-900 dark:text-gray-100 mb-2">
           Không có sản phẩm
         </h3>
-        <p className="text-sm md:text-base text-gray-600">
+        <p className="text-sm md:text-base text-gray-600 dark:text-gray-400">
           Hãy thử tìm kiếm hoặc điều chỉnh bộ lọc của bạn
         </p>
       </motion.div>

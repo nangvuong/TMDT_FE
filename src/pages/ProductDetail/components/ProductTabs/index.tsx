@@ -46,15 +46,15 @@ const ProductTabs: React.FC<ProductTabsProps> = ({ product }) => {
   return (
     <div className="w-full">
       {/* Tab Navigation */}
-      <div className="border-b border-gray-200 flex overflow-x-auto">
+      <div className="border-b border-gray-200 dark:border-gray-700 flex overflow-x-auto">
         {tabs.map((tab) => (
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
             className={`px-3 sm:px-4 md:px-6 py-2.5 sm:py-3 md:py-4 font-medium text-xs sm:text-sm transition-all whitespace-nowrap ${
               activeTab === tab.id
-                ? 'text-gray-900 border-b-2 border-gray-900'
-                : 'text-gray-600 hover:text-gray-900'
+                ? 'text-gray-900 dark:text-gray-100 border-b-2 border-gray-900 dark:border-gray-100'
+                : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100'
             }`}
           >
             {tab.label}

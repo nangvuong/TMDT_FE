@@ -36,19 +36,19 @@ const AlertModal: React.FC<AlertModalProps> = ({
   const getConfig = () => {
     const configs = {
       success: {
-        iconColor: 'text-gray-700',
+        iconColor: 'text-gray-700 dark:text-gray-300',
         icon: CheckCircle2,
       },
       error: {
-        iconColor: 'text-gray-700',
+        iconColor: 'text-gray-700 dark:text-gray-300',
         icon: AlertCircle,
       },
       warning: {
-        iconColor: 'text-gray-700',
+        iconColor: 'text-gray-700 dark:text-gray-300',
         icon: AlertTriangle,
       },
       info: {
-        iconColor: 'text-gray-700',
+        iconColor: 'text-gray-700 dark:text-gray-300',
         icon: Info,
       },
     };
@@ -80,7 +80,7 @@ const AlertModal: React.FC<AlertModalProps> = ({
           >
             <IconComponent className={`w-6 h-6 ${config.iconColor}`} />
           </motion.div>
-          <h3 className="text-lg font-semibold text-gray-900 leading-tight flex-1">{title}</h3>
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 leading-tight flex-1">{title}</h3>
         </div>
       }
       footer={
@@ -107,7 +107,7 @@ const AlertModal: React.FC<AlertModalProps> = ({
         </div>
       }
     >
-      <p className="text-gray-700 text-base leading-relaxed">{message}</p>
+      <p className="text-gray-700 dark:text-gray-300 text-base leading-relaxed">{message}</p>
     </Modal>
   );
 };

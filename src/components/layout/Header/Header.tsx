@@ -156,7 +156,7 @@ const Header: React.FC<HeaderProps> = ({ logo = 'TMDT Logo', hideFAB = false }) 
   };
 
   return (
-    <header className="sticky top-0 z-40 w-full bg-white border-b border-gray-200 shadow-sm">
+    <header className="sticky top-0 z-40 w-full bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 shadow-sm dark:shadow-gray-900/20">
       {/* Desktop Header */}
       <div className="hidden md:block px-8 py-4">
         <div className="flex items-center justify-between gap-8">
@@ -174,10 +174,10 @@ const Header: React.FC<HeaderProps> = ({ logo = 'TMDT Logo', hideFAB = false }) 
               className="h-10 w-auto"
             />
             <div className="flex flex-col">
-              <span className="text-base md:text-lg font-bold text-black leading-tight tracking-wide">
+              <span className="text-base md:text-lg font-bold text-black dark:text-white leading-tight tracking-wide">
                 Fitness
               </span>
-              <span className="text-base md:text-lg font-bold text-gray-700 leading-tight tracking-wide">
+              <span className="text-base md:text-lg font-bold text-gray-700 dark:text-gray-300 leading-tight tracking-wide">
                 Mart
               </span>
             </div>
@@ -206,7 +206,7 @@ const Header: React.FC<HeaderProps> = ({ logo = 'TMDT Logo', hideFAB = false }) 
             <AnimatePresence>
               {isSearchOpen && (searchResults.length > 0 || filteredCategories.length > 0) && (
                 <motion.div
-                  className="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg py-2 z-50 max-h-96 overflow-y-auto"
+                  className="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg dark:shadow-gray-900/30 py-2 z-50 max-h-96 overflow-y-auto"
                   variants={menuVariants}
                   initial="hidden"
                   animate="visible"
@@ -216,16 +216,16 @@ const Header: React.FC<HeaderProps> = ({ logo = 'TMDT Logo', hideFAB = false }) 
                   {searchResults.length > 0 && (
                     <>
                       <div className="px-3 py-1">
-                        <p className="text-xs text-gray-500 font-medium mb-2">Sản phẩm gợi ý</p>
+                        <p className="text-xs text-gray-500 dark:text-gray-400 font-medium mb-2">Sản phẩm gợi ý</p>
                       </div>
                       {searchResults.slice(0, 5).map((product, i) => (
                         <motion.button
                           key={product.id}
                           onClick={() => handleProductSuggestionClick(product.id)}
-                          className="w-full px-3 py-2 text-left text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-3 transition-colors"
+                          className="w-full px-3 py-2 text-left text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center gap-3 transition-colors"
                           custom={i}
                           variants={itemVariants}
-                          whileHover={{ backgroundColor: '#f3f4f6' }}
+                          whileHover={{ backgroundColor: '#f3f4f6' }} // Note: Inline style needs conditional handling for dark mode
                         >
                           {product.images && product.images[0] ? (
                             <img
@@ -234,13 +234,13 @@ const Header: React.FC<HeaderProps> = ({ logo = 'TMDT Logo', hideFAB = false }) 
                               className="w-8 h-8 rounded object-cover"
                             />
                           ) : (
-                            <div className="w-8 h-8 bg-gray-200 rounded" />
+                            <div className="w-8 h-8 bg-gray-200 dark:bg-gray-600 rounded" />
                           )}
                           <div className="flex-1 min-w-0">
-                            <p className="text-sm font-medium text-gray-900 truncate">
+                            <p className="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">
                               {product.name}
                             </p>
-                            <p className="text-xs text-gray-500">
+                            <p className="text-xs text-gray-500 dark:text-gray-400">
                               {product.price?.toLocaleString('vi-VN')} đ
                             </p>
                           </div>
@@ -252,20 +252,20 @@ const Header: React.FC<HeaderProps> = ({ logo = 'TMDT Logo', hideFAB = false }) 
                   {/* Categories Section */}
                   {filteredCategories.length > 0 && (
                     <>
-                      <div className="border-t border-gray-200 my-2" />
+                      <div className="border-t border-gray-200 dark:border-gray-700 my-2" />
                       <div className="px-3 py-1">
-                        <p className="text-xs text-gray-500 font-medium mb-2">Danh mục</p>
+                        <p className="text-xs text-gray-500 dark:text-gray-400 font-medium mb-2">Danh mục</p>
                       </div>
                       {filteredCategories.map((category, i) => (
                         <motion.button
                           key={category.id}
                           onClick={() => handleCategorySuggestionClick(category.id)}
-                          className="w-full px-3 py-2 text-left text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2 transition-colors"
+                          className="w-full px-3 py-2 text-left text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center gap-2 transition-colors"
                           custom={i}
                           variants={itemVariants}
-                          whileHover={{ backgroundColor: '#f3f4f6' }}
+                          whileHover={{ backgroundColor: '#f3f4f6' }} // Note: Inline style needs conditional handling for dark mode
                         >
-                          <Grid3x3 size={16} className="text-gray-400" />
+                          <Grid3x3 size={16} className="text-gray-400 dark:text-gray-500" />
                           <span>{category.name}</span>
                         </motion.button>
                       ))}
@@ -275,13 +275,13 @@ const Header: React.FC<HeaderProps> = ({ logo = 'TMDT Logo', hideFAB = false }) 
                   {/* Search All Button */}
                   {searchQuery.trim().length > 0 && (
                     <>
-                      <div className="border-t border-gray-200 my-2" />
+                      <div className="border-t border-gray-200 dark:border-gray-700 my-2" />
                       <motion.button
                         onClick={() => handleSearchSubmit()}
-                        className="w-full px-3 py-2 text-left text-sm font-medium text-gray-900 hover:bg-gray-100 flex items-center gap-2 transition-colors"
-                        whileHover={{ backgroundColor: '#f3f4f6' }}
+                        className="w-full px-3 py-2 text-left text-sm font-medium text-gray-900 dark:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center gap-2 transition-colors"
+                        whileHover={{ backgroundColor: '#f3f4f6' }} // Note: Inline style needs conditional handling for dark mode
                       >
-                        <Search size={16} className="text-gray-600" />
+                        <Search size={16} className="text-gray-600 dark:text-gray-400" />
                         <span>Tìm kiếm "{searchQuery}"</span>
                       </motion.button>
                     </>
@@ -301,7 +301,7 @@ const Header: React.FC<HeaderProps> = ({ logo = 'TMDT Logo', hideFAB = false }) 
               onMouseLeave={() => setIsCategoryMenuOpen(false)}
             >
               <motion.button
-                className="px-4 py-2 text-gray-700 hover:text-black flex items-center gap-2 rounded-lg hover:bg-gray-100"
+                className="px-4 py-2 text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white flex items-center gap-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.98 }}
                 onClick={() => setIsCategoryMenuOpen(!isCategoryMenuOpen)}
@@ -319,7 +319,7 @@ const Header: React.FC<HeaderProps> = ({ logo = 'TMDT Logo', hideFAB = false }) 
               <AnimatePresence>
                 {isCategoryMenuOpen && (
                   <motion.div
-                    className="fixed inset-x-0 top-20 bg-white border border-gray-200 rounded-lg shadow-2xl p-6 mx-0"
+                    className="fixed inset-x-0 top-20 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg shadow-2xl dark:shadow-gray-900/30 p-6 mx-0"
                     variants={menuVariants}
                     initial="hidden"
                     animate="visible"
@@ -334,17 +334,17 @@ const Header: React.FC<HeaderProps> = ({ logo = 'TMDT Logo', hideFAB = false }) 
                             className="flex flex-col items-start gap-2 p-3 rounded-lg w-full"
                           >
                             <motion.div 
-                              className="w-full h-32 bg-gray-200 rounded-lg"
+                              className="w-full h-32 bg-gray-200 dark:bg-gray-600 rounded-lg"
                               variants={skeletonVariants}
                               animate="loading"
                             />
                             <motion.div 
-                              className="w-full h-4 bg-gray-200 rounded"
+                              className="w-full h-4 bg-gray-200 dark:bg-gray-600 rounded"
                               variants={skeletonVariants}
                               animate="loading"
                             />
                             <motion.div 
-                              className="w-3/4 h-3 bg-gray-200 rounded"
+                              className="w-3/4 h-3 bg-gray-200 dark:bg-gray-600 rounded"
                               variants={skeletonVariants}
                               animate="loading"
                             />
@@ -363,10 +363,10 @@ const Header: React.FC<HeaderProps> = ({ logo = 'TMDT Logo', hideFAB = false }) 
                                 navigate(`/categories/${category.id}`);
                                 setIsCategoryMenuOpen(false);
                               }}
-                              className="flex flex-col items-start gap-2 p-3 rounded-lg w-full hover:bg-gray-50 group"
+                              className="flex flex-col items-start gap-2 p-3 rounded-lg w-full hover:bg-gray-50 dark:hover:bg-gray-800 group"
                               whileHover={{ x: 5 }}
                             >
-                              <div className="w-full h-32 bg-gray-200 rounded-lg overflow-hidden">
+                              <div className="w-full h-32 bg-gray-200 dark:bg-gray-600 rounded-lg overflow-hidden">
                                 {category.imageUrl ? (
                                   <img
                                     src={category.imageUrl}
@@ -375,18 +375,18 @@ const Header: React.FC<HeaderProps> = ({ logo = 'TMDT Logo', hideFAB = false }) 
                                   />
                                 ) : (
                                   <motion.div 
-                                    className="w-full h-full bg-gradient-to-r from-gray-300 via-gray-200 to-gray-300"
+                                    className="w-full h-full bg-gradient-to-r from-gray-300 via-gray-200 to-gray-300 dark:from-gray-600 dark:via-gray-500 dark:to-gray-600"
                                     variants={skeletonVariants}
                                     animate="loading"
                                   />
                                 )}
                               </div>
                               <div className="text-left w-full">
-                                <h3 className="font-medium text-gray-900 text-sm">
+                                <h3 className="font-medium text-gray-900 dark:text-gray-100 text-sm">
                                   {category.name}
                                 </h3>
                                 {category.description && (
-                                  <p className="text-xs text-gray-500 mt-1 line-clamp-2">
+                                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 line-clamp-2">
                                     {category.description}
                                   </p>
                                 )}
@@ -399,7 +399,7 @@ const Header: React.FC<HeaderProps> = ({ logo = 'TMDT Logo', hideFAB = false }) 
                     {/* Pagination Controls */}
                     {!isLoadingCategories && (categoryPagination.totalPages || 0) > 1 && (
                       <div 
-                        className="flex items-center justify-center gap-4 mt-6 pt-6 border-t border-gray-200"
+                        className="flex items-center justify-center gap-4 mt-6 pt-6 border-t border-gray-200 dark:border-gray-700"
                         onMouseEnter={() => setIsCategoryMenuOpen(true)}
                         onMouseLeave={() => setIsCategoryMenuOpen(true)}
                       >
@@ -411,7 +411,7 @@ const Header: React.FC<HeaderProps> = ({ logo = 'TMDT Logo', hideFAB = false }) 
                             setIsCategoryMenuOpen(true)
                           }}
                           disabled={(categoryPagination.page || 1) === 1}
-                          className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                          className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed"
                           whileHover={{ scale: 1.05 }}
                           whileTap={{ scale: 0.98 }}
                         >
@@ -431,8 +431,8 @@ const Header: React.FC<HeaderProps> = ({ logo = 'TMDT Logo', hideFAB = false }) 
                                 }}
                                 className={`w-8 h-8 rounded-lg font-medium text-sm transition-colors ${
                                   (categoryPagination.page || 1) === page
-                                    ? 'bg-black text-white'
-                                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                                    ? 'bg-black dark:bg-white text-white dark:text-black'
+                                    : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
                                 }`}
                                 whileHover={{ scale: 1.05 }}
                                 whileTap={{ scale: 0.98 }}
@@ -450,7 +450,7 @@ const Header: React.FC<HeaderProps> = ({ logo = 'TMDT Logo', hideFAB = false }) 
                             setIsCategoryMenuOpen(true)
                           }}
                           disabled={(categoryPagination.page || 1) === (categoryPagination.totalPages || 1)}
-                          className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                          className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed"
                           whileHover={{ scale: 1.05 }}
                           whileTap={{ scale: 0.98 }}
                         >
@@ -465,15 +465,15 @@ const Header: React.FC<HeaderProps> = ({ logo = 'TMDT Logo', hideFAB = false }) 
 
             {/* Wishlist Button */}
             <motion.button
-              className="relative p-2 hover:bg-gray-100 rounded-lg flex items-center gap-1"
+              className="relative p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg flex items-center gap-1"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.98 }}
               onClick={handleWishlistClick}
             >
-              <Heart size={20} className="text-gray-700" />
+              <Heart size={20} className="text-gray-700 dark:text-gray-300" />
               {computedWishlistCount > 0 && (
                 <motion.span
-                  className="absolute -top-1 -right-1 bg-gray-900 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-medium"
+                  className="absolute -top-1 -right-1 bg-gray-900 dark:bg-gray-100 text-white dark:text-black text-xs rounded-full w-5 h-5 flex items-center justify-center font-medium"
                   initial={{ scale: 0 }}
                   animate={{ scale: 1 }}
                   transition={{ type: 'spring', stiffness: 400, damping: 20 }}
@@ -481,20 +481,20 @@ const Header: React.FC<HeaderProps> = ({ logo = 'TMDT Logo', hideFAB = false }) 
                   {computedWishlistCount}
                 </motion.span>
               )}
-              <span className="text-xs text-gray-700">Yêu thích</span>
+              <span className="text-xs text-gray-700 dark:text-gray-300">Yêu thích</span>
             </motion.button>
 
             {/* Cart Button */}
             <motion.button
-              className="relative p-2 hover:bg-gray-100 rounded-lg flex items-center gap-1"
+              className="relative p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg flex items-center gap-1"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.98 }}
               onClick={handleCartClick}
             >
-              <ShoppingCart size={20} className="text-gray-700" />
+              <ShoppingCart size={20} className="text-gray-700 dark:text-gray-300" />
               {computedCartCount > 0 && (
                 <motion.span
-                  className="absolute -top-1 -right-1 bg-gray-900 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-medium"
+                  className="absolute -top-1 -right-1 bg-gray-900 dark:bg-gray-100 text-white dark:text-black text-xs rounded-full w-5 h-5 flex items-center justify-center font-medium"
                   initial={{ scale: 0 }}
                   animate={{ scale: 1 }}
                   transition={{ type: 'spring', stiffness: 400, damping: 20 }}
@@ -502,7 +502,7 @@ const Header: React.FC<HeaderProps> = ({ logo = 'TMDT Logo', hideFAB = false }) 
                   {computedCartCount}
                 </motion.span>
               )}
-              <span className="text-xs text-gray-700">Giỏ hàng</span>
+              <span className="text-xs text-gray-700 dark:text-gray-300">Giỏ hàng</span>
             </motion.button>
 
             {/* User Menu */}
@@ -513,20 +513,20 @@ const Header: React.FC<HeaderProps> = ({ logo = 'TMDT Logo', hideFAB = false }) 
                 onMouseLeave={() => setIsUserMenuOpen(false)}
             >
               <motion.button
-                className="p-2 hover:bg-gray-100 rounded-lg flex items-center gap-2"
+                className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg flex items-center gap-2"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.98 }}
                 onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
               >
-                <User size={20} className="text-gray-700" />
-                <span className="text-xs text-gray-700">
+                <User size={20} className="text-gray-700 dark:text-gray-300" />
+                <span className="text-xs text-gray-700 dark:text-gray-300">
                   {isLoggedIn ? 'Tài khoản' : 'Đăng nhập'}
                 </span>
                 <motion.div
                   animate={{ rotate: isUserMenuOpen ? 180 : 0 }}
                   transition={{ type: 'spring', stiffness: 400, damping: 20 }}
                 >
-                  <ChevronDown size={16} className="text-gray-700" />
+                  <ChevronDown size={16} className="text-gray-700 dark:text-gray-300" />
                 </motion.div>
               </motion.button>
 
@@ -534,7 +534,7 @@ const Header: React.FC<HeaderProps> = ({ logo = 'TMDT Logo', hideFAB = false }) 
               <AnimatePresence>
                 {isUserMenuOpen && (
                   <motion.div
-                    className="absolute right-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg py-2 min-w-48"
+                    className="absolute right-0 mt-2 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg dark:shadow-gray-900/30 py-2 min-w-48"
                     variants={menuVariants}
                     initial="hidden"
                     animate="visible"
@@ -544,15 +544,15 @@ const Header: React.FC<HeaderProps> = ({ logo = 'TMDT Logo', hideFAB = false }) 
                       <>
                         <motion.a
                           href="/login"
-                          className="w-full block text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2 no-underline"
-                          whileHover={{ paddingLeft: '24px', backgroundColor: '#f9fafb' }}
+                          className="w-full block text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 flex items-center gap-2 no-underline"
+                          whileHover={{ paddingLeft: '24px', backgroundColor: '#f9fafb' }} // Note: Inline style needs conditional handling for dark mode
                         >
                           Đăng nhập
                         </motion.a>
                         <motion.a
                           href="/register"
-                          className="w-full block text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2 no-underline"
-                          whileHover={{ paddingLeft: '24px', backgroundColor: '#f9fafb' }}
+                          className="w-full block text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 flex items-center gap-2 no-underline"
+                          whileHover={{ paddingLeft: '24px', backgroundColor: '#f9fafb' }} // Note: Inline style needs conditional handling for dark mode
                         >
                           Đăng ký
                         </motion.a>
@@ -564,8 +564,8 @@ const Header: React.FC<HeaderProps> = ({ logo = 'TMDT Logo', hideFAB = false }) 
                             navigate('/profile');
                             setIsUserMenuOpen(false);
                           }}
-                          className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2"
-                          whileHover={{ paddingLeft: '24px', backgroundColor: '#f9fafb' }}
+                          className="w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 flex items-center gap-2"
+                          whileHover={{ paddingLeft: '24px', backgroundColor: '#f9fafb' }} // Note: Inline style needs conditional handling for dark mode
                         >
                           <User size={16} />
                           Hồ sơ thể chất
@@ -575,8 +575,8 @@ const Header: React.FC<HeaderProps> = ({ logo = 'TMDT Logo', hideFAB = false }) 
                             navigate('/orders');
                             setIsUserMenuOpen(false);
                           }}
-                          className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2"
-                          whileHover={{ paddingLeft: '24px', backgroundColor: '#f9fafb' }}
+                          className="w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 flex items-center gap-2"
+                          whileHover={{ paddingLeft: '24px', backgroundColor: '#f9fafb' }} // Note: Inline style needs conditional handling for dark mode
                         >
                           <Package size={16} />
                           Đơn hàng của tôi
@@ -586,17 +586,17 @@ const Header: React.FC<HeaderProps> = ({ logo = 'TMDT Logo', hideFAB = false }) 
                             navigate('/setting');
                             setIsUserMenuOpen(false);
                           }}
-                          className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2"
-                          whileHover={{ paddingLeft: '24px', backgroundColor: '#f9fafb' }}
+                          className="w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 flex items-center gap-2"
+                          whileHover={{ paddingLeft: '24px', backgroundColor: '#f9fafb' }} // Note: Inline style needs conditional handling for dark mode
                         >
                           <Settings size={16} />
                           Cài đặt
                         </motion.button>
-                        <div className="border-t border-gray-200 my-2" />
+                        <div className="border-t border-gray-200 dark:border-gray-700 my-2" />
                         <motion.button
                           onClick={handleLogout}
-                          className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2"
-                          whileHover={{ paddingLeft: '24px', backgroundColor: '#f9fafb' }}
+                          className="w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 flex items-center gap-2"
+                          whileHover={{ paddingLeft: '24px', backgroundColor: '#f9fafb' }} // Note: Inline style needs conditional handling for dark mode
                         >
                           <LogOut size={16} />
                           Đăng xuất
@@ -614,7 +614,7 @@ const Header: React.FC<HeaderProps> = ({ logo = 'TMDT Logo', hideFAB = false }) 
       {/* Mobile Header */}
       <div className="md:hidden">
         {/* Top Row: Logo + Search */}
-        <div className="px-4 py-3 border-b border-gray-100">
+        <div className="px-4 py-3 border-b border-gray-100 dark:border-gray-800">
           <div className="flex items-center justify-between gap-2">
             {/* Logo */}
             <motion.a
@@ -630,10 +630,10 @@ const Header: React.FC<HeaderProps> = ({ logo = 'TMDT Logo', hideFAB = false }) 
                 className="h-9 w-auto"
               />
               <div className="flex flex-col">
-                <span className="text-xs font-bold text-black leading-tight tracking-wide">
+                <span className="text-xs font-bold text-black dark:text-white leading-tight tracking-wide">
                   Fitness
                 </span>
-                <span className="text-xs font-bold text-gray-700 leading-tight tracking-wide">
+                <span className="text-xs font-bold text-gray-700 dark:text-gray-300 leading-tight tracking-wide">
                   Mart
                 </span>
               </div>
@@ -662,7 +662,7 @@ const Header: React.FC<HeaderProps> = ({ logo = 'TMDT Logo', hideFAB = false }) 
               <AnimatePresence>
                 {isSearchOpen && (searchResults.length > 0 || filteredCategories.length > 0) && (
                   <motion.div
-                    className="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg py-2 z-50 max-h-64 overflow-y-auto"
+                    className="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg dark:shadow-gray-900/30 py-2 z-50 max-h-64 overflow-y-auto"
                     variants={menuVariants}
                     initial="hidden"
                     animate="visible"
@@ -672,16 +672,16 @@ const Header: React.FC<HeaderProps> = ({ logo = 'TMDT Logo', hideFAB = false }) 
                     {searchResults.length > 0 && (
                       <>
                         <div className="px-3 py-1">
-                          <p className="text-xs text-gray-500 font-medium mb-2">Sản phẩm</p>
+                          <p className="text-xs text-gray-500 dark:text-gray-400 font-medium mb-2">Sản phẩm</p>
                         </div>
                         {searchResults.slice(0, 5).map((product, i) => (
                           <motion.button
                             key={product.id}
                             onClick={() => handleProductSuggestionClick(product.id)}
-                            className="w-full px-3 py-2 text-left text-xs text-gray-700 hover:bg-gray-100 flex items-center gap-2 transition-colors"
+                            className="w-full px-3 py-2 text-left text-xs text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center gap-2 transition-colors"
                             custom={i}
                             variants={itemVariants}
-                            whileHover={{ backgroundColor: '#f3f4f6' }}
+                            whileHover={{ backgroundColor: '#f3f4f6' }} // Note: Inline style needs conditional handling for dark mode
                           >
                             {product.images && product.images[0] ? (
                               <img
@@ -690,7 +690,7 @@ const Header: React.FC<HeaderProps> = ({ logo = 'TMDT Logo', hideFAB = false }) 
                                 className="w-6 h-6 rounded object-cover flex-shrink-0"
                               />
                             ) : (
-                              <div className="w-6 h-6 bg-gray-200 rounded flex-shrink-0" />
+                              <div className="w-6 h-6 bg-gray-200 dark:bg-gray-600 rounded flex-shrink-0" />
                             )}
                             <span className="truncate">{product.name}</span>
                           </motion.button>
@@ -701,20 +701,20 @@ const Header: React.FC<HeaderProps> = ({ logo = 'TMDT Logo', hideFAB = false }) 
                     {/* Categories Section */}
                     {filteredCategories.length > 0 && (
                       <>
-                        <div className="border-t border-gray-200 my-2" />
+                        <div className="border-t border-gray-200 dark:border-gray-700 my-2" />
                         <div className="px-3 py-1">
-                          <p className="text-xs text-gray-500 font-medium mb-2">Danh mục</p>
+                          <p className="text-xs text-gray-500 dark:text-gray-400 font-medium mb-2">Danh mục</p>
                         </div>
                         {filteredCategories.slice(0, 5).map((category, i) => (
                           <motion.button
                             key={category.id}
                             onClick={() => handleCategorySuggestionClick(category.id)}
-                            className="w-full px-3 py-2 text-left text-xs text-gray-700 hover:bg-gray-100 flex items-center gap-2 transition-colors"
+                            className="w-full px-3 py-2 text-left text-xs text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center gap-2 transition-colors"
                             custom={i}
                             variants={itemVariants}
-                            whileHover={{ backgroundColor: '#f3f4f6' }}
+                            whileHover={{ backgroundColor: '#f3f4f6' }} // Note: Inline style needs conditional handling for dark mode
                           >
-                            <Grid3x3 size={14} className="text-gray-400" />
+                            <Grid3x3 size={14} className="text-gray-400 dark:text-gray-500" />
                             <span>{category.name}</span>
                           </motion.button>
                         ))}
@@ -724,13 +724,13 @@ const Header: React.FC<HeaderProps> = ({ logo = 'TMDT Logo', hideFAB = false }) 
                     {/* Search All Button */}
                     {searchQuery.trim().length > 0 && (
                       <>
-                        <div className="border-t border-gray-200 my-2" />
+                        <div className="border-t border-gray-200 dark:border-gray-700 my-2" />
                         <motion.button
                           onClick={() => handleSearchSubmit()}
-                          className="w-full px-3 py-2 text-left text-xs font-medium text-gray-900 hover:bg-gray-100 flex items-center gap-2 transition-colors"
-                          whileHover={{ backgroundColor: '#f3f4f6' }}
+                          className="w-full px-3 py-2 text-left text-xs font-medium text-gray-900 dark:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center gap-2 transition-colors"
+                          whileHover={{ backgroundColor: '#f3f4f6' }} // Note: Inline style needs conditional handling for dark mode
                         >
-                          <Search size={14} className="text-gray-600" />
+                          <Search size={14} className="text-gray-600 dark:text-gray-400" />
                           <span>Tìm kiếm "{searchQuery}"</span>
                         </motion.button>
                       </>
@@ -745,37 +745,37 @@ const Header: React.FC<HeaderProps> = ({ logo = 'TMDT Logo', hideFAB = false }) 
 
       {/* Mobile Navigation Bottom */}
       {!hideFAB && (
-      <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-lg">
+      <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700 shadow-lg dark:shadow-gray-900/30">
         {/* Bottom Row: Navigation Icons */}
         <div className="px-2 py-2 flex items-center justify-between">
           {/* Home Button */}
           <motion.a
             href="/"
-            className="flex-1 flex flex-col items-center gap-1 py-2 px-2 hover:bg-gray-50 rounded-lg no-underline"
+            className="flex-1 flex flex-col items-center gap-1 py-2 px-2 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg no-underline"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.98 }}
           >
-            <Home size={20} className="text-gray-700" />
-            <span className="text-xs text-gray-700 text-center">Trang chủ</span>
+            <Home size={20} className="text-gray-700 dark:text-gray-300" />
+            <span className="text-xs text-gray-700 dark:text-gray-300 text-center">Trang chủ</span>
           </motion.a>
 
           {/* Categories Button */}
           <div className="flex-1 relative" ref={categoryMenuRef}>
             <motion.button
-              className="w-full flex flex-col items-center gap-1 py-2 px-2 hover:bg-gray-50 rounded-lg"
+              className="w-full flex flex-col items-center gap-1 py-2 px-2 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.98 }}
               onClick={() => setIsCategoryMenuOpen(!isCategoryMenuOpen)}
             >
-              <Grid3x3 size={20} className="text-gray-700" />
-              <span className="text-xs text-gray-700 whitespace-nowrap">Danh mục</span>
+              <Grid3x3 size={20} className="text-gray-700 dark:text-gray-300" />
+              <span className="text-xs text-gray-700 dark:text-gray-300 whitespace-nowrap">Danh mục</span>
             </motion.button>
 
             {/* Category Mobile Menu */}
             <AnimatePresence>
               {isCategoryMenuOpen && (
                 <motion.div
-                  className="absolute left-0 top-0 -translate-y-full bg-white border border-gray-200 rounded-lg shadow-lg py-2 w-48 max-h-64 overflow-y-auto mb-2"
+                  className="absolute left-0 top-0 -translate-y-full bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg dark:shadow-gray-900/30 py-2 w-48 max-h-64 overflow-y-auto mb-2"
                   variants={menuVariants}
                   initial="hidden"
                   animate="visible"
@@ -789,12 +789,12 @@ const Header: React.FC<HeaderProps> = ({ logo = 'TMDT Logo', hideFAB = false }) 
                         className="w-full px-4 py-3 flex items-center gap-3"
                       >
                         <motion.div 
-                          className="w-10 h-10 bg-gray-200 rounded flex-shrink-0"
+                          className="w-10 h-10 bg-gray-200 dark:bg-gray-600 rounded flex-shrink-0"
                           variants={skeletonVariants}
                           animate="loading"
                         />
                         <motion.div 
-                          className="h-4 flex-1 bg-gray-200 rounded"
+                          className="h-4 flex-1 bg-gray-200 dark:bg-gray-600 rounded"
                           variants={skeletonVariants}
                           animate="loading"
                         />
@@ -809,12 +809,12 @@ const Header: React.FC<HeaderProps> = ({ logo = 'TMDT Logo', hideFAB = false }) 
                           navigate(`/categories/${category.id}`);
                           setIsCategoryMenuOpen(false);
                         }}
-                        className="w-full text-left px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-3"
+                        className="w-full text-left px-4 py-3 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 flex items-center gap-3"
                         variants={itemVariants}
                         custom={i}
-                        whileHover={{ paddingLeft: '24px', backgroundColor: '#f9fafb' }}
+                        whileHover={{ paddingLeft: '24px', backgroundColor: '#f9fafb' }} // Note: Inline style needs conditional handling for dark mode
                       >
-                        <div className="w-10 h-10 bg-gray-200 rounded flex-shrink-0 overflow-hidden">
+                        <div className="w-10 h-10 bg-gray-200 dark:bg-gray-600 rounded flex-shrink-0 overflow-hidden">
                           {category.imageUrl ? (
                             <img
                               src={category.imageUrl}
@@ -823,7 +823,7 @@ const Header: React.FC<HeaderProps> = ({ logo = 'TMDT Logo', hideFAB = false }) 
                             />
                           ) : (
                             <motion.div 
-                              className="w-full h-full bg-gradient-to-r from-gray-300 via-gray-200 to-gray-300"
+                              className="w-full h-full bg-gradient-to-r from-gray-300 via-gray-200 to-gray-300 dark:from-gray-600 dark:via-gray-500 dark:to-gray-600"
                               variants={skeletonVariants}
                               animate="loading"
                             />
@@ -836,7 +836,7 @@ const Header: React.FC<HeaderProps> = ({ logo = 'TMDT Logo', hideFAB = false }) 
                   {/* Mobile Pagination */}
                   {!isLoadingCategories && (categoryPagination.totalPages || 0) > 1 && (
                     <div 
-                      className="border-t border-gray-200 mt-2 pt-2 px-4 py-2 flex items-center justify-between"
+                      className="border-t border-gray-200 dark:border-gray-700 mt-2 pt-2 px-4 py-2 flex items-center justify-between"
                       onMouseEnter={() => setIsCategoryMenuOpen(true)}
                       onMouseLeave={() => setIsCategoryMenuOpen(true)}
                     >
@@ -848,13 +848,13 @@ const Header: React.FC<HeaderProps> = ({ logo = 'TMDT Logo', hideFAB = false }) 
                           setIsCategoryMenuOpen(true)
                         }}
                         disabled={(categoryPagination.page || 1) === 1}
-                        className="px-3 py-1 text-xs font-medium text-gray-700 bg-gray-100 rounded disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="px-3 py-1 text-xs font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 rounded disabled:opacity-50 disabled:cursor-not-allowed"
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.98 }}
                       >
                         ←
                       </motion.button>
-                      <span className="text-xs text-gray-600">
+                      <span className="text-xs text-gray-600 dark:text-gray-400">
                         {categoryPagination.page || 1} / {categoryPagination.totalPages || 1}
                       </span>
                       <motion.button
@@ -865,7 +865,7 @@ const Header: React.FC<HeaderProps> = ({ logo = 'TMDT Logo', hideFAB = false }) 
                           setIsCategoryMenuOpen(true)
                         }}
                         disabled={(categoryPagination.page || 1) === (categoryPagination.totalPages || 1)}
-                        className="px-3 py-1 text-xs font-medium text-gray-700 bg-gray-100 rounded disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="px-3 py-1 text-xs font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 rounded disabled:opacity-50 disabled:cursor-not-allowed"
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.98 }}
                       >
@@ -880,15 +880,15 @@ const Header: React.FC<HeaderProps> = ({ logo = 'TMDT Logo', hideFAB = false }) 
 
           {/* Wishlist Button */}
           <motion.button
-            className="flex-1 relative flex flex-col items-center gap-1 py-2 px-2 hover:bg-gray-50 rounded-lg"
+            className="flex-1 relative flex flex-col items-center gap-1 py-2 px-2 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.98 }}
             onClick={handleWishlistClick}
           >
-            <Heart size={20} className="text-gray-700" />
+            <Heart size={20} className="text-gray-700 dark:text-gray-300" />
             {computedWishlistCount > 0 && (
               <motion.span
-                className="absolute top-0 right-1 bg-gray-900 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center font-medium"
+                className="absolute top-0 right-1 bg-gray-900 dark:bg-gray-100 text-white dark:text-black text-xs rounded-full w-4 h-4 flex items-center justify-center font-medium"
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
                 transition={{ type: 'spring', stiffness: 400, damping: 20 }}
@@ -896,20 +896,20 @@ const Header: React.FC<HeaderProps> = ({ logo = 'TMDT Logo', hideFAB = false }) 
                 {computedWishlistCount}
               </motion.span>
             )}
-            <span className="text-xs text-gray-700">Yêu thích</span>
+            <span className="text-xs text-gray-700 dark:text-gray-300">Yêu thích</span>
           </motion.button>
 
           {/* Cart Button */}
           <motion.button
-            className="flex-1 relative flex flex-col items-center gap-1 py-2 px-2 hover:bg-gray-50 rounded-lg"
+            className="flex-1 relative flex flex-col items-center gap-1 py-2 px-2 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.98 }}
             onClick={handleCartClick}
           >
-            <ShoppingCart size={20} className="text-gray-700" />
+            <ShoppingCart size={20} className="text-gray-700 dark:text-gray-300" />
             {computedCartCount > 0 && (
               <motion.span
-                className="absolute top-0 right-1 bg-gray-900 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center font-medium"
+                className="absolute top-0 right-1 bg-gray-900 dark:bg-gray-100 text-white dark:text-black text-xs rounded-full w-4 h-4 flex items-center justify-center font-medium"
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
                 transition={{ type: 'spring', stiffness: 400, damping: 20 }}
@@ -917,28 +917,28 @@ const Header: React.FC<HeaderProps> = ({ logo = 'TMDT Logo', hideFAB = false }) 
                 {computedCartCount}
               </motion.span>
             )}
-            <span className="text-xs text-gray-700">Giỏ hàng</span>
+            <span className="text-xs text-gray-700 dark:text-gray-300">Giỏ hàng</span>
           </motion.button>
 
           {/* User Menu */}
           <div className="flex-1 relative" ref={userMenuRef}>
             <motion.button
-              className="w-full flex flex-col items-center gap-1 py-2 px-2 hover:bg-gray-50 rounded-lg"
+              className="w-full flex flex-col items-center gap-1 py-2 px-2 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.98 }}
               onClick={() => {
                 setIsUserMenuOpen(!isUserMenuOpen);
               }}
             >
-              <User size={20} className="text-gray-700" />
-              <span className="text-xs text-gray-700">{isLoggedIn ? "Tài khoản" : "Đăng nhập"}</span>
+              <User size={20} className="text-gray-700 dark:text-gray-300" />
+              <span className="text-xs text-gray-700 dark:text-gray-300">{isLoggedIn ? "Tài khoản" : "Đăng nhập"}</span>
             </motion.button>
 
             {/* User Menu Dropdown */}
             <AnimatePresence>
               {isUserMenuOpen && (
                 <motion.div
-                  className="absolute right-0 bottom-16 bg-white border border-gray-200 rounded-lg shadow-lg py-2 min-w-40"
+                  className="absolute right-0 bottom-16 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg dark:shadow-gray-900/30 py-2 min-w-40"
                   variants={menuVariants}
                   initial="hidden"
                   animate="visible"
@@ -948,15 +948,15 @@ const Header: React.FC<HeaderProps> = ({ logo = 'TMDT Logo', hideFAB = false }) 
                     <>
                       <motion.a
                         href="/login"
-                        className="w-full block text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 no-underline"
-                        whileHover={{ paddingLeft: '24px', backgroundColor: '#f9fafb' }}
+                        className="w-full block text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 no-underline"
+                        whileHover={{ paddingLeft: '24px', backgroundColor: '#f9fafb' }} // Note: Inline style needs conditional handling for dark mode
                       >
                         Đăng nhập
                       </motion.a>
                       <motion.a
                         href="/register"
-                        className="w-full block text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 no-underline"
-                        whileHover={{ paddingLeft: '24px', backgroundColor: '#f9fafb' }}
+                        className="w-full block text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 no-underline"
+                        whileHover={{ paddingLeft: '24px', backgroundColor: '#f9fafb' }} // Note: Inline style needs conditional handling for dark mode
                       >
                         Đăng ký
                       </motion.a>
@@ -968,8 +968,8 @@ const Header: React.FC<HeaderProps> = ({ logo = 'TMDT Logo', hideFAB = false }) 
                           navigate('/profile');
                           setIsUserMenuOpen(false);
                         }}
-                        className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
-                        whileHover={{ paddingLeft: '24px', backgroundColor: '#f9fafb' }}
+                        className="w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800"
+                        whileHover={{ paddingLeft: '24px', backgroundColor: '#f9fafb' }} // Note: Inline style needs conditional handling for dark mode
                       >
                         Hồ sơ thể chất
                       </motion.button>
@@ -978,8 +978,8 @@ const Header: React.FC<HeaderProps> = ({ logo = 'TMDT Logo', hideFAB = false }) 
                           navigate('/orders');
                           setIsUserMenuOpen(false);
                         }}
-                        className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2"
-                        whileHover={{ paddingLeft: '24px', backgroundColor: '#f9fafb' }}
+                        className="w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 flex items-center gap-2"
+                        whileHover={{ paddingLeft: '24px', backgroundColor: '#f9fafb' }} // Note: Inline style needs conditional handling for dark mode
                       >
                         Đơn hàng của tôi
                       </motion.button>
@@ -988,16 +988,16 @@ const Header: React.FC<HeaderProps> = ({ logo = 'TMDT Logo', hideFAB = false }) 
                           navigate('/setting');
                           setIsUserMenuOpen(false);
                         }}
-                        className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
-                        whileHover={{ paddingLeft: '24px', backgroundColor: '#f9fafb' }}
+                        className="w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800"
+                        whileHover={{ paddingLeft: '24px', backgroundColor: '#f9fafb' }} // Note: Inline style needs conditional handling for dark mode
                       >
                         Cài đặt
                       </motion.button>
-                      <div className="border-t border-gray-200 my-2" />
+                      <div className="border-t border-gray-200 dark:border-gray-700 my-2" />
                       <motion.button
                         onClick={handleLogout}
-                        className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
-                        whileHover={{ paddingLeft: '24px', backgroundColor: '#f9fafb' }}
+                        className="w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800"
+                        whileHover={{ paddingLeft: '24px', backgroundColor: '#f9fafb' }} // Note: Inline style needs conditional handling for dark mode
                       >
                         Đăng xuất
                       </motion.button>
