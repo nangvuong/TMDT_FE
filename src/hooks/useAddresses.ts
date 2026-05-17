@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import type { Address, CreateAddressDto, UpdateAddressDto } from '../types';
 import { addressService } from '../services';
 import { useIsLoggedIn } from './useAuth';
@@ -36,6 +36,10 @@ export const useAddresses = (): UseAddressesReturn => {
   const [error, setError] = useState<string | null>(null);
   const [selectedAddressId, setSelectedAddressId] = useState<string | null>(null);
 
+  // Ref to read selectedAddressId inside fetchAddresses without making it a reactive dep
+  const selectedAddressIdRef = useRef(selectedAddressId);
+  selectedAddressIdRef.current = selectedAddressId;
+
   // Get default address from addresses list - safe check with optional chaining
   const defaultAddress = addresses && addresses.length > 0 
     ? addresses.find((addr) => addr.isDefault) || null 
@@ -44,7 +48,7 @@ export const useAddresses = (): UseAddressesReturn => {
   /**
    * Fetch all addresses for current user
    */
-  const fetchAddresses = async (): Promise<void> => {
+  const fetchAddresses = useCallback(async (): Promise<void> => {
     setLoading(true);
     setError(null);
     try {
@@ -59,7 +63,7 @@ export const useAddresses = (): UseAddressesReturn => {
       setAddresses(data);
       
       // Auto-select default address if not already selected
-      if (!selectedAddressId && data.length > 0) {
+      if (!selectedAddressIdRef.current && data.length > 0) {
         const defaultAddr = data.find((addr) => addr.isDefault);
         if (defaultAddr) {
           setSelectedAddressId(defaultAddr.id);
@@ -76,7 +80,7 @@ export const useAddresses = (): UseAddressesReturn => {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   /**
    * Get a specific address by ID
@@ -236,7 +240,7 @@ export const useAddresses = (): UseAddressesReturn => {
       setSelectedAddressId(null);
       setError(null);
     }
-  }, [isLoggedIn]);
+  }, [isLoggedIn, fetchAddresses]);
 
   return {
     addresses,

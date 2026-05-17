@@ -43,7 +43,7 @@ const Detail: React.FC = () => {
       }
     };
     fetchOrder();
-  }, [orderId]);
+  }, [orderId, getOrderById]);
 
   if (loading) {
     return (

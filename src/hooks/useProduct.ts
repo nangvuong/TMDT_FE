@@ -26,22 +26,8 @@ export const useProducts = (initialParams?: GetProductsParams) => {
     try {
       setIsLoading(true);
       setError(null);
-      
-      // Try to get from cache first
-      const cacheKey = `products_${JSON.stringify(fetchParams)}`;
-      const cachedProducts = cacheManager.get<any>(cacheKey);
-      if (cachedProducts) {
-        setProducts(cachedProducts.data || []);
-        setPagination({
-          page: cachedProducts.page || 1,
-          limit: cachedProducts.limit || 10,
-          total: cachedProducts.total || 0,
-        });
-        setIsLoading(false);
-        return;
-      }
 
-      // If no cache, fetch from API
+      // Fetch from API
       const response = await productService.getAll(fetchParams);
       setProducts(response.data || []);
       setPagination({
@@ -49,8 +35,6 @@ export const useProducts = (initialParams?: GetProductsParams) => {
         limit: response.limit || 10,
         total: response.total || 0,
       });
-      // Cache the result for 5 minutes
-      cacheManager.set(cacheKey, response, 5 * 60 * 1000);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to fetch products');
       setProducts([]);
@@ -247,27 +231,7 @@ export const useCategories = (initialParams?: GetCategoryParams) => {
   const [params, setParams] = useState<GetCategoryParams>(initialParams || {});
   const isFetchingRef = useRef(false); // Prevent duplicate concurrent requests
 
-  const fetchCategories = useCallback(async (fetchParams = params, useCache = true) => {
-    const cacheKey = generateCategoriesCacheKey(
-      fetchParams.page || 1,
-      fetchParams.limit || 10
-    );
-
-    // Check cache first if caching is enabled
-    if (useCache) {
-      const cachedData = cacheManager.get<{
-        data: Category[];
-        pagination: { page: number; limit: number; totalItems: number; totalPages: number };
-      }>(cacheKey);
-
-      if (cachedData) {
-        setCategories(cachedData.data);
-        setPagination(cachedData.pagination);
-        setIsLoading(false);
-        return;
-      }
-    }
-
+  const fetchCategories = useCallback(async (fetchParams = params, useCache = false) => {
     // Prevent duplicate concurrent requests
     if (isFetchingRef.current) {
       return;
@@ -289,18 +253,6 @@ export const useCategories = (initialParams?: GetCategoryParams) => {
 
       setCategories(newCategories);
       setPagination(newPagination);
-
-      // Cache the result (5 minutes TTL)
-      if (useCache) {
-        cacheManager.set(
-          cacheKey,
-          {
-            data: newCategories,
-            pagination: newPagination,
-          },
-          5 * 60 * 1000 // 5 minutes
-        );
-      }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to fetch categories');
       setCategories([]);

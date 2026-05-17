@@ -194,7 +194,8 @@ const Cart: React.FC = () => {
 
     try {
       for (const itemId of selectedItems) {
-        await addToWishlist(itemId);
+        const cartItem = cartItems.find((i) => i.id === itemId);
+        if (cartItem) await addToWishlist(cartItem.productId);
       }
       alert.showSuccess('Thành công', `Đã lưu ${selectedItems.size} sản phẩm vào danh sách yêu thích`);
       setSelectedItems(new Set());

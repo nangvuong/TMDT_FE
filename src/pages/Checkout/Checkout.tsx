@@ -108,7 +108,7 @@ const Checkout: React.FC = () => {
   // Fetch addresses
   useEffect(() => {
     fetchAddresses();
-  }, []);
+  }, [fetchAddresses]);
 
   // Auto-select first address
   useEffect(() => {

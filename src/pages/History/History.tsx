@@ -22,7 +22,7 @@ const History: React.FC = () => {
 
   useEffect(() => {
     fetchMyOrders(1, limit);
-  }, []);
+  }, [fetchMyOrders]);
 
   const handlePageChange = (page: number) => {
     fetchMyOrders(page, limit);

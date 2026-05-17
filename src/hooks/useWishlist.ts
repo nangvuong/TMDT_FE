@@ -72,7 +72,7 @@ export const useWishlist = (initialParams?: GetWishlistParams) => {
     if (isLoggedIn) {
       fetchWishlist();
     }
-  }, [isLoggedIn]);
+  }, [isLoggedIn, fetchWishlist]);
 
   /**
    * Add product to wishlist and refetch

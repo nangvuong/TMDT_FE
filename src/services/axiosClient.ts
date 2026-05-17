@@ -15,17 +15,19 @@ const axiosClient: AxiosInstance = axios.create({
 axiosClient.interceptors.request.use(
   (config) => {
     const token = getToken();
-    console.log('[AxiosClient Request]', {
-      url: config.url,
-      tokenExists: !!token,
-      tokenLength: token?.length || 0,
-    });
+    if (import.meta.env.DEV) {
+      console.log('[AxiosClient Request]', {
+        url: config.url,
+        tokenExists: !!token,
+        tokenLength: token?.length || 0,
+      });
+    }
     
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
-      console.log('[AxiosClient] ✓ Token attached');
+      if (import.meta.env.DEV) console.log('[AxiosClient] ✓ Token attached');
     } else {
-      console.warn('[AxiosClient] ⚠ No token - request will likely fail with 401');
+      if (import.meta.env.DEV) console.warn('[AxiosClient] ⚠ No token - request will likely fail with 401');
     }
     return config;
   },
@@ -39,12 +41,14 @@ axiosClient.interceptors.response.use(
     const status = error.response?.status;
     const message = error.response?.data?.message || error.message;
     
-    console.error('[AxiosClient Response Error]', {
-      status,
-      message,
-      url: error.config?.url,
-      authHeader: error.config?.headers?.Authorization ? 'YES' : 'NO',
-    });
+    if (import.meta.env.DEV) {
+      console.error('[AxiosClient Response Error]', {
+        status,
+        message,
+        url: error.config?.url,
+        authHeader: error.config?.headers?.Authorization ? 'YES' : 'NO',
+      });
+    }
 
     // Handle 401 - Unauthorized (token expired or invalid)
     if (status === 401) {

@@ -159,6 +159,7 @@ export const useCart = () => {
     try {
       await cartService.clearCart();
       setCart(null);
+      cacheManager.clear('cart');
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to clear cart';
       setError(errorMessage);

@@ -49,8 +49,15 @@ export const getToken = (): string | null => {
     return cookieToken;
   }
   
-  // Fallback to old key (authToken)
-  return localStorage.getItem('authToken');
+  // Fallback to old key (authToken) and migrate it
+  const legacyToken = localStorage.getItem('authToken');
+  if (legacyToken) {
+    localStorage.setItem('accessToken', legacyToken);
+    localStorage.removeItem('authToken');
+    return legacyToken;
+  }
+
+  return null;
 };
 
 export const setToken = (token: string, rememberMe: boolean = false): void => {
@@ -72,7 +79,15 @@ export const removeToken = (): void => {
 
 export const isTokenValid = (): boolean => {
   const token = getToken();
-  return !!token;
+  if (!token) return false;
+  const payload = decodeToken(token);
+  if (!payload) return false;
+  // Check expiry: exp is in seconds
+  if (payload.exp && Date.now() / 1000 > payload.exp) {
+    removeToken();
+    return false;
+  }
+  return true;
 };
 
 export const decodeToken = (token: string): any => {

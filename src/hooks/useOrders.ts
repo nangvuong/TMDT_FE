@@ -70,9 +70,8 @@ export const useOrders = () => {
     try {
       const order = await orderService.checkout(payload);
       
-      // Clear orders cache after successful checkout so latest order shows up
-      cacheManager.clear('orders_list_1_10');
-      cacheManager.clear('orders_list_1_20');
+      // Clear all orders cache after successful checkout so latest order shows up
+      cacheManager.clearAll();
       
       return order;
     } catch (err) {

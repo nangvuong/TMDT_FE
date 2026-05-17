@@ -113,7 +113,7 @@ const Register: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900 flex items-center justify-center">
       {/* Home Button */}
       <motion.button
         onClick={() => navigate('/')}
@@ -136,7 +136,7 @@ const Register: React.FC = () => {
             animate="visible"
           >
             <motion.div variants={itemVariants}>
-              <h1 className="text-3xl font-bold text-gray-900 mb-1">
+              <h1 className="text-3xl font-bold rgb(232 234 238) mb-1">
                 Tạo tài khoản mới
               </h1>
               <p className="text-base text-gray-600">
@@ -344,7 +344,7 @@ const Register: React.FC = () => {
             animate="visible"
           >
             <motion.div variants={itemVariants}>
-              <h1 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-2">
+              <h1 className="text-4xl sm:text-5xl font-bold rgb(235 236 238) mb-2">
                 Tạo tài khoản mới
               </h1>
               <p className="text-lg text-gray-600">

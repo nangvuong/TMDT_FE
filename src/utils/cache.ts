@@ -22,17 +22,7 @@ class CacheManager {
       timestamp: Date.now(),
       ttl,
     });
-    // Also persist to localStorage for persistence across page reloads
-    try {
-      localStorage.setItem(`cache_${key}`, JSON.stringify({
-        data,
-        timestamp: Date.now(),
-        ttl,
-      }));
-    } catch (e) {
-      // localStorage might be unavailable in some scenarios
-      console.warn('Failed to persist cache to localStorage:', e);
-    }
+    // Disabled localStorage caching to prevent stale data across reloads
     // Notify all listeners for this key
     this.notifyListeners(key, data);
   }
@@ -84,25 +74,7 @@ class CacheManager {
       }
     }
 
-    // Try localStorage as fallback
-    try {
-      const stored = localStorage.getItem(`cache_${key}`);
-      if (stored) {
-        const entry = JSON.parse(stored) as CacheEntry<T>;
-        const isValid = Date.now() - entry.timestamp < entry.ttl;
-        if (isValid) {
-          // Restore to memory cache
-          this.cache.set(key, entry);
-          return entry.data as T;
-        } else {
-          // Entry expired, remove from storage
-          localStorage.removeItem(`cache_${key}`);
-        }
-      }
-    } catch (e) {
-      console.warn('Failed to retrieve cache from localStorage:', e);
-    }
-
+    // Try localStorage as fallback (Disabled)
     return null;
   }
 

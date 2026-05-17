@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Check, Copy, AlertCircle, Clock, ArrowLeft } from 'lucide-react';
@@ -63,16 +63,7 @@ const Payment: React.FC = () => {
   }, [paymentState, navigate]);
 
   // Auto create payment transaction on mount
-  useEffect(() => {
-    if (paymentState?.orderId && !paymentData) {
-      handleCreatePayment();
-    }
-  }, [paymentState?.orderId]);
-
-  /**
-   * Create payment transaction for bank transfer
-   */
-  const handleCreatePayment = async () => {
+  const handleCreatePayment = useCallback(async () => {
     if (!paymentState?.orderId) return;
 
     try {
@@ -89,7 +80,13 @@ const Payment: React.FC = () => {
       console.error('Payment error:', error);
       alert.showError('Lỗi', 'Tạo QR code thanh toán thất bại');
     }
-  };
+  }, [paymentState?.orderId, createTransaction, alert]);
+
+  useEffect(() => {
+    if (paymentState?.orderId && !paymentData) {
+      handleCreatePayment();
+    }
+  }, [paymentState?.orderId, handleCreatePayment]);
 
   /**
    * Check payment status (manual)
