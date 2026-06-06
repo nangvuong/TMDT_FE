@@ -35,12 +35,6 @@ const Cart: React.FC = () => {
 
   const { addToWishlist } = useWishlist();
 
-  // Redirect to login if not logged in
-  useEffect(() => {
-    if (!isLoggedIn) {
-      navigate('/login', { replace: true });
-    }
-  }, [isLoggedIn, navigate]);
 
   const [quantities, setQuantities] = useState<Record<string, number>>({});
   const [couponCode, setCouponCode] = useState('');
@@ -92,8 +86,6 @@ const Cart: React.FC = () => {
 
     return () => observer.disconnect();
   }, []);
-
-
 
   const handleQuantityInputChange = (itemId: string, newQuantity: number) => {
     if (newQuantity > 0) {

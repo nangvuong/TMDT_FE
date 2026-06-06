@@ -75,15 +75,15 @@ const ProductCard: React.FC<ProductCardProps> = ({
   };
 
   const handleAddToCart = async () => {
-    // Check if user is logged in
-    if (!isLoggedIn) {
-      navigate('/login', { state: { returnTo: window.location.pathname } });
-      return;
-    }
-
     try {
       setIsAddingToCart(true);
-      await addItem(id, 1);
+      await addItem(id, 1, {
+        id,
+        name,
+        price,
+        images: image ? [image] : [],
+        stock,
+      });
       
       // Show success feedback
       setAddedSuccess(true);

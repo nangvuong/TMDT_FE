@@ -15,6 +15,7 @@ interface PaymentState {
   orderId: string;
   amount: number;
   paymentMethod: 'bank_transfer' | 'cod';
+  isGuest?: boolean;
 }
 
 /**
@@ -38,12 +39,6 @@ const Payment: React.FC = () => {
   const [isImageLoading, setIsImageLoading] = useState(true);
   const [imageError, setImageError] = useState(false);
 
-  // Redirect if not logged in
-  useEffect(() => {
-    if (!isLoggedIn) {
-      navigate('/login', { replace: true });
-    }
-  }, [isLoggedIn, navigate]);
 
   // Get payment state from location
   useEffect(() => {
@@ -101,7 +96,12 @@ const Payment: React.FC = () => {
         setPaymentStatus('completed');
         alert.showSuccess('Thành công', 'Thanh toán đã được xác nhận!');
         setTimeout(() => {
-          navigate(`/orders/${paymentState?.orderId}`, { replace: true });
+          if (paymentState?.isGuest) {
+            navigate('/', { replace: true });
+            alert.showSuccess('Đặt hàng thành công', 'Cảm ơn bạn! Email xác nhận đơn hàng đã được gửi.');
+          } else {
+            navigate(`/orders/${paymentState?.orderId}`, { replace: true });
+          }
         }, 2000);
       } else if (result.status === 'EXPIRED') {
         setPaymentStatus('expired');

@@ -1,6 +1,7 @@
 import { useState, useCallback, useEffect } from 'react';
 import type { Cart } from '../types/product';
 import cartService, { type AddToCartPayload } from '../services/cartService';
+import * as guestCartService from '../services/guestCartService';
 import { useIsLoggedIn } from './useAuth';
 import { useCountersContext } from '../contexts/CountersContext';
 import { cacheManager } from '../utils/cache';
@@ -26,14 +27,16 @@ export const useCart = () => {
   useEffect(() => {
     const count = getCartCount();
     setCartCount(count);
-  }, [cart, setCartCount]);
+  }, [cart, setCartCount, getCartCount]);
 
   /**
    * Fetch user's cart (GET /cart) with caching
    */
   const fetchCart = useCallback(async () => {
     if (!isLoggedIn) {
-      setCart(null);
+      const guestCart = guestCartService.getGuestCart();
+      // Cast GuestCart to Cart format
+      setCart({ items: guestCart.items } as unknown as Cart);
       return;
     }
 
@@ -61,34 +64,62 @@ export const useCart = () => {
   }, [isLoggedIn]);
 
   /**
-   * Auto-fetch cart on mount when logged in
+   * Merge guest cart into user cart upon login
    */
   useEffect(() => {
     if (isLoggedIn) {
-      fetchCart();
+      const guestCart = guestCartService.getGuestCart();
+      if (guestCart.items.length > 0) {
+        const mergeGuestItems = async () => {
+          for (const item of guestCart.items) {
+            try {
+              await cartService.addToCart({ productId: item.productId, quantity: item.quantity });
+            } catch (e) {
+              // Ignore individual item errors during merge
+              console.error('Error merging guest cart item:', e);
+            }
+          }
+          guestCartService.clearGuestCart();
+          fetchCart();
+        };
+        mergeGuestItems();
+      }
     }
   }, [isLoggedIn, fetchCart]);
+
+  /**
+   * Auto-fetch cart on mount and when isLoggedIn changes
+   */
+  useEffect(() => {
+    fetchCart();
+  }, [fetchCart]);
 
   /**
    * Add product to cart (POST /cart/items)
    * API returns the complete updated cart with all items
    */
   const addToCart = useCallback(
-    async (payload: AddToCartPayload) => {
+    async (payload: AddToCartPayload, productDetails?: any) => {
+      setError(null);
+
       if (!isLoggedIn) {
-        setError('Please log in to add items to cart');
-        throw new Error('User not logged in');
+        const updatedGuestCart = guestCartService.addToGuestCart(
+          payload.productId,
+          payload.quantity,
+          productDetails
+        );
+        setCart({ items: updatedGuestCart.items } as unknown as Cart);
+        return { items: updatedGuestCart.items } as unknown as Cart;
       }
 
-      setError(null);
       try {
         // API returns the entire updated cart, not just the new item
         const updatedCart = await cartService.addToCart(payload);
-        
+
         // Update state and cache with the complete cart from API response
         setCart(updatedCart);
         cacheManager.set('cart', updatedCart, 5 * 60 * 1000);
-        
+
         // Return the updated cart
         return updatedCart;
       } catch (err) {
@@ -104,8 +135,8 @@ export const useCart = () => {
    * Add to cart with separate parameters (convenience method)
    */
   const addItem = useCallback(
-    async (productId: string, quantity: number) => {
-      return addToCart({ productId, quantity });
+    async (productId: string, quantity: number, productDetails?: any) => {
+      return addToCart({ productId, quantity }, productDetails);
     },
     [addToCart]
   );
@@ -116,16 +147,18 @@ export const useCart = () => {
    */
   const removeFromCart = useCallback(
     async (itemId: string) => {
+      setError(null);
+
       if (!isLoggedIn) {
-        setError('Please log in to remove items from cart');
-        throw new Error('User not logged in');
+        const updatedGuestCart = guestCartService.removeFromGuestCart(itemId);
+        setCart({ items: updatedGuestCart.items } as unknown as Cart);
+        return;
       }
 
-      setError(null);
       try {
         // API returns the entire updated cart after removal
         const updatedCart = await cartService.removeFromCart(itemId);
-        
+
         // Update state and cache with the complete cart from API response
         setCart(updatedCart);
         cacheManager.set('cart', updatedCart, 5 * 60 * 1000);
@@ -150,12 +183,14 @@ export const useCart = () => {
    * Clear entire cart (DELETE /cart)
    */
   const clearCart = useCallback(async () => {
+    setError(null);
+
     if (!isLoggedIn) {
-      setError('Please log in to clear cart');
-      throw new Error('User not logged in');
+      guestCartService.clearGuestCart();
+      setCart(null);
+      return;
     }
 
-    setError(null);
     try {
       await cartService.clearCart();
       setCart(null);
@@ -173,8 +208,8 @@ export const useCart = () => {
   const getTotalPrice = useCallback((): number => {
     if (!cart || !cart.items) return 0;
     return cart.items.reduce((total, item) => {
-      const price = typeof item.product?.price === 'string' 
-        ? parseFloat(item.product.price) 
+      const price = typeof item.product?.price === 'string'
+        ? parseFloat(item.product.price)
         : (item.product?.price || 0);
       return total + price * (item.quantity || 1);
     }, 0);

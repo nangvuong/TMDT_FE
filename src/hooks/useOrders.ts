@@ -69,14 +69,36 @@ export const useOrders = () => {
     setError(null);
     try {
       const order = await orderService.checkout(payload);
-      
+
       // Clear all orders cache after successful checkout so latest order shows up
       cacheManager.clearAll();
-      
+
       return order;
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to checkout');
       return null;
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  const guestCheckout = useCallback(async (data: {
+    guestName: string;
+    guestEmail: string;
+    guestPhone: string;
+    guestShippingAddress: string;
+    items: { productId: string; quantity: number }[];
+    couponCode?: string;
+    notes?: string;
+  }) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await orderService.guestCheckoutApi(data);
+      return response;
+    } catch (err: any) {
+      setError(err?.response?.data?.message || 'Guest checkout failed');
+      throw err;
     } finally {
       setLoading(false);
     }
@@ -100,6 +122,7 @@ export const useOrders = () => {
     fetchMyOrders,
     getOrderById,
     checkout,
+    guestCheckout,
     clearOrdersCache,
     clearOrderCache,
   };

@@ -95,6 +95,17 @@ const orderService = {
   checkout: (data: CheckoutPayload) =>
     axiosClient.post<any, Order>(ORDERS_ENDPOINTS.CHECKOUT, data),
 
+  // Guest Checkout
+  guestCheckoutApi: (data: {
+    guestName: string;
+    guestEmail: string;
+    guestPhone: string;
+    guestShippingAddress: string;
+    items: { productId: string; quantity: number }[];
+    couponCode?: string;
+    notes?: string;
+  }) => axiosClient.post('/orders/guest-checkout', data),
+
   // Get user's orders (Authenticated 🔒)
   getMyOrders: (params?: GetOrdersParams) =>
     axiosClient.get<any, { data: Order[]; meta: { page: number; limit: number; totalItems: number; totalPages: number } }>(

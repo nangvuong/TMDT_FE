@@ -39,7 +39,7 @@ const Checkout: React.FC = () => {
 
   // Cart & Order
   const { cartItems, removeItem } = useCart();
-  const { checkout, error: orderError } = useOrders();
+  const { checkout, guestCheckout, error: orderError } = useOrders();
 
   // Addresses
   const { addresses, fetchAddresses, loading: addressLoading, createAddress, deleteAddress } = useAddresses();
@@ -48,6 +48,11 @@ const Checkout: React.FC = () => {
   const [selectedAddressId, setSelectedAddressId] = useState<string>('');
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('bank_transfer');
   const [notes, setNotes] = useState('');
+  // Guest info state (chỉ dùng khi !isLoggedIn)
+  const [guestName, setGuestName] = useState('');
+  const [guestEmail, setGuestEmail] = useState('');
+  const [guestPhone, setGuestPhone] = useState('');
+  const [guestShippingAddress, setGuestShippingAddress] = useState('');
   const [couponCode, setCouponCode] = useState('');
   const [isProcessing, setIsProcessing] = useState(false);
   
@@ -98,12 +103,6 @@ const Checkout: React.FC = () => {
 
 
 
-  // Redirect if not logged in
-  useEffect(() => {
-    if (!isLoggedIn) {
-      navigate('/login', { replace: true });
-    }
-  }, [isLoggedIn, navigate]);
 
   // Fetch addresses
   useEffect(() => {
@@ -201,34 +200,85 @@ const Checkout: React.FC = () => {
   /**
    * Create order from cart
    */
-  const handleCreateOrder = async () => {
-    if (!selectedAddressId) {
-      alert.showWarning('Thông báo', 'Vui lòng chọn địa chỉ giao hàng');
-      return;
+  const validateGuestForm = (): boolean => {
+    if (!guestName.trim()) {
+      alert.showError('Lỗi', 'Vui lòng nhập họ tên');
+      return false;
     }
+    if (!guestEmail.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(guestEmail)) {
+      alert.showError('Lỗi', 'Vui lòng nhập email hợp lệ');
+      return false;
+    }
+    if (!guestPhone.trim() || !/^[0-9]{9,11}$/.test(guestPhone.replace(/\s/g, ''))) {
+      alert.showError('Lỗi', 'Vui lòng nhập số điện thoại hợp lệ');
+      return false;
+    }
+    if (!guestShippingAddress.trim()) {
+      alert.showError('Lỗi', 'Vui lòng nhập địa chỉ giao hàng');
+      return false;
+    }
+    return true;
+  };
 
+  const handleCreateOrder = async () => {
     setIsProcessing(true);
     try {
-      const order = await checkout({
-        shippingAddress: selectedAddressId,
-        couponCode: coupon?.code || undefined,
-        notes: notes || undefined,
-      });
+      let order: any;
+
+      if (isLoggedIn) {
+        // User đã đăng nhập — logic cũ
+        if (!selectedAddressId) {
+          alert.showWarning('Thông báo', 'Vui lòng chọn địa chỉ giao hàng');
+          setIsProcessing(false);
+          return;
+        }
+        order = await checkout({
+          shippingAddress: selectedAddressId,
+          couponCode: coupon?.code || undefined,
+          notes: notes || undefined,
+        });
+      } else {
+        // Guest — dùng guest checkout
+        if (!validateGuestForm()) {
+          setIsProcessing(false);
+          return;
+        }
+        if (cartItems.length === 0) {
+          alert.showWarning('Thông báo', 'Giỏ hàng trống');
+          setIsProcessing(false);
+          return;
+        }
+        order = await guestCheckout({
+          guestName: guestName.trim(),
+          guestEmail: guestEmail.trim(),
+          guestPhone: guestPhone.trim(),
+          guestShippingAddress: guestShippingAddress.trim(),
+          items: cartItems.map((item) => ({
+            productId: item.productId,
+            quantity: item.quantity || 1,
+          })),
+          couponCode: coupon?.code || undefined,
+          notes: notes || undefined,
+        });
+      }
 
       if (order) {
-        // Redirect based on payment method
         if (paymentMethod === 'cod') {
-          // COD: redirect to order detail
           setTimeout(() => {
-            navigate(`/orders/${order.id}`, { replace: true });
+            if (!isLoggedIn) {
+              alert.showSuccess('Đặt hàng thành công', 'Cảm ơn bạn! Email xác nhận đơn hàng đã được gửi.');
+              navigate('/', { replace: true });
+            } else {
+              navigate(`/orders/${order.id}`, { replace: true });
+            }
           }, 2000);
         } else {
-          // Bank transfer: redirect to payment page
           navigate('/payment', {
             state: {
               orderId: order.id,
               amount: totalPrice - discount,
               paymentMethod: paymentMethod,
+              isGuest: !isLoggedIn,
             },
             replace: true,
           });
@@ -382,7 +432,58 @@ const Checkout: React.FC = () => {
             </div>
           </motion.div>
 
-          {/* Delivery Address Section */}
+          {/* Guest Info Section — chỉ hiện khi chưa đăng nhập */}
+          {!isLoggedIn && (
+            <motion.div
+              className="bg-white dark:bg-gray-900 rounded-lg shadow-sm dark:shadow-gray-900/30 border border-gray-200 dark:border-gray-700 overflow-hidden mb-4 md:mb-6"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+            >
+              <div className="p-4 md:p-6 border-b border-gray-100 dark:border-gray-700 flex items-center gap-3">
+                <div className="p-2 bg-yellow-100 dark:bg-yellow-900/30 rounded-lg">
+                  <MapPin className="w-5 h-5 text-yellow-700 dark:text-yellow-400" />
+                </div>
+                <div>
+                  <h2 className="text-base md:text-lg font-bold text-gray-900 dark:text-gray-100">Thông tin người nhận</h2>
+                  <p className="text-xs text-gray-500 dark:text-gray-400">
+                    Bạn đang đặt hàng với tư cách khách.{' '}
+                    <a href="/login" className="text-blue-600 dark:text-blue-400 underline font-medium">Đăng nhập</a> để lưu thông tin.
+                  </p>
+                </div>
+              </div>
+              <div className="p-4 md:p-6 space-y-4">
+                <Input
+                  label="Họ và tên *"
+                  placeholder="Nguyễn Văn A"
+                  value={guestName}
+                  onChange={(e) => setGuestName(e.target.value)}
+                />
+                <Input
+                  label="Email *"
+                  placeholder="example@email.com"
+                  type="email"
+                  value={guestEmail}
+                  onChange={(e) => setGuestEmail(e.target.value)}
+                />
+                <Input
+                  label="Số điện thoại *"
+                  placeholder="0901234567"
+                  type="tel"
+                  value={guestPhone}
+                  onChange={(e) => setGuestPhone(e.target.value)}
+                />
+                <Input
+                  label="Địa chỉ giao hàng *"
+                  placeholder="123 Nguyễn Trãi, Quận 1, TP.HCM"
+                  value={guestShippingAddress}
+                  onChange={(e) => setGuestShippingAddress(e.target.value)}
+                />
+              </div>
+            </motion.div>
+          )}
+
+          {/* Delivery Address Section — chỉ hiện khi đã đăng nhập */}
+          {isLoggedIn && (
           <motion.div
             className="bg-white dark:bg-gray-900 rounded-lg shadow-sm dark:shadow-gray-900/30 border border-gray-200 dark:border-gray-700 overflow-hidden mb-4 md:mb-6"
             initial={{ opacity: 0, y: 10 }}
@@ -520,6 +621,7 @@ const Checkout: React.FC = () => {
               )}
             </div>
           </motion.div>
+          )}
 
           {/* Notes Section */}
           <motion.div
@@ -672,13 +774,13 @@ const Checkout: React.FC = () => {
                 <span className="text-gray-300 dark:text-gray-600 hidden sm:inline">|</span>
 
                 <div className="text-xs sm:text-sm w-full sm:w-auto">
-                  {selectedAddressId ? (
+                  {isLoggedIn && (selectedAddressId ? (
                     <p className="text-gray-600 dark:text-gray-400">
                       <span className="font-semibold text-green-600 dark:text-green-400">✓</span> {addresses.find(a => a.id === selectedAddressId)?.city}
                     </p>
                   ) : (
                     <p className="text-red-600 dark:text-red-400 font-medium">Chưa chọn địa chỉ</p>
-                  )}
+                  ))}
                 </div>
               </div>
             </div>
@@ -706,7 +808,7 @@ const Checkout: React.FC = () => {
               {/* Checkout Button */}
               <Button
                 onClick={handleCreateOrder}
-                disabled={isProcessing || !selectedAddressId}
+                disabled={isProcessing || (isLoggedIn && !selectedAddressId)}
                 className="bg-gray-900 text-white hover:bg-black px-4 sm:px-6 text-xs sm:text-sm py-2 font-medium whitespace-nowrap disabled:opacity-50 disabled:cursor-not-allowed w-full sm:w-auto"
               >
                 {isProcessing ? 'Đang xử lý...' : 'Thanh toán'}

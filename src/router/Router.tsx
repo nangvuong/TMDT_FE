@@ -84,23 +84,9 @@ const Router: React.FC = () => {
           } 
         />
 
-        <Route 
-          path="/cart" 
-          element={
-            <ProtectedRoute>
-              <Cart />
-            </ProtectedRoute>
-          } 
-        />
+        <Route path="/cart" element={<Cart />} />
 
-        <Route 
-          path="/checkout" 
-          element={
-            <ProtectedRoute>
-              <CheckoutPage />
-            </ProtectedRoute>
-          } 
-        />
+        <Route path="/checkout" element={<CheckoutPage />} />
 
         <Route 
           path="/payment" 
