@@ -40,7 +40,7 @@ const Header: React.FC<HeaderProps> = ({ logo = 'TMDT Logo', hideFAB = false }) 
   
   // Use cached counts for better performance
   const computedWishlistCount = wishlistCount;
-  const computedCartCount = isLoggedIn ? cartCount : 0;
+  const computedCartCount = cartCount;
   
   const [searchQuery, setSearchQuery] = useState('');
   const [isSearchOpen, setIsSearchOpen] = useState(false);

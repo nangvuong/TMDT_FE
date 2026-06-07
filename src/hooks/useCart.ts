@@ -118,13 +118,15 @@ export const useCart = () => {
 
         // Update state and cache with the complete cart from API response
         setCart(updatedCart);
-        cacheManager.set('cart', updatedCart, 5 * 60 * 1000);
+        cacheManager.set('cart', updatedCart, 30 * 1000);
 
         // Return the updated cart
         return updatedCart;
       } catch (err) {
         const errorMessage = err instanceof Error ? err.message : 'Failed to add item to cart';
         setError(errorMessage);
+        // Invalidate cache on error so next fetch gets fresh data
+        cacheManager.clear('cart');
         throw err;
       }
     },
@@ -136,7 +138,8 @@ export const useCart = () => {
    */
   const addItem = useCallback(
     async (productId: string, quantity: number, productDetails?: any) => {
-      return addToCart({ productId, quantity }, productDetails);
+      const result = await addToCart({ productId, quantity }, productDetails);
+      return result;
     },
     [addToCart]
   );
@@ -161,10 +164,11 @@ export const useCart = () => {
 
         // Update state and cache with the complete cart from API response
         setCart(updatedCart);
-        cacheManager.set('cart', updatedCart, 5 * 60 * 1000);
+        cacheManager.set('cart', updatedCart, 30 * 1000);
       } catch (err) {
         const errorMessage = err instanceof Error ? err.message : 'Failed to remove item from cart';
         setError(errorMessage);
+        cacheManager.clear('cart');
         throw err;
       }
     },

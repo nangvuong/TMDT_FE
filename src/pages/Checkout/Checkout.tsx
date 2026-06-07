@@ -38,7 +38,7 @@ const Checkout: React.FC = () => {
   useScrollReset();
 
   // Cart & Order
-  const { cartItems, removeItem } = useCart();
+  const { cartItems, removeItem, clearCart } = useCart();
   const { checkout, guestCheckout, error: orderError } = useOrders();
 
   // Addresses
@@ -263,6 +263,7 @@ const Checkout: React.FC = () => {
       }
 
       if (order) {
+        clearCart();
         if (paymentMethod === 'cod') {
           setTimeout(() => {
             if (!isLoggedIn) {
@@ -809,7 +810,7 @@ const Checkout: React.FC = () => {
               <Button
                 onClick={handleCreateOrder}
                 disabled={isProcessing || (isLoggedIn && !selectedAddressId)}
-                className="bg-gray-900 text-white hover:bg-black px-4 sm:px-6 text-xs sm:text-sm py-2 font-medium whitespace-nowrap disabled:opacity-50 disabled:cursor-not-allowed w-full sm:w-auto"
+                className="bg-emerald-600 text-white hover:bg-emerald-700 active:bg-emerald-800 px-4 sm:px-6 text-xs sm:text-sm py-2 font-medium whitespace-nowrap disabled:opacity-50 disabled:cursor-not-allowed w-full sm:w-auto shadow-lg shadow-emerald-900/40"
               >
                 {isProcessing ? 'Đang xử lý...' : 'Thanh toán'}
               </Button>
